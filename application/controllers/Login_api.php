@@ -19,7 +19,7 @@ class Login_api extends BaseAPIController
     public function login_post(){   
         $cellphone = $this->security->xss_clean($this->input->post("cellphone"));
         $password = $this->security->xss_clean($this->input->post("password"));
-        $this->form_validation->set_rules('cellphone', 'lang:「帳號」', 'required');
+        $this->form_validation->set_rules('cellphone', 'lang:「手機號碼」', 'required');
         $this->form_validation->set_rules('password', 'lang:「密碼」', 'required');
 
         //判斷規則是否成立
