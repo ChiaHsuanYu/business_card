@@ -2,7 +2,7 @@
 class Users_model extends CI_Model
 {
     public $id = '';
-    public $cellphone = '';
+    public $account = '';
     public $password = '';
     public $verify = '';
     public $verifyCode = '';
@@ -25,7 +25,7 @@ class Users_model extends CI_Model
             foreach ($query->result() as $row) {
                 $obj = new Users_model();
                 $obj->id = $row->Id;
-                $obj->cellphone = $row->Cellphone;
+                $obj->account = $row->Account;
                 $obj->verify = $row->Verify;
                 $obj->verifyCode = $row->VerifyCode;
                 $obj->superID = $row->SuperID;
@@ -63,16 +63,16 @@ class Users_model extends CI_Model
     }
 
     //登入驗證
-    public function get_user_by_telpwd($cellphone, $password){
+    public function get_user_by_accpwd($account, $password){
         $password = md5($password);
-        $sql = "SELECT users.* FROM users WHERE users.Cellphone=? AND users.Password=? AND users.Verify=1 AND users.isDeleted = 0";
-        $query = $this->db->query($sql, array($cellphone, $password));
+        $sql = "SELECT users.* FROM users WHERE users.Account=? AND users.Password=? AND users.Verify=1 AND users.isDeleted = 0";
+        $query = $this->db->query($sql, array($account, $password));
         $result = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $obj = new Users_model();
                 $obj->id = $row->Id;
-                $obj->cellphone = $row->Cellphone;
+                $obj->account = $row->Account;
                 $obj->verify = $row->Verify;
                 $obj->verifyCode = $row->VerifyCode;
                 $obj->superID = $row->SuperID;

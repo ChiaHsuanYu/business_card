@@ -7,9 +7,9 @@ class Login_service extends MY_Service
         $this->load->model('users_model');
     }
     
-    public function login($cellphone,$password)
+    public function login($account,$password)
     {
-        if ($r = $this->users_model->get_user_by_telpwd($cellphone,$password)){
+        if ($r = $this->users_model->get_user_by_accpwd($account,$password)){
             $result = array(
                 "status" => 1,
                 "data"=> $r
@@ -17,15 +17,15 @@ class Login_service extends MY_Service
         }else{
             $result = array(
                 "status" => 0,
-                "message"=> "登入失敗"
+                "msg"=> "登入失敗"
             );    
         }
         return $result;
     }
 
-    public function logout($cellphone)
+    public function logout($account)
     {
-        if ($cellphone){
+        if ($account){
             session_destroy();
         }
     }

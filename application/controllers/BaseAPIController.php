@@ -15,19 +15,19 @@ class BaseAPIController extends RestController {
         header('Content-Type: application/json');
     }
 
-    public function GenToken($user_id, $user_cellphone)
+    public function GenToken($user_id, $user_account)
     {
         $tokenData['id'] = $user_id;
-        $tokenData['cellphone'] = $user_cellphone;
+        $tokenData['account'] = $user_account;
         $tokenData['timeStamp'] = date('Y-m-d H:i:s');
 
         $jwtToken = $this->objOfJwt->GenerateToken($tokenData);
         return array('Token' => $jwtToken);
     }
 
-    public function renewToken($user_id, $user_cellphone)
+    public function renewToken($user_id, $user_account)
     {
-        $jwtToken = $this->GenToken($user_id, $user_cellphone);
+        $jwtToken = $this->GenToken($user_id, $user_account);
 
         //update db
         $this->common_service->renewTokenById($user_id, $jwtToken['Token']); //更新 Token, T_CreateDT, T_UpdateDT
@@ -54,7 +54,7 @@ class BaseAPIController extends RestController {
         if ($r['status']) {
             // //檢查逾時
             // $user_id = $r['data'][0]->id;
-            // $user_cellphone = $r['data'][0]->cellphone;
+            // $user_account = $r['data'][0]->account;
             // $TC = $r['data'][0]->tokenCreateTime;
             // $TU = $r['data'][0]->tokenUpdateTime;
             // $TN = date('Y-m-d H:i:s');                                                       //now
@@ -62,18 +62,18 @@ class BaseAPIController extends RestController {
             // $u_not_expired = $this->common_service->check_date_long($TU, $TN, TOKENEXPIRED);   //return true: 沒超過限制
 
             // if ($c_not_expired != TRUE && $u_not_expired == TRUE) {              //建立token的時間超過限制，但使用者持續使用，因此換發新的token
-            //     $new_Token = $this->renewToken($user_id, $user_cellphone);
+            //     $new_Token = $this->renewToken($user_id, $user_account);
             //     $r = $this->common_service->checkToken($new_Token['token']);    //重新取得使用者資訊                
             // } elseif ($u_not_expired != TRUE) {                                    //使用者idle時間已超過限制，token過期，登出user
             //     $this->deleteToken($received_Token);
-            //     return array("status" => 0, "message" => "token 不合法或逾時");
+            //     return array("status" => 0, "msg" => "token 不合法或逾時");
             // } else {                                                              //正常，更新Token的T_UpdateDT
             //     $this->common_service->renewTokenUpdateDT($received_Token);
             // }
             return array("status" => 1, "data" => $r['data']);
 
         } else {  //token 不合法或逾時，導到登入頁面
-            return array("status" => 0, "message" => "token 不合法或逾時");
+            return array("status" => 0, "msg" => "token 不合法或逾時");
         }
     }
 
@@ -83,7 +83,7 @@ class BaseAPIController extends RestController {
     //         $jwtData = $this->objOfJwt->DecodeToken($received_Token['Authorization']);
     //         return json_encode($jwtData);
     //     } catch (Exception $e) {
-    //         return array("status" => 0, "message" => "Token錯誤");
+    //         return array("status" => 0, "msg" => "Token錯誤");
     //     }
     // }
 
@@ -91,7 +91,7 @@ class BaseAPIController extends RestController {
     public function timestamp_validation($dateTime)
     {
         if (date('Y-m-d H:i:s', strtotime($dateTime)) != $dateTime && date('Y/m/d H:i:s', strtotime($dateTime)) != $dateTime) {
-            $this->form_validation->set_message('timestamp_validation', '{field} 格式錯誤');
+            $this->form_validation->set_msg('timestamp_validation', '{field} 格式錯誤');
             return FALSE;
         } else {
             return TRUE;
@@ -102,7 +102,7 @@ class BaseAPIController extends RestController {
     public function datetamp_validation($dateTime){
         if( date('Y-m-d', strtotime($dateTime)) != $dateTime && date('Y/m/d', strtotime($dateTime)) != $dateTime)
         {
-            $this->form_validation->set_message('datetamp_validation', '{field} 格式錯誤');
+            $this->form_validation->set_msg('datetamp_validation', '{field} 格式錯誤');
             return FALSE;
         }
         else

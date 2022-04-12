@@ -17,35 +17,41 @@ class Login_api extends BaseAPIController
 
     // 登入
     public function login_post(){   
-        $cellphone = $this->security->xss_clean($this->input->post("cellphone"));
+        $account = $this->security->xss_clean($this->input->post("account"));
         $password = $this->security->xss_clean($this->input->post("password"));
-        $this->form_validation->set_rules('cellphone', 'lang:「手機號碼」', 'required');
+        $this->form_validation->set_rules('account', 'lang:「手機號碼」', 'required');
         $this->form_validation->set_rules('password', 'lang:「密碼」', 'required');
 
         //判斷規則是否成立
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
-                "message" => $this->form_validation->error_string()
+                "msg" => $this->form_validation->error_string()
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
-            $result = $this->login_service->login($cellphone,$password);
+            $result = $this->login_service->login($account,$password);
             if ($result['status'] == 1) {
                 //更新Token, createDT, updateDT
-                $new_Token = $this->renewToken($result['data'][0]->id,$result['data'][0]->cellphone);
+                $new_Token = $this->renewToken($result['data'][0]->id,$result['data'][0]->account);
                 $result = $this->common_service->checkToken($new_Token['Token']);//重新取得使用者資訊
 
                 //登入成功，紀錄帳號資料到SESSION
                 $this->session->user_info = (array)$result['data'][0];
+                // 檢查基本是否為空
+                $isBasicInfoEmpty = true;
+                if(!empty($result['data'][0]->superID)){
+                    $isBasicInfoEmpty = false;
+                }
                 $result = array(
                     "status" => 1,
-                    "message" => "登入成功"
+                    "msg" => "登入成功",
+                    "isBasicInfoEmpty" => $isBasicInfoEmpty
                 ); 
             } else {
                 $result = array(
                     "status" => 0,
-                    "message" => "帳號密碼錯誤",
+                    "msg" => "帳號密碼錯誤",
                 );
             }
             $this->response( $result,200); // REST_Controller::HTTP_OK     
@@ -60,12 +66,12 @@ class Login_api extends BaseAPIController
         }
         //清除session
         if(isset($this->session->user_info)){
-            $this->login_service->logout($this->session->user_info['cellphone']);
+            $this->login_service->logout($this->session->user_info['account']);
         }
 
         $result = array(
             "status" => 1,
-            "message" => "登出成功"
+            "msg" => "登出成功"
         ); 
         $this->response($result,200); // REST_Controller::HTTP_OK
     }
