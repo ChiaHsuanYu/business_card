@@ -6,8 +6,7 @@ class Common_service extends MY_Service
         parent::__construct();
         $this->load->library('session');
         // $this->load->library('phpmailer_lib');
-        // $this->load->model('authorization_model');
-        // $this->load->model('users_model');
+        $this->load->model('users_model');
     }
 
     // 檢查日期時間區間
