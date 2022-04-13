@@ -3,13 +3,15 @@ class Users_model extends CI_Model
 {
     public $id = '';
     public $account = '';
-    public $password = '';
-    public $verify = '';
-    public $verifyCode = '';
-    public $superID = '';
-    public $name = '';
-    public $avatar = '';
-    public $createTime = '';
+    public $order = '';
+    public $companyOrder = '';
+    public $personal_superID = '';
+    public $personal_name = '';
+    public $personal_avatar = '';
+    public $personal_nickname = '';
+    public $personal_email = '';
+    public $personal_phone = '';
+    public $personal_social = '';
    
     // 連接資料庫
     public function __construct(){
@@ -26,15 +28,30 @@ class Users_model extends CI_Model
                 $obj = new Users_model();
                 $obj->id = $row->Id;
                 $obj->account = $row->Account;
-                $obj->verify = $row->Verify;
-                $obj->verifyCode = $row->VerifyCode;
-                $obj->superID = $row->SuperID;
-                $obj->name = $row->Name;
-                $obj->avatar = $row->Avatar;
-                $obj->createTime = $row->CreateTime;
+                $obj->order = $row->Order;
+                $obj->companyOrder = $row->CompanyOrder;
+                $obj->personal_superID = $row->SuperID;
+                $obj->personal_name = $row->Name;
+                $obj->personal_avatar = $row->Avatar;
+                $obj->personal_nickname = $row->Nickname;
+                $obj->personal_email = $row->Email;
+                $obj->personal_phone = $row->Phone;
+                $obj->personal_social = json_decode($row->Social);
                 $obj->token = $row->Token;
                 $obj->tokenCreateTime = $row->TokenCreateTime;
                 $obj->tokenUpdateTime = $row->TokenUpdateTime;
+                if($row->Order){
+                    $obj->order = explode(',',$row->Order);
+                }
+                if($row->CompanyOrder){
+                    $obj->companyOrder = explode(',',$row->CompanyOrder);
+                }
+                if($row->Email){
+                    $obj->personal_email = explode(',',$row->Email);
+                }
+                if($row->Phone){
+                    $obj->personal_phone = explode(',',$row->Phone);
+                }
                 array_push($result, $obj);
             }
         }
@@ -57,7 +74,7 @@ class Users_model extends CI_Model
 
     // 更新使用者token
     public function update_Token_by_id($user_id, $token){
-        $sql = "UPDATE users SET  Token = ?,  TokenCreateTime = ?, TokenUpdateTime = ? WHERE Id = ? AND isDeleted = ?";
+        $sql = "UPDATE users SET Token = ?,  TokenCreateTime = ?, TokenUpdateTime = ? WHERE Id = ? AND isDeleted = ?";
         $query = $this->db->query($sql, array($token, date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $user_id, 0));
         return $query;
     }
@@ -87,4 +104,59 @@ class Users_model extends CI_Model
         }
         return $result;
     }
+
+    // 檢查手機號碼是否存在
+    public function check_account($account){
+        $sql = "SELECT Id,Account,Verify FROM users WHERE Account=? AND isDeleted = 0";
+        $query = $this->db->query($sql, array($account));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->account = $row->Account;
+                $obj->verify = $row->Verify;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // 新增使用者
+    public function add_user($account){
+        $sql = "INSERT INTO users (Account, createTime) VALUES (?, ?)";
+        $query = $this->db->query($sql,array($account,date('Y-m-d H:i:s')));
+        return $this->db->insert_id();
+    }
+
+    // 帳號驗證
+    public function check_verify_by_account($data){
+        $sql = "SELECT Id,Verify FROM users WHERE Account=? AND VerifyCode=?  AND isDeleted = 0";
+        $query = $this->db->query($sql, array($data['account'],$data['vaild']));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->verify = $row->Verify;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+    
+    // 更改驗證碼 by id
+    public function update_verifyCode_by_id($verifyCode,$id){
+        $sql = "UPDATE users SET VerifyCode = ? WHERE Id = ? AND isDeleted = 0;";
+        $query = $this->db->query($sql, array($verifyCode,$id));
+        return $query;
+    }
+
+    // 更改驗證狀態 by id
+    public function update_verify_by_id($id){
+        $sql = "UPDATE users SET Verify = ? WHERE Id = ? AND isDeleted = 0;";
+        $query = $this->db->query($sql, array('1',$id));
+        return $query;
+    }
+
 }

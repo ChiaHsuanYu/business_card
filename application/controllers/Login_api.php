@@ -38,15 +38,31 @@ class Login_api extends BaseAPIController
 
                 //登入成功，紀錄帳號資料到SESSION
                 $this->session->user_info = (array)$result['data'][0];
+
+                //整理資料-依照順序取得公司資訊 by companyId,userId
+                $user_data = $result['data'][0];
+                $user_data->companyInfo = array();
+                for($i=0;$i<count($user_data->companyOrder);$i++){
+                    $companyId = $user_data->companyOrder[$i];
+                    $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
+                    if(count($company_data)){
+                        array_push($user_data->companyInfo,$company_data[0]);
+                    }
+                }
+                $userInfo =  array(
+                    'userInfo'=>$user_data
+                );
+
                 // 檢查基本是否為空
                 $isBasicInfoEmpty = true;
-                if(!empty($result['data'][0]->superID)){
+                if(!empty($user_data->superID)){
                     $isBasicInfoEmpty = false;
                 }
                 $result = array(
                     "status" => 1,
                     "msg" => "登入成功",
-                    "isBasicInfoEmpty" => $isBasicInfoEmpty
+                    "isBasicInfoEmpty" => $isBasicInfoEmpty,
+                    "data" => $userInfo
                 ); 
             } else {
                 $result = array(

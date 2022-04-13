@@ -12,7 +12,7 @@ class Industry_model extends CI_Model
 
     // 取得產業名稱
     public function get_industry_by_categoryId($industryCategoryId){
-        $sql = "SELECT * FROM industry WHERE industryCategoryId = ?";
+        $sql = "SELECT * FROM industry WHERE IndustryCategoryId = ?";
         $query = $this->db->query($sql, array($industryCategoryId));
         $result = array();
         if ($query->num_rows() > 0) {

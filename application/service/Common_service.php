@@ -7,6 +7,7 @@ class Common_service extends MY_Service
         $this->load->library('session');
         // $this->load->library('phpmailer_lib');
         $this->load->model('users_model');
+        $this->load->model('company_model');
     }
 
     // 檢查日期時間區間
@@ -21,7 +22,7 @@ class Common_service extends MY_Service
             if ($interval > $time_long) {
                 return "搜尋區間超過限制";
             } else {
-                return TRUE;
+                return true;
             }
         } else {
             return "結束時間不可小於開始時間";
@@ -29,8 +30,7 @@ class Common_service extends MY_Service
     }
 
     // 檢查資料庫是否有使用者 Token
-    public function checkToken($token)
-    {
+    public function checkToken($token){
         if ($r = $this->users_model->get_user_by_token($token)) {
             $result = array(
                 "status" => 1,

@@ -15,12 +15,12 @@ class Industry_category_api extends BaseAPIController
         $this->load->library('session');
 
         // 登入驗證
-        // $r = $this->checkAA();
-        // if ($r['status'] == 1){             //Token合法並具有權限，將資料儲存在session            
-        //     $this->session->user_info = (array)$r['data'][0];         
-        // }else{                              //Token不合法或逾時，讓使用者執行登出
-        //     exit("Invalid Token");
-        // }
+        $r = $this->checkAA();
+        if ($r['status'] == 1){             //Token合法並具有權限，將資料儲存在session           
+            $this->session->user_info = (array)$r['data'][0];       
+        }else{                              //Token不合法或逾時，讓使用者執行登出
+            exit("Invalid Token");
+        }
     }
 
     // 取得產業類別

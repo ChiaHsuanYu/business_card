@@ -69,26 +69,24 @@ class BaseAPIController extends RestController {
         //檢查token是否合法(存在於database)；
         $r = $this->common_service->checkToken($received_Token);
         if ($r['status']) {
-            // //檢查逾時
-            // $user_id = $r['data'][0]->id;
-            // $user_account = $r['data'][0]->account;
-            // $TC = $r['data'][0]->tokenCreateTime;
-            // $TU = $r['data'][0]->tokenUpdateTime;
-            // $TN = date('Y-m-d H:i:s');                                                       //now
-            // $c_not_expired = $this->common_service->check_date_long($TC, $TN, TOKENEXPIRED);   //return true: 沒超過限制
-            // $u_not_expired = $this->common_service->check_date_long($TU, $TN, TOKENEXPIRED);   //return true: 沒超過限制
-
-            // if ($c_not_expired != TRUE && $u_not_expired == TRUE) {              //建立token的時間超過限制，但使用者持續使用，因此換發新的token
-            //     $new_Token = $this->renewToken($user_id, $user_account);
-            //     $r = $this->common_service->checkToken($new_Token['token']);    //重新取得使用者資訊                
-            // } elseif ($u_not_expired != TRUE) {                                    //使用者idle時間已超過限制，token過期，登出user
-            //     $this->deleteToken($received_Token);
-            //     return array("status" => 0, "msg" => "token 不合法或逾時");
-            // } else {                                                              //正常，更新Token的T_UpdateDT
-            //     $this->common_service->renewTokenUpdateDT($received_Token);
-            // }
+            //檢查逾時
+            $user_id = $r['data'][0]->id;
+            $user_account = $r['data'][0]->account;
+            $TC = $r['data'][0]->tokenCreateTime;
+            $TU = $r['data'][0]->tokenUpdateTime;
+            $TN = date('Y-m-d H:i:s'); //now
+            $c_not_expired = $this->common_service->check_date_long($TC, $TN, TOKENEXPIRED);   //return true: 沒超過限制
+            $u_not_expired = $this->common_service->check_date_long($TU, $TN, TOKENEXPIRED);   //return true: 沒超過限制
+            if (($c_not_expired !== true) && $u_not_expired === true) {              //建立token的時間超過限制，但使用者持續使用，因此換發新的token
+                $new_Token = $this->renewToken($user_id, $user_account);
+                $r = $this->common_service->checkToken($new_Token['token']);    //重新取得使用者資訊                
+            } elseif ($u_not_expired !== TRUE) {                                    //使用者idle時間已超過限制，token過期，登出user
+                $this->deleteToken($received_Token);
+                return array("status" => 0, "msg" => "token 不合法或逾時");
+            } else {                                                              //正常，更新Token的T_UpdateDT
+                $this->common_service->renewTokenUpdateDT($received_Token);
+            }
             return array("status" => 1, "data" => $r['data']);
-
         } else {  //token 不合法或逾時，導到登入頁面
             return array("status" => 0, "msg" => "token 不合法或逾時");
         }
