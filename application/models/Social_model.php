@@ -1,25 +1,28 @@
 <?php
-class Industry_model extends CI_Model
+class Social_model extends CI_Model
 {
-    public $industryId = '';
-    public $industryName = '';
+    public $id = '';
+    public $iconURL = '';
+    public $name = '';
 
     // 連接資料庫
     public function __construct()
     {
         $this->load->database();
+        $this->load->helper('url');
     }
 
-    // 取得產業類別
+    // 取得社群清單
     public function query_all(){
-        $sql = "SELECT * FROM industry";
+        $sql = "SELECT * FROM social";
         $query = $this->db->query($sql, array());
         $result = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                $obj = new Industry_model();
-                $obj->industryId = $row->Id;
-                $obj->industryName = $row->Name;
+                $obj = new Social_model();
+                $obj->id = $row->Id;
+                $obj->iconURL = base_url().SOCIAL_ICON_PATH.$row->Icon;
+                $obj->name = $row->Name;
                 array_push($result, $obj);
             }
         }

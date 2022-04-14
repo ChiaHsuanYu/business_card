@@ -85,3 +85,6 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 define('TOKENEXPIRED', 28800);                                          //define token expired time 8 hours
+define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑
+
+

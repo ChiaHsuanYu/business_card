@@ -107,7 +107,7 @@ class Users_model extends CI_Model
 
     // 檢查手機號碼是否存在
     public function check_account($account){
-        $sql = "SELECT Id,Account,Verify FROM users WHERE Account=? AND isDeleted = 0";
+        $sql = "SELECT Id,Account,Verify,`Password` FROM users WHERE Account=? AND isDeleted = 0";
         $query = $this->db->query($sql, array($account));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -116,6 +116,25 @@ class Users_model extends CI_Model
                 $obj->id = $row->Id;
                 $obj->account = $row->Account;
                 $obj->verify = $row->Verify;
+                $obj->password = $row->Password;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // 檢查使用者驗證狀態
+    public function check_account_by_id($id){
+        $sql = "SELECT Id,Account,Verify,`Password` FROM users WHERE Id=? AND isDeleted = 0";
+        $query = $this->db->query($sql, array($id));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->account = $row->Account;
+                $obj->verify = $row->Verify;
+                $obj->password = $row->Password;
                 array_push($result, $obj);
             }
         }
@@ -124,15 +143,15 @@ class Users_model extends CI_Model
 
     // 新增使用者
     public function add_user($account){
-        $sql = "INSERT INTO users (Account, createTime) VALUES (?, ?)";
+        $sql = "INSERT INTO users (Account, CreateTime) VALUES (?, ?)";
         $query = $this->db->query($sql,array($account,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 
     // 帳號驗證
-    public function check_verify_by_account($data){
-        $sql = "SELECT Id,Verify FROM users WHERE Account=? AND VerifyCode=?  AND isDeleted = 0";
-        $query = $this->db->query($sql, array($data['account'],$data['vaild']));
+    public function check_verify_by_id($data){
+        $sql = "SELECT Id,Verify FROM users WHERE Id=? AND VerifyCode=?  AND isDeleted = 0";
+        $query = $this->db->query($sql, array($data['userId'],$data['vaild']));
         $result = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -159,4 +178,11 @@ class Users_model extends CI_Model
         return $query;
     }
 
+    // 設定密碼 by id
+    public function update_password_by_id($data){
+        $password = md5($data['password']);
+        $sql = "UPDATE users SET `Password` = ? WHERE Id = ? AND isDeleted = 0;";
+        $query = $this->db->query($sql, array($password,$data['id']));
+        return $query;
+    }
 }

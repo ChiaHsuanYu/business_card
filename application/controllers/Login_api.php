@@ -42,11 +42,13 @@ class Login_api extends BaseAPIController
                 //整理資料-依照順序取得公司資訊 by companyId,userId
                 $user_data = $result['data'][0];
                 $user_data->companyInfo = array();
-                for($i=0;$i<count($user_data->companyOrder);$i++){
-                    $companyId = $user_data->companyOrder[$i];
-                    $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
-                    if(count($company_data)){
-                        array_push($user_data->companyInfo,$company_data[0]);
+                if($user_data->companyOrder){
+                    for($i=0;$i<count($user_data->companyOrder);$i++){
+                        $companyId = $user_data->companyOrder[$i];
+                        $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
+                        if(count($company_data)){
+                            array_push($user_data->companyInfo,$company_data[0]);
+                        }
                     }
                 }
                 $userInfo =  array(
@@ -84,7 +86,6 @@ class Login_api extends BaseAPIController
         if(isset($this->session->user_info)){
             $this->login_service->logout($this->session->user_info['account']);
         }
-
         $result = array(
             "status" => 1,
             "msg" => "登出成功"

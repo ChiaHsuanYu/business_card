@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 use chriskacerguis\RestServer\RestController;
+
 require APPPATH . 'libraries/CreatorJwt.php';
 
 class BaseAPIController extends RestController {
@@ -10,6 +11,7 @@ class BaseAPIController extends RestController {
     {
         // Construct the parent class
         parent::__construct();
+        $this->load->library(array("form_validation"));
         $this->load->service("Common_service");
         $this->objOfJwt = new CreatorJwt();
 
@@ -58,13 +60,14 @@ class BaseAPIController extends RestController {
     }
 
     // 檢查登入狀態 Authentication/使用權限 Authorization
-    public function checkAA()
-    {
-        $bearer = array("Bearer ", "bearer ", "BEARER ");     
-        $received_Token = "";
-        $headers = $this->input->request_headers('Authorization');
-        if (array_key_exists('Authorization', $headers) && $headers['Authorization'] != '') {
-            $received_Token = str_replace($bearer, "", $headers['Authorization']); //取得Token
+    public function checkAA($received_Token = null){
+        if(!$received_Token){
+            $bearer = array("Bearer ", "bearer ", "BEARER ");     
+            $received_Token = "";
+            $headers = $this->input->request_headers('Authorization');
+            if (array_key_exists('Authorization', $headers) && $headers['Authorization'] != '') {
+                $received_Token = str_replace($bearer, "", $headers['Authorization']); //取得Token
+            }
         }
         //檢查token是否合法(存在於database)；
         $r = $this->common_service->checkToken($received_Token);
@@ -86,7 +89,7 @@ class BaseAPIController extends RestController {
             } else {                                                              //正常，更新Token的T_UpdateDT
                 $this->common_service->renewTokenUpdateDT($received_Token);
             }
-            return array("status" => 1, "data" => $r['data']);
+            return array("status" => 1, "data" => $r['data'][0]);
         } else {  //token 不合法或逾時，導到登入頁面
             return array("status" => 0, "msg" => "token 不合法或逾時");
         }
@@ -102,11 +105,29 @@ class BaseAPIController extends RestController {
     //     }
     // }
 
+    // 檢查字串是否英數混合
+    public function check_string_validation($string){
+        $lens = strlen($string); //取得字數
+        $string= strtolower($string); //字串轉小寫
+        $c_ok = 0;
+        $n_ok = 0;
+        for ($i=0; $i<$lens; $i++) {
+            $cc = substr($string, $i, 1);
+            $c_ok += substr_count("abcdefghijklmnopqrstuvwxyz", $cc); //字母出現的次數
+            $n_ok += substr_count("1234567890", $cc); //數字出現的次數
+        }
+        if ($c_ok==0 || $n_ok==0 || ($n_ok+$c_ok != $lens)){
+            $this->form_validation->set_message('check_string_validation', '{field} 必須英數混合');
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     // 檢查日期時間格式
     public function timestamp_validation($dateTime)
     {
         if (date('Y-m-d H:i:s', strtotime($dateTime)) != $dateTime && date('Y/m/d H:i:s', strtotime($dateTime)) != $dateTime) {
-            $this->form_validation->set_msg('timestamp_validation', '{field} 格式錯誤');
+            $this->form_validation->set_message('timestamp_validation', '{field} 格式錯誤');
             return FALSE;
         } else {
             return TRUE;
@@ -117,7 +138,7 @@ class BaseAPIController extends RestController {
     public function datetamp_validation($dateTime){
         if( date('Y-m-d', strtotime($dateTime)) != $dateTime && date('Y/m/d', strtotime($dateTime)) != $dateTime)
         {
-            $this->form_validation->set_msg('datetamp_validation', '{field} 格式錯誤');
+            $this->form_validation->set_message('datetamp_validation', '{field} 格式錯誤');
             return FALSE;
         }
         else

@@ -41,10 +41,8 @@ class Register_api extends BaseAPIController
     // 帳號驗證
     public function account_verify_post(){   
         $data = array(
-            'account' => $this->security->xss_clean($this->input->post("account")),
             'vaild' => $this->security->xss_clean($this->input->post("vaild")),
         );
-        $this->form_validation->set_rules('account', 'lang:「手機號碼」', 'required');
         $this->form_validation->set_rules('vaild', 'lang:「驗證碼」', 'required');
         if ($this->form_validation->run() === FALSE) {
             $result = array(
@@ -54,6 +52,24 @@ class Register_api extends BaseAPIController
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
             $this->response( $this->register_service->account_verify($data),200); // REST_Controller::HTTP_OK     
+        }
+    } 
+
+    // 設定密碼
+    public function add_password_post(){   
+        $data = array(
+            'password' => $this->security->xss_clean($this->input->post("password")),
+        );
+        $this->form_validation->set_rules("password", "lang:「密碼」", "trim|required|min_length[6]|max_length[20]|callback_check_string_validation");
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "msg" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            // $id = $this->session->user_info['id'];
+            $this->response( $this->register_service->add_password($data),200); // REST_Controller::HTTP_OK     
         }
     } 
 }

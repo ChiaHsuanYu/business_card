@@ -25,8 +25,8 @@ class Company_model extends CI_Model
 
     // 取得公司資訊 by userId
     public function get_company_by_userId($companyId,$userId){
-        $sql = "SELECT company.*,industry.IndustryCategoryId,industry.Name as industryName,industry_category.Name as industryCategoryName FROM company 
-                LEFT JOIN industry ON company.IndustryId = industry.Id LEFT JOIN industry_category ON industry.industryCategoryId = industry_category.Id 
+        $sql = "SELECT company.*,industry.Name as industryName FROM company 
+                LEFT JOIN industry ON company.IndustryId = industry.Id 
                 WHERE company.Id = ? AND company.UserId = ? AND company.isDeleted = ?";
         $query = $this->db->query($sql, array($companyId,$userId, 0));
         $result = array();
@@ -39,8 +39,6 @@ class Company_model extends CI_Model
                 $obj->company_address = $row->Address;
                 $obj->company_gui = $row->Gui;
                 $obj->company_phone = $row->Phone;
-                $obj->company_industryCategoryId = $row->IndustryCategoryId;
-                $obj->company_industryCategoryName = $row->industryCategoryName;
                 $obj->company_industryId = $row->IndustryId;
                 $obj->company_industryName = $row->industryName;
                 $obj->company_position = $row->Position;
@@ -57,6 +55,9 @@ class Company_model extends CI_Model
                 }
                 if($row->Email){
                     $obj->company_email = explode(',',$row->Email);
+                }
+                if($row->Address){
+                    $obj->company_address = explode(',',$row->Address);
                 }
                 array_push($result, $obj);
             }

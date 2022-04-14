@@ -3,13 +3,13 @@
 require APPPATH . 'controllers/BaseAPIController.php';
 defined('BASEPATH') OR exit('No direct script access allowed');
  
-class Industry_category_api extends BaseAPIController 
+class Social_api extends BaseAPIController 
 {
     //連接指定的model檔案 
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("industry_service");
+        $this->load->service("social_service");
         $this->load->library('session');
 
         // 登入驗證
@@ -21,8 +21,8 @@ class Industry_category_api extends BaseAPIController
         }
     }
 
-    // 取得產業類別
+    // 取得社群清單
     public function query_all_post(){   
-        $this->response( $this->industry_service->query_all(),200); // REST_Controller::HTTP_OK     
+        $this->response( $this->social_service->query_all(),200); // REST_Controller::HTTP_OK     
     } 
 }
