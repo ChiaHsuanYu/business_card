@@ -80,9 +80,9 @@ class Common_service extends MY_Service
     }
 
     //更新Token為NULL
-    public function removeToken($token)
+    public function removeToken($id)
     {
-        if ($r = $this->users_model->update_Token_as_NULL($token)) {
+        if ($r = $this->users_model->update_Token_as_NULL($id)) {
             $result = array(
                 "status" => 1,
                 "data" => $r

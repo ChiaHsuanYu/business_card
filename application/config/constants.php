@@ -85,6 +85,9 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 define('TOKENEXPIRED', 28800);                                          //define token expired time 8 hours
+define('SMS_NUM', 3);                                                   //簡訊當日發送限制次數
+define('SMSEXPIRED', 60);                                               //簡訊發送間隔時間
 define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑
-
-
+define('SUBJECT_IMAGE_PATH', 'appoint/images/subject/');                //主題圖片路徑
+define('AVATAR_PATH', 'appoint/images/avatar/');                        //個人頭像圖片路徑
+define('LOGO_PATH', 'appoint/images/logo/');                            //公司LOGO圖片路徑

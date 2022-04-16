@@ -7,8 +7,6 @@ class Company_model extends CI_Model
     public $company_address = '';
     public $company_gui = '';
     public $company_phone = '';
-    public $company_industryCategoryId = '';
-    public $company_industryCategoryName = '';
     public $company_industryId = '';
     public $company_industryName = '';
     public $company_position = '';
@@ -21,6 +19,7 @@ class Company_model extends CI_Model
     // 連接資料庫
     public function __construct(){
         $this->load->database();
+        $this->load->helper('url');
     }
 
     // 取得公司資訊 by userId
@@ -59,9 +58,19 @@ class Company_model extends CI_Model
                 if($row->Address){
                     $obj->company_address = explode(',',$row->Address);
                 }
+                if($row->Logo){
+                    $obj->company_logo = base_url().LOGO_PATH.$row->Logo;
+                }
                 array_push($result, $obj);
             }
         }
         return $result;
+    }
+    
+    // 新增公司資訊
+    public function add_company($data){
+        $sql = "INSERT INTO company (UserId,Company,Position,Logo,CreateTime) VALUES (?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['id'],$data['company_name'],$data['company_position'],$data['company_logo_path'],date('Y-m-d H:i:s')));
+        return $this->db->insert_id();
     }
 }

@@ -60,15 +60,18 @@ class BaseAPIController extends RestController {
     }
 
     // 檢查登入狀態 Authentication/使用權限 Authorization
-    public function checkAA($received_Token = null){
-        if(!$received_Token){
-            $bearer = array("Bearer ", "bearer ", "BEARER ");     
-            $received_Token = "";
-            $headers = $this->input->request_headers('Authorization');
-            if (array_key_exists('Authorization', $headers) && $headers['Authorization'] != '') {
-                $received_Token = str_replace($bearer, "", $headers['Authorization']); //取得Token
-            }
+    public function checkAA(){
+        $received_Token = null;
+        if($this->session->user_info){
+            $received_Token = $this->session->user_info['token'];
         }
+        // $bearer = array("Bearer ", "bearer ", "BEARER ");     
+        // $received_Token = "";
+        // $headers = $this->input->request_headers('Authorization');
+        // if (array_key_exists('Authorization', $headers) && $headers['Authorization'] != '') {
+        //     $received_Token = str_replace($bearer, "", $headers['Authorization']); //取得Token
+        // }
+        // return $headers;
         //檢查token是否合法(存在於database)；
         $r = $this->common_service->checkToken($received_Token);
         if ($r['status']) {
