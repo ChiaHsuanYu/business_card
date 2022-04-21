@@ -16,24 +16,60 @@ class Login_api extends BaseAPIController
     }
 
     // 檢查是否已有登入紀錄
+    // public function check_login_post(){   
+    //     $result = $this->login_service->check_login();
+    //     if ($result['status'] == 2) {
+    //         // 整理資料-依照順序取得公司資訊 by companyId,userId
+    //         $userInfo = $this->login_service->get_company($result['data'][0]);
+    //         // 檢查基本是否為空
+    //         $isBasicInfoEmpty = true;
+    //         if(!empty($result['data'][0]->personal_superID)){
+    //             $isBasicInfoEmpty = false;
+    //         }
+    //         $result = array(
+    //             "status" => 2,
+    //             "msg" => "已有登入紀錄，直接導向主頁",
+    //             "isBasicInfoEmpty" => $isBasicInfoEmpty,
+    //             "data" => $userInfo
+    //         ); 
+    //     }
+    //     $this->response($result,200); // REST_Controller::HTTP_OK     
+    // } 
+
+    // 檢查是否已有登入紀錄
     public function check_login_post(){   
-        $result = $this->login_service->check_login();
-        if ($result['status'] == 2) {
-            // 整理資料-依照順序取得公司資訊 by companyId,userId
-            $userInfo = $this->login_service->get_company($result['data'][0]);
-            // 檢查基本是否為空
-            $isBasicInfoEmpty = true;
-            if(!empty($result['data'][0]->superID)){
-                $isBasicInfoEmpty = false;
+        $result = $this->checkAA_front();
+        if ($result['status'] == 1) {
+            if($result['data']->isDeleted){
+                $result = array(
+                    "status" => 0,
+                    "msg"=> "手機號碼已被凍結"
+                );    
+            }else{
+                $this->session->user_info = (array)$result['data'];   
+                // 整理資料-依照順序取得公司資訊 by companyId,userId
+                $userInfo = $this->login_service->get_company($result['data']);
+                // 檢查基本是否為空
+                $isBasicInfoEmpty = true;
+                if(!empty($result['data']->personal_superID)){
+                    $isBasicInfoEmpty = false;
+                }
+                $result = array(
+                    "status" => 2,
+                    "msg" => "已有登入紀錄，直接導向主頁",
+                    "isBasicInfoEmpty" => $isBasicInfoEmpty,
+                    "data" => $userInfo
+                ); 
             }
+        }else{
             $result = array(
-                "status" => 2,
-                "msg" => "已有登入紀錄，直接導向主頁",
-                "isBasicInfoEmpty" => $isBasicInfoEmpty,
-                "data" => $userInfo
-            ); 
+                "status" => 1,
+                "msg"=> "尚無登入紀錄"
+            );  
         }
-        $this->response($result,200); // REST_Controller::HTTP_OK     
+        $this->response($result,200); // REST_Controller::HTTP_OK 
+        // $mobile = $this->is_mobile_request();   
+        // $this->response($this->input->request_headers() ,200); // REST_Controller::HTTP_OK    
     } 
 
     // 登入
@@ -69,23 +105,26 @@ class Login_api extends BaseAPIController
         }else{
             $result = $this->login_service->account_verify($data);
             if ($result['status'] == 1) {                
+                // 限制設備裝置登入數量
+                $device = $this->get_device_type();
+                $this->common_service->restrict_user_device($result['data'][0]->id,$device);
                 //更新Token, createDT, updateDT
-                $new_Token = $this->renewToken($result['data'][0]->id,$result['data'][0]->account);
-                $result = $this->common_service->checkToken($new_Token['Token']);//重新取得使用者資訊
+                $new_Token = $this->renewToken_front($result['data'][0]->id,$result['data'][0]->account);
+                $result = $this->common_service->checkToken_front($new_Token['Token']);//重新取得使用者資訊
                 //驗證成功，紀錄帳號資料到SESSION
                 $this->session->user_info = (array)$result['data'][0];
                 // 整理資料-依照順序取得公司資訊 by companyId,userId
                 $userInfo = $this->login_service->get_company($result['data'][0]);
                 // 檢查基本是否為空
                 $isBasicInfoEmpty = true;
-                if(!empty($result['data'][0]->superID)){
+                if(!empty($result['data'][0]->personal_superID)){
                     $isBasicInfoEmpty = false;
                 }
                 $result = array(
                     "status" => 1,
                     "msg" => '驗證成功',
                     "isBasicInfoEmpty" => $isBasicInfoEmpty,
-                    "data" => $userInfo
+                    "data" => $userInfo,
                 ); 
             }
             $this->response($result,200); // REST_Controller::HTTP_OK     
@@ -96,16 +135,17 @@ class Login_api extends BaseAPIController
     public function logout_post(){
         if($this->session->user_info){
             //清除token
-            $this->deleteToken($this->session->user_info['id']);
+            $this->deleteToken_front($this->session->user_info['token']);
         }
         //清除session
         if(isset($this->session->user_info)){
+            // $this->session->sess_destroy();
             $this->login_service->logout($this->session->user_info['account']);
         }
         $result = array(
-            "status" => 1,
-            "msg" => "登出成功"
+            "status" => 0,
+            "msg" => $this->session->user_info
         ); 
-        $this->response($result,200); // REST_Controller::HTTP_OK
+        $this->response($this->session->user_info,200); // REST_Controller::HTTP_OK
     }
 }

@@ -43,6 +43,39 @@ class Login_service extends MY_Service
         return $result;
     }
 
+    // 檢查是否已有登入紀錄
+    public function check_login_2($token){
+        if($token){
+            if ($r = $this->token_model->get_user_by_token($token)){
+                if($r[0]->isDeleted){
+                    $result = array(
+                        "status" => 0,
+                        "msg"=> "手機號碼已被凍結"
+                    );    
+                }else{
+                    if($r[0]->tokenUpdateTime){
+                        $TU = $r[0]->tokenUpdateTime;
+                        $TN = date('Y-m-d H:i:s'); //now
+                        $u_not_expired = $this->common_service->check_date_long($TU, $TN, TOKENEXPIRED);   //return true: 沒超過限制
+                        if($u_not_expired){
+                            // 已有登入紀錄，直接導向主頁
+                            $result = array(
+                                "status" => 2,
+                                "data"=> $r
+                            );
+                            return $result;
+                        }
+                    }
+                }
+            }
+        }
+        $result = array(
+            "status" => 1,
+            "msg"=> "尚無登入紀錄"
+        );   
+        return $result;
+    }
+
     public function login($account){
         // 取得帳號資訊
         if ($r = $this->users_model->get_user_by_acc($account)){

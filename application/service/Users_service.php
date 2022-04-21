@@ -7,6 +7,7 @@ class Users_service extends MY_Service
         $this->load->model('users_model');
         $this->load->model('company_model');
         $this->load->model('social_model');
+        $this->load->model('avatar_model');
         $this->load->service('common_service');
         $this->load->library('session');
     }
@@ -46,9 +47,19 @@ class Users_service extends MY_Service
         }
         return $result;
     }
-
+    
     // 修改基本資料
     public function edit_personal_acc($data){
+        // 檢查是否需要取得系統預設頭像資料
+        if(empty($data['personal_avatar_path'])){
+            if($data['personal_avatar_id']){
+                $avatar_data = $this->avatar_model->get_avatar_by_id($data['personal_avatar_id']);
+                if(count($avatar_data)){
+                    $data['personal_avatar_path'] = $avatar_data[0]->imageURL;
+                }
+            }
+        }
+        // 新增公司資訊
         $data['id'] = $this->session->user_info['id'];
         $companyId = $this->company_model->add_company($data);
         if(!$companyId){
@@ -58,6 +69,17 @@ class Users_service extends MY_Service
             );    
             return $result;
         }
+        // 檢查SUPER ID是否重複
+        $data['superId'] = $data['personal_superID'];
+        $r = $this->users_model->check_superId($data);
+        if($r){
+            $result = array(
+                "status" => 0,
+                "msg"=> "SUPER ID已存在，請重新輸入"
+            );  
+            return $result;
+        }
+        // 更新個人資訊
         $data['companyOrder'] = $companyId;
         $userId = $this->users_model->update_personal_by_id($data);
         if($userId){
@@ -150,12 +172,83 @@ class Users_service extends MY_Service
 
     // 編輯個人檔案
     public function update_acc_by_id($data){
-        $data['id'] = $this->session->user_info['id'];
-        $r = $this->users_model->check_user_by_password($data);
+        // 檢查是否需要取得系統預設頭像資料
+        if(empty($data->personal_avatar_path)){
+            if($data->personal_avatar_id){
+                $avatar_data = $this->avatar_model->get_avatar_by_id($data->personal_avatar_id);
+                if(count($avatar_data)){
+                    $data->personal_avatar_path = $avatar_data[0]->imageURL;
+                }
+            }
+        }
+        $data->company_order = array();
+        $data->id = $this->session->user_info['id'];
+        $companyInfo = $data->companyInfo;
+        // 刪除公司資訊 by userId
+        $this->company_model->del_company_by_userId($data->id);
+        for($i=0;$i<count($companyInfo);$i++){
+            // 新增公司資訊 for 編輯個人檔案
+            $company_data = $data->companyInfo[$i];
+            $company_data->order = implode(",",$company_data->order);
+            $company_data->company_address = null;
+            $company_data->company_phone = null;
+            $company_data->company_email = null;
+            $company_data->company_social = null;
+            if($company_data->company_address){
+                $company_data->company_address = implode(",",$company_data->company_address);
+            }
+            if($company_data->company_phone){
+                $company_data->company_phone = implode(",",$company_data->company_phone);
+            }
+            if($company_data->company_email){
+                $company_data->company_email = implode(",",$company_data->company_email);
+            }
+            if($company_data->company_social){
+                $company_data->company_social = json_encode($company_data->company_social);
+            }
+            $companyId = $this->company_model->add_company_for_acc($data->id, $company_data);
+            if($companyId){
+                array_push($data->company_order,$companyId);
+            }
+        }
+        // 更新使用者資訊
+        $data->order = implode(",",$data->order);
+        $data->company_order = null;
+        $data->personal_phone = null;
+        $data->personal_email = null;
+        $data->personal_social = null;
+        if($data->company_order){
+            $data->company_order = implode(",",$data->company_order);
+        }
+        if($data->personal_phone){
+            $data->personal_phone = implode(",",$data->personal_phone);
+        }
+        if($data->personal_email){
+            $data->personal_email = implode(",",$data->personal_email);
+        }
+        if($data->personal_social){
+        $data->personal_social = json_encode($data->personal_social);
+        }
+        $r = $this->users_model->update_acc_by_id($data);
         if($r){
-            // 更新使用者新密碼
-            $data['password'] = $data['password_new'];
-            $r = $this->users_model->update_password_by_id($data);
+            $result = array(
+                "status" => 1,
+                "msg"=> "更新成功"
+            );  
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "更新失敗"
+            );    
+        }
+        return $result;
+    }
+
+    // 更改使用者主題 by userId
+    public function update_subjectId_by_id($data){
+        $data['id'] = $this->session->user_info['id'];
+        $r = $this->users_model->update_subjectId_by_id($data);
+        if($r){
             $result = array(
                 "status" => 1,
                 "msg"=> "修改成功"
@@ -163,7 +256,33 @@ class Users_service extends MY_Service
         }else{
             $result = array(
                 "status" => 0,
-                "msg"=> "舊密碼不存在，請重新輸入"
+                "msg"=> "修改失敗"
+            );    
+        }
+        return $result;
+    }
+
+    // 修改SUPER ID by userId
+    public function update_superId_by_id($data){
+        $data['id'] = $this->session->user_info['id'];
+        $r = $this->users_model->check_superId($data);
+        if($r){
+            $result = array(
+                "status" => 0,
+                "msg"=> "SUPER ID已存在，請重新輸入"
+            );  
+            return $result;
+        }
+        $r = $this->users_model->update_superId_by_id($data);
+        if($r){
+            $result = array(
+                "status" => 1,
+                "msg"=> "修改成功"
+            );  
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "修改失敗"
             );    
         }
         return $result;

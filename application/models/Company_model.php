@@ -8,7 +8,7 @@ class Company_model extends CI_Model
     public $company_gui = '';
     public $company_phone = '';
     public $company_industryId = '';
-    public $company_industryName = '';
+    // public $company_industryName = '';
     public $company_position = '';
     public $company_aboutus = '';
     public $company_email = '';
@@ -39,7 +39,7 @@ class Company_model extends CI_Model
                 $obj->company_gui = $row->Gui;
                 $obj->company_phone = $row->Phone;
                 $obj->company_industryId = $row->IndustryId;
-                $obj->company_industryName = $row->industryName;
+                // $obj->company_industryName = $row->industryName;
                 $obj->company_position = $row->Position;
                 $obj->company_aboutus = $row->Aboutus;
                 $obj->company_email = $row->Email;
@@ -72,5 +72,19 @@ class Company_model extends CI_Model
         $sql = "INSERT INTO company (UserId,Company,Position,Logo,CreateTime) VALUES (?, ?, ?, ?, ?)";
         $query = $this->db->query($sql,array($data['id'],$data['company_name'],$data['company_position'],$data['company_logo_path'],date('Y-m-d H:i:s')));
         return $this->db->insert_id();
+    }
+
+    // 新增公司資訊 for 編輯個人檔案
+    public function add_company_for_acc($userId,$data){
+        $sql = "INSERT INTO company (UserId,`Order`,Company,`Address`,Gui,Phone,IndustryId,Position,Aboutus,Email,Logo,Social,CreateTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($userId,$data->order,$data->company_name,$data->company_address,$data->company_gui,$data->company_phone,$data->company_industryId,$data->company_position,$data->company_aboutus,$data->company_email,$data->company_logo_path,$data->company_social,date('Y-m-d H:i:s')));
+        return $this->db->insert_id();
+    }
+
+    // 刪除公司資訊 by userId
+    public function del_company_by_userId($userId){
+        $sql = "DELETE FROM company WHERE company.UserId = ? ";
+        $query = $this->db->query($sql, array($userId));
+        return $query;
     }
 }

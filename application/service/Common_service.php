@@ -7,7 +7,9 @@ class Common_service extends MY_Service
         $this->load->library('session');
         // $this->load->library('phpmailer_lib');
         $this->load->model('users_model');
+        $this->load->model('mgt_users_model');
         $this->load->model('company_model');
+        $this->load->model('token_model');
     }
 
     // 檢查日期時間區間
@@ -31,7 +33,25 @@ class Common_service extends MY_Service
 
     // 檢查資料庫是否有使用者 Token
     public function checkToken($token){
-        if ($r = $this->users_model->get_user_by_token($token)) {
+        $r = $this->mgt_users_model->get_user_by_token($token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "查詢失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 檢查資料庫是否有使用者 Token
+    public function checkToken_front($token){
+        $r = $this->token_model->get_user_by_token($token);
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -46,9 +66,26 @@ class Common_service extends MY_Service
     }
 
     // 更新Token 的 update time
-    public function renewTokenUpdateDT($token)
-    {
-        if ($r = $this->users_model->update_TUpdateDT_by_token($token)) {
+    public function renewTokenUpdateDT($token){
+        $r = $this->mgt_users_model->update_TUpdateDT_by_token($token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "更新失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 更新Token 的 update time
+    public function renewTokenUpdateDT_front($token){
+        $r = $this->token_model->update_TUpdateDT_by_token($token);
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -63,9 +100,31 @@ class Common_service extends MY_Service
     }
 
     // 更新 Token, T_CreateDT, T_UpdateDT
-    public function renewTokenById($user_id, $token)
-    {
-        if ($r = $this->users_model->update_Token_by_id($user_id, $token)) {
+    public function renewTokenById($user_id, $token){
+        $r = $this->mgt_users_model->update_Token_by_id($user_id, $token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "更新失敗"
+            );
+        }
+        return $result;
+    }
+
+    public function renewTokenById_front($user_id, $token, $host, $device){
+        
+        $r = $this->token_model->check_host_by_userId($user_id,$host);
+        if($r){
+            $r = $this->token_model->update_Token_by_id($r[0]->id, $token);
+        }else{
+            $r = $this->token_model->add_token($user_id,$token,$host,$device);
+        }
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -80,9 +139,9 @@ class Common_service extends MY_Service
     }
 
     //更新Token為NULL
-    public function removeToken($id)
-    {
-        if ($r = $this->users_model->update_Token_as_NULL($id)) {
+    public function removeToken($token){
+        $r = $this->mgt_users_model->update_Token_as_NULL($token);
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -93,6 +152,48 @@ class Common_service extends MY_Service
                 "message" => "更新失敗"
             );
         }
+        return $result;
+    }
+
+    //更新Token為NULL
+    public function removeToken_front($token){
+        $r = $this->token_model->update_Token_as_NULL($token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "更新失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 限制設備裝置登入數量
+    public function restrict_user_device($user_id,$device){
+        // 取得已登入設備裝置數量
+        $r = $this->token_model->get_login_device($user_id,$device);
+        if($r){
+            $device_num = count($r);
+            if($device_num >= LOGIN_DEVICE_NUM){
+                for($i=0; $i<$device_num;$i++){
+                    // 數量超出限制，強制將衝突裝置登出
+                    $this->token_model->update_Token_as_NULL($r[$i]->token);
+                }
+                $result = array(
+                    "status" => 0,
+                    "message" => "同一設備類型僅能同時登入一台，已將衝突裝置登出"
+                );
+                return $result;
+            }
+        }
+        $result = array(
+            "status" => 1,
+            "message" => "無衝突裝置"
+        );
         return $result;
     }
 

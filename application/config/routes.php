@@ -50,8 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 
-$route['api/(:any)'] = 'api/$1';
+// $route['api/(:any)'] = 'api/$1';
 
-$route['default_controller'] = 'welcome';
+$route['default_controller'] = 'mgt_login/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
