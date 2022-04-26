@@ -7,6 +7,9 @@ class Common_service extends MY_Service
         $this->load->library('session');
         // $this->load->library('phpmailer_lib');
         $this->load->model('users_model');
+        $this->load->model('mgt_users_model');
+        $this->load->model('company_model');
+        $this->load->model('token_model');
     }
 
     // 檢查日期時間區間
@@ -21,7 +24,7 @@ class Common_service extends MY_Service
             if ($interval > $time_long) {
                 return "搜尋區間超過限制";
             } else {
-                return TRUE;
+                return true;
             }
         } else {
             return "結束時間不可小於開始時間";
@@ -29,9 +32,26 @@ class Common_service extends MY_Service
     }
 
     // 檢查資料庫是否有使用者 Token
-    public function checkToken($token)
-    {
-        if ($r = $this->users_model->get_user_by_token($token)) {
+    public function checkToken($token){
+        $r = $this->mgt_users_model->get_user_by_token($token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "查詢失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 檢查資料庫是否有使用者 Token
+    public function checkToken_front($token){
+        $r = $this->token_model->get_user_by_token($token);
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -46,9 +66,26 @@ class Common_service extends MY_Service
     }
 
     // 更新Token 的 update time
-    public function renewTokenUpdateDT($token)
-    {
-        if ($r = $this->users_model->update_TUpdateDT_by_token($token)) {
+    public function renewTokenUpdateDT($token){
+        $r = $this->mgt_users_model->update_TUpdateDT_by_token($token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "更新失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 更新Token 的 update time
+    public function renewTokenUpdateDT_front($token){
+        $r = $this->token_model->update_TUpdateDT_by_token($token);
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -63,9 +100,31 @@ class Common_service extends MY_Service
     }
 
     // 更新 Token, T_CreateDT, T_UpdateDT
-    public function renewTokenById($user_id, $token)
-    {
-        if ($r = $this->users_model->update_Token_by_id($user_id, $token)) {
+    public function renewTokenById($user_id, $token){
+        $r = $this->mgt_users_model->update_Token_by_id($user_id, $token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "更新失敗"
+            );
+        }
+        return $result;
+    }
+
+    public function renewTokenById_front($user_id, $token, $host, $device){
+        
+        $r = $this->token_model->check_host_by_userId($user_id,$host,$device);
+        if($r){
+            $r = $this->token_model->update_Token_by_id($r[0]->id, $token);
+        }else{
+            $r = $this->token_model->add_token($user_id,$token,$host,$device);
+        }
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -80,9 +139,9 @@ class Common_service extends MY_Service
     }
 
     //更新Token為NULL
-    public function removeToken($token)
-    {
-        if ($r = $this->users_model->update_Token_as_NULL($token)) {
+    public function removeToken($token){
+        $r = $this->mgt_users_model->update_Token_as_NULL($token);
+        if ($r) {
             $result = array(
                 "status" => 1,
                 "data" => $r
@@ -96,6 +155,48 @@ class Common_service extends MY_Service
         return $result;
     }
 
+    //更新Token為NULL
+    public function removeToken_front($token){
+        $r = $this->token_model->update_Token_as_NULL($token);
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data" => $r
+            );
+        } else {
+            $result = array(
+                "status" => 0,
+                "message" => "更新失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 限制設備裝置登入數量
+    public function restrict_user_device($user_id,$device){
+        // 取得已登入設備裝置數量
+        $r = $this->token_model->get_login_device($user_id,$device);
+        if($r){
+            $device_num = count($r);
+            if($device_num >= LOGIN_DEVICE_NUM){
+                for($i=0; $i<$device_num;$i++){
+                    // 數量超出限制，強制將衝突裝置登出
+                    $this->token_model->update_Token_as_NULL($r[$i]->token);
+                }
+                $result = array(
+                    "status" => 0,
+                    "message" => "同一設備類型僅能同時登入一台，已將衝突裝置登出"
+                );
+                return $result;
+            }
+        }
+        $result = array(
+            "status" => 1,
+            "message" => "無衝突裝置"
+        );
+        return $result;
+    }
+
     //產生隨機密碼
     public function GenRandomPWD()
     {
@@ -104,6 +205,17 @@ class Common_service extends MY_Service
         $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $password = substr(str_shuffle($str), 0, $length);
         return $password;
+    }
+
+    //產生隨機驗證碼
+    public function GenRandomCode()
+    {
+        $length = 6;
+        //隨機密碼可能包含的字符
+        // $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $str = "0123456789";
+        $verifyCode = substr(str_shuffle($str), 0, $length);
+        return $verifyCode;
     }
 
     //發送信件
@@ -208,6 +320,40 @@ class Common_service extends MY_Service
             . substr($charid, 12, 4) . $hyphen
             . substr($charid, 16, 4) . $hyphen
             . substr($charid, 20, 12);
+        return $uuid;
+    }
+
+    public function avatar_uuid($fileName){
+        $name = explode('.', $fileName);
+        $nowtime = date('YmdHis');
+        $userId = $this->session->user_info['id'];
+        $new_num = 1; //預設1，總數+1=新單號
+        $uuid = $userId."_".$nowtime."_".$new_num;
+        $path = DEL_AVATAR_PATH;
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        while(file_exists(AVATAR_PATH.$uuid.".".$name[1]) || file_exists(DEL_AVATAR_PATH.$uuid.".".$name[1])){
+            $new_num++;
+            $uuid = $userId."_".$nowtime."_".$new_num;
+        }
+        return $uuid;
+    }
+
+    public function logo_uuid($fileName){
+        $name = explode('.', $fileName);
+        $nowtime = date('YmdHis');
+        $userId = $this->session->user_info['id'];
+        $new_num = 1; //預設1，總數+1=新單號
+        $uuid = "logo_".$userId."_".$nowtime."_".$new_num;
+        $path = DEL_LOGO_PATH;
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        while(file_exists(LOGO_PATH.$uuid.".".$name[1]) || file_exists(DEL_LOGO_PATH.$uuid.".".$name[1])){
+            $new_num++;
+            $uuid = "logo_".$userId."_".$nowtime."_".$new_num;
+        }
         return $uuid;
     }
 }

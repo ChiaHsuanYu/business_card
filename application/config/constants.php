@@ -83,3 +83,21 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+define('TOKENEXPIRED', 28800);                                          //define token expired time 8 hours
+define('SMS_NUM', 3);                                                   //簡訊當日發送限制次數
+define('SMSEXPIRED', 60);                                               //簡訊發送間隔時間
+define('LOGIN_DEVICE_NUM', 1);                                          //登入設備類型限制數量
+
+define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑
+define('SUBJECT_IMAGE_PATH', 'appoint/images/subject/');                //主題圖片路徑
+define('SUBJECT_CSS_PATH', 'appoint/css/subject/');                     //主題CSS檔案路徑
+define('SYSTEM_AVATAR_PATH', 'appoint/images/system_avatar/');          //系統預設頭像圖片路徑
+define('AVATAR_PATH', 'appoint/images/avatar/');                        //個人頭像圖片路徑
+define('DEL_AVATAR_PATH', 'appoint/images/del_avatar/');                //未使用到的個人頭像圖片路徑
+define('LOGO_PATH', 'appoint/images/logo/');                            //公司LOGO圖片路徑
+define('DEL_LOGO_PATH', 'appoint/images/del_logo/');                    //未使用到的公司LOGO圖片路徑
+define('LOGIN_PAGE', 'mgt_login/index');                                    //define login page
+define('LOGOUT_PAGE', '/mgt_login/logout/');                                //define logout page
+
+define('PATH', 'C:\xampp\htdocs\business_card');                                //define logout page
