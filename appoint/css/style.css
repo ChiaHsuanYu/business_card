@@ -48,18 +48,34 @@
 }
 
 .loginBox .button:hover {
-    background:#e2e2e2;
+    background: #e2e2e2;
 }
 
+
 /* sidebar & content */
-.menu{
+
+.menu {
     position: relative !important;
     display: inline-block !important;
     width: 200px !important;
     height: 100vh;
+    transform: translateX(0);
+    transition: all 0.1s;
 }
 
-#container{
+.bar_btn {
+    background-color: #ececec54;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    z-index: 100;
+}
+
+.active {
+    transform: translateX(-200px);
+}
+
+#container {
     overflow: auto;
 }
 
@@ -68,10 +84,10 @@
     top: 0;
     right: 0;
     left: 200px;
-    width: calc(100% - 200px);; 
-    background-color: #cac9c9; 
-    word-wrap: break-word; 
-    height: 100%; 
+    width: calc(100% - 200px);
+    background-color: #eeeeee;
+    word-wrap: break-word;
+    height: 100%;
     display: inline-block !important;
     overflow: auto;
 }
@@ -82,10 +98,21 @@
     min-height: 930px;
 }
 
+.navUserAccount {
+    width: 80%;
+    font-size: 0.8rem;
+    padding: 5px;
+    text-align: right;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+
 /*--------- footer css ---------*/
 
 footer {
-    background-color: #8a8989;
+    background-color: #4173ad;
     padding: 5px 0px;
     margin: 0px;
     color: white;
@@ -97,4 +124,18 @@ footer {
     padding: 2px 0px;
     text-align: center;
     font-size: 0.8rem;
+}
+
+.file_font {
+    font-size: 0.9rem;
+    color: rgb(250, 146, 86);
+    padding-left: 16%;
+    word-break: break-all;
+}
+
+@media (max-width: 768px) {
+    .file_font {
+        font-size: 0.7rem;
+        padding-left: 0 !important;
+    }
 }

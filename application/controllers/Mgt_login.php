@@ -17,11 +17,17 @@ class Mgt_login extends BaseController
     //登入
     public function index()
     {
-        $this->load->view(LOGIN_PAGE);
+        $data = array(
+            'login' => 1,
+        );
+        $this->load->view(LOGIN_PAGE,$data);
     }
     //登出
     public function logout()
     {
+        $data = array(
+            'login' => 0,
+        );
         if($this->session->mgt_user_info){
             //清除token
             $this->deleteToken($this->session->mgt_user_info['token']);
@@ -30,6 +36,6 @@ class Mgt_login extends BaseController
         if(isset($this->session->mgt_user_info)){
             $this->login_service->logout($this->session->mgt_user_info['account']);
         }
-        $this->load->view(LOGIN_PAGE);
+        $this->load->view(LOGIN_PAGE,$data);
     }
 }

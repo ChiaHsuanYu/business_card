@@ -18,7 +18,7 @@ class Mgt_login_service extends MY_Service
         }else{
             $result = array(
                 "status" => 0,
-                "msg"=> "登入失敗"
+                "msg"=> "帳號密碼錯誤"
             );    
         }
         return $result;
@@ -56,46 +56,5 @@ class Mgt_login_service extends MY_Service
             $this->session->unset_userdata('mgt_user_info');
             // $this->session->sess_destroy();
         }
-    }
-
-    // 整理使用者資料 by companyId,userId
-    public function get_company($user_data){
-        $user_data->companyInfo = array();
-        // 依照順序取得公司資訊
-        if($user_data->companyOrder){
-            for($i=0;$i<count($user_data->companyOrder);$i++){
-                $companyId = $user_data->companyOrder[$i];
-                $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
-                if(count($company_data)){
-                    // 依序取得公司社群icon
-                    if($company_data[0]->company_social){
-                        for($j=0;$j<count($company_data[0]->company_social);$j++){
-                            $socialId = $company_data[0]->company_social[$j]->socialId;
-                            $social_data = $this->social_model->get_social_by_id($socialId);
-                            if(count($social_data)){
-                                $company_data[0]->company_social[$j]->iconURL = $social_data[0]->iconURL;
-                                $company_data[0]->company_social[$j]->socialName = $social_data[0]->name;
-                            }
-                        }
-                    }
-                    array_push($user_data->companyInfo,$company_data[0]);
-                }
-            }
-        }
-        // 依序取得個人社群icon
-        if($user_data->personal_social){
-            for($i=0;$i<count($user_data->personal_social);$i++){
-                $socialId = $user_data->personal_social[$i]->socialId;
-                $social_data = $this->social_model->get_social_by_id($socialId);
-                if(count($social_data)){
-                    $user_data->personal_social[$i]->iconURL = $social_data[0]->iconURL;
-                    $user_data->personal_social[$i]->socialName = $social_data[0]->name;
-                }
-            }
-        }
-        $userInfo =  array(
-            'userInfo'=>$user_data
-        );
-        return $userInfo;
     }
 }

@@ -27,6 +27,36 @@ function call_api(api_name, data_obj) {
     return result;
 }
 
+function call_api_upload(api_name, data_obj) {
+    var baseUrl = document.getElementById('base_url').value;
+    var result = [];
+    $.ajax({
+        cache: false,
+        async: false,
+        contentType: false,
+        processData: false,
+        url: baseUrl + api_name,
+        headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+        },
+        type: "POST",
+        data: data_obj,
+        success: function(json) {
+            json = JSON.stringify(json);
+            json = JSON.parse(json);
+            result = json;
+        },
+        error: function(xhr, status, error) {
+            result['status'] = 0;
+            result['message'] = "連線失敗";
+            console.log("Error    ==================    API Response    ==================");
+            console.log(xhr.responseText);
+            console.log(error);
+        }
+    });
+    return result;
+}
+
 // 筆數頁數選單
 function page_count_select(total_page, page, count) {
     var pageSelect = document.getElementById('list_page');
@@ -186,15 +216,13 @@ function formatDate(date) {
 }
 
 // 另開啟圖片視窗 for color
-function openImg(imgUUIDName) {
-    var baseUrl = document.getElementById('base_url').value;
-    var IMG_PATH = document.getElementById('IMG_PATH').value;
-    window.open(baseUrl + IMG_PATH + imgUUIDName, 'Img', config = 'height=500,width=500');
+function openImg(imgUrl) {
+    window.open(imgUrl, 'Img', config = 'height=500,width=500');
 }
 
 // 檢視下滑資訊
-function look_slideToggle(proId) {
-    if (document.getElementById(proId)) {
-        $('.' + proId).slideToggle(500);
+function look_slideToggle(divId) {
+    if (document.getElementById(divId)) {
+        $('.' + divId).slideToggle(300);
     }
 }

@@ -32,7 +32,7 @@ class Mgt_users_service extends MY_Service
     // 修改密碼
     public function update_password($data){
         // 檢查使用者舊密碼
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->session->mgt_user_info['id'];
         $r = $this->mgt_users_model->check_user_by_password($data);
         if($r){
             // 更新使用者新密碼

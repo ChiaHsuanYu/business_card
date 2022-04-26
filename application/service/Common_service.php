@@ -118,7 +118,7 @@ class Common_service extends MY_Service
 
     public function renewTokenById_front($user_id, $token, $host, $device){
         
-        $r = $this->token_model->check_host_by_userId($user_id,$host);
+        $r = $this->token_model->check_host_by_userId($user_id,$host,$device);
         if($r){
             $r = $this->token_model->update_Token_by_id($r[0]->id, $token);
         }else{
@@ -205,6 +205,17 @@ class Common_service extends MY_Service
         $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $password = substr(str_shuffle($str), 0, $length);
         return $password;
+    }
+
+    //產生隨機驗證碼
+    public function GenRandomCode()
+    {
+        $length = 6;
+        //隨機密碼可能包含的字符
+        // $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $str = "0123456789";
+        $verifyCode = substr(str_shuffle($str), 0, $length);
+        return $verifyCode;
     }
 
     //發送信件
@@ -309,6 +320,40 @@ class Common_service extends MY_Service
             . substr($charid, 12, 4) . $hyphen
             . substr($charid, 16, 4) . $hyphen
             . substr($charid, 20, 12);
+        return $uuid;
+    }
+
+    public function avatar_uuid($fileName){
+        $name = explode('.', $fileName);
+        $nowtime = date('YmdHis');
+        $userId = $this->session->user_info['id'];
+        $new_num = 1; //預設1，總數+1=新單號
+        $uuid = $userId."_".$nowtime."_".$new_num;
+        $path = DEL_AVATAR_PATH;
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        while(file_exists(AVATAR_PATH.$uuid.".".$name[1]) || file_exists(DEL_AVATAR_PATH.$uuid.".".$name[1])){
+            $new_num++;
+            $uuid = $userId."_".$nowtime."_".$new_num;
+        }
+        return $uuid;
+    }
+
+    public function logo_uuid($fileName){
+        $name = explode('.', $fileName);
+        $nowtime = date('YmdHis');
+        $userId = $this->session->user_info['id'];
+        $new_num = 1; //預設1，總數+1=新單號
+        $uuid = "logo_".$userId."_".$nowtime."_".$new_num;
+        $path = DEL_LOGO_PATH;
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        while(file_exists(LOGO_PATH.$uuid.".".$name[1]) || file_exists(DEL_LOGO_PATH.$uuid.".".$name[1])){
+            $new_num++;
+            $uuid = "logo_".$userId."_".$nowtime."_".$new_num;
+        }
         return $uuid;
     }
 }

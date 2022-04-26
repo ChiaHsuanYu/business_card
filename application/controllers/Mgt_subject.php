@@ -2,7 +2,7 @@
 require APPPATH . 'controllers/BaseController.php';
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Users extends BaseController {
+class Mgt_subject extends BaseController {
 
     //連接指定的model檔案 
     public function __construct()
@@ -20,20 +20,13 @@ class Users extends BaseController {
             redirect(LOGOUT_PAGE);
         }
     }
-    public function index(){
+    public function add(){
         $data = array(
-            'account' => $this->security->xss_clean($this->input->post("account")),
-            'superID' => $this->security->xss_clean($this->input->post("superID")),
-            'company' => $this->security->xss_clean($this->input->post("company")),
-            'industryId' => $this->security->xss_clean($this->input->post("industryId")),
-            'startDT' => $this->security->xss_clean($this->input->post("startDT")),
-            'endDT' => $this->security->xss_clean($this->input->post("endDT")),
-            'page' => $this->security->xss_clean($this->input->post("page")),
-            'page_count' =>$this->security->xss_clean($this->input->post("page_count")),
-            'title' => '用戶管理'
+            'id' => $this->security->xss_clean($this->input->post("id")),
+            'title' => '主題新增上傳'
         );
         $this->load->view('templates/header',$data);
-        $this->load->view('users/index',$data);
+        $this->load->view('mgt_subject/add',$data);
         $this->load->view('templates/footer');
     }
 }

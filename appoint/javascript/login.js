@@ -3,7 +3,6 @@ function check_login() {
     var baseUrl = document.getElementById('base_url').value;
     var data_obj = {};
     var result = call_api('mgt_login_api/check_login', data_obj);
-    console.log(result);
     if (result['status']) {
         location.href = baseUrl + "users/index/";
     }

@@ -29,14 +29,17 @@ class Mgt_users_api extends BaseAPIController
     public function update_password_post(){   
         $data = array(
             "password_old" => $this->security->xss_clean($this->input->post("password_old")),
-            "password_new" => $this->security->xss_clean($this->input->post("password_new"))
+            "password_new" => $this->security->xss_clean($this->input->post("password_new")),
+            "check_password" => $this->security->xss_clean($this->input->post("check_password"))
         );
         $this->form_validation->set_rules("password_old", "lang:「舊密碼」", "trim|required");
         $this->form_validation->set_rules("password_new", "lang:「新密碼」","trim|required|min_length[4]|max_length[20]");
+        $this->form_validation->set_rules("check_password", "lang:「確認密碼」","trim|required|min_length[4]|max_length[20]|matches[password_new]");
+
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
-                "message" => $this->form_validation->error_string()
+                "msg" => $this->form_validation->error_string()
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
@@ -60,7 +63,7 @@ class Mgt_users_api extends BaseAPIController
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
-                "message" => $this->form_validation->error_string()
+                "msg" => $this->form_validation->error_string()
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
@@ -84,7 +87,7 @@ class Mgt_users_api extends BaseAPIController
             if ($this->form_validation->run() === FALSE) {
                 $result = array(
                     "status" => 0,
-                    "message" => $this->form_validation->error_string()
+                    "msg" => $this->form_validation->error_string()
                 ); 
                 $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
             }

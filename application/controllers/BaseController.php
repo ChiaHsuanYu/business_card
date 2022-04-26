@@ -96,25 +96,4 @@ class BaseController extends CI_Controller
             return TRUE;
         }
     }
-
-    // 檢查資料格式是否為JSON
-    public function json_validation($str){
-        $r = is_null(json_decode($str));
-        if ($r) {
-            $this->form_validation->set_message('json_validation', '{field} 須為JSON格式');
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-    // 檢查資料格式是否為純數字
-    public function numeric_validation($str){
-        $r = is_numeric($str);
-        if ($r) {
-            $this->form_validation->set_message('numeric_validation', '{field} 不可為數字');
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
 }

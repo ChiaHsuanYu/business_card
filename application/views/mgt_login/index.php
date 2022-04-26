@@ -20,18 +20,22 @@
         <title>電子名片後台系統</title>
     </head>
     <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
+    <input type="hidden" id="login" value="<?php echo $login; ?>">
     <body class="loginBody">
         <div class="loginTitle">電子名片後台系統</div>
         <div class="loginBox">
         <label for="account">帳號</label><input type="text" id="account" maxlength="30"><br />
         <label for="password">密碼</label><input type="password" id="password" maxlength="30"><br />
         <div class="alertMsg" id="alertMsg"></div>
-        <input type="button" class="button" value="登入" onclick="login();"/>
+        <input type="button" class="width_60px" value="登入" onclick="login();"/>
         </div>
     </body>
     <script type="text/javascript" src='<?php echo base_url();?>appoint/javascript/common_function.js'></script>
     <script type="text/javascript" src='<?php echo base_url();?>appoint/javascript/login.js'></script>
     <script>
-        check_login();
+        var login_state = document.getElementById('login').value;
+        if(login_state == '1'){
+            check_login();
+        }
     </script>
 </html>

@@ -16,27 +16,6 @@ class Login_api extends BaseAPIController
     }
 
     // 檢查是否已有登入紀錄
-    // public function check_login_post(){   
-    //     $result = $this->login_service->check_login();
-    //     if ($result['status'] == 2) {
-    //         // 整理資料-依照順序取得公司資訊 by companyId,userId
-    //         $userInfo = $this->login_service->get_company($result['data'][0]);
-    //         // 檢查基本是否為空
-    //         $isBasicInfoEmpty = true;
-    //         if(!empty($result['data'][0]->personal_superID)){
-    //             $isBasicInfoEmpty = false;
-    //         }
-    //         $result = array(
-    //             "status" => 2,
-    //             "msg" => "已有登入紀錄，直接導向主頁",
-    //             "isBasicInfoEmpty" => $isBasicInfoEmpty,
-    //             "data" => $userInfo
-    //         ); 
-    //     }
-    //     $this->response($result,200); // REST_Controller::HTTP_OK     
-    // } 
-
-    // 檢查是否已有登入紀錄
     public function check_login_post(){   
         $result = $this->checkAA_front();
         if ($result['status'] == 1) {
@@ -68,8 +47,6 @@ class Login_api extends BaseAPIController
             );  
         }
         $this->response($result,200); // REST_Controller::HTTP_OK 
-        // $mobile = $this->is_mobile_request();   
-        // $this->response($this->input->request_headers() ,200); // REST_Controller::HTTP_OK    
     } 
 
     // 登入
@@ -139,7 +116,6 @@ class Login_api extends BaseAPIController
         }
         //清除session
         if(isset($this->session->user_info)){
-            // $this->session->sess_destroy();
             $this->login_service->logout($this->session->user_info['account']);
         }
         $result = array(

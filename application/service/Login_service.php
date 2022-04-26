@@ -5,77 +5,12 @@ class Login_service extends MY_Service
     {
         parent::__construct();
         $this->load->service("register_service");
+        $this->load->service("common_service");
+        $this->load->service("sms_service");
         $this->load->model('users_model');
         $this->load->model('social_model');
     }
     
-    // 檢查是否已有登入紀錄
-    public function check_login(){
-        if($this->session->user_info){
-            $account = $this->session->user_info['account'];
-            if ($r = $this->users_model->get_user_by_acc($account)){
-                if($r[0]->isDeleted){
-                    $result = array(
-                        "status" => 0,
-                        "msg"=> "手機號碼已被凍結"
-                    );    
-                }else{
-                    if($r[0]->tokenUpdateTime){
-                        $TU = $r[0]->tokenUpdateTime;
-                        $TN = date('Y-m-d H:i:s'); //now
-                        $u_not_expired = $this->common_service->check_date_long($TU, $TN, TOKENEXPIRED);   //return true: 沒超過限制
-                        if($u_not_expired){
-                            // 已有登入紀錄，直接導向主頁
-                            $result = array(
-                                "status" => 2,
-                                "data"=> $r
-                            );
-                            return $result;
-                        }
-                    }
-                }
-            }
-        }
-        $result = array(
-            "status" => 1,
-            "msg"=> "尚無登入紀錄"
-        );   
-        return $result;
-    }
-
-    // 檢查是否已有登入紀錄
-    public function check_login_2($token){
-        if($token){
-            if ($r = $this->token_model->get_user_by_token($token)){
-                if($r[0]->isDeleted){
-                    $result = array(
-                        "status" => 0,
-                        "msg"=> "手機號碼已被凍結"
-                    );    
-                }else{
-                    if($r[0]->tokenUpdateTime){
-                        $TU = $r[0]->tokenUpdateTime;
-                        $TN = date('Y-m-d H:i:s'); //now
-                        $u_not_expired = $this->common_service->check_date_long($TU, $TN, TOKENEXPIRED);   //return true: 沒超過限制
-                        if($u_not_expired){
-                            // 已有登入紀錄，直接導向主頁
-                            $result = array(
-                                "status" => 2,
-                                "data"=> $r
-                            );
-                            return $result;
-                        }
-                    }
-                }
-            }
-        }
-        $result = array(
-            "status" => 1,
-            "msg"=> "尚無登入紀錄"
-        );   
-        return $result;
-    }
-
     public function login($account){
         // 取得帳號資訊
         if ($r = $this->users_model->get_user_by_acc($account)){
@@ -93,13 +28,18 @@ class Login_service extends MY_Service
                 $SMSTime = $r[0]->SMSTime;
                 if($SMSTime){
                     $nowTime = date('Y-m-d H:i:s');
-                    $sms_not_expired = $this->common_service->check_date_long($SMSTime, $nowTime, SMSEXPIRED);   //return true: 沒超過限制
-                    if($sms_not_expired){
-                        $result = array(
-                            "status" => 0,
-                            "msg"=> "上次發送簡訊時間為".$SMSTime."，發送頻率需間隔一分鐘"
-                        );  
-                        return $result;
+                    $startDT_unix =  strtotime($SMSTime);
+                    $endDT_unix =  strtotime($nowTime);
+                    // 判斷結束時間是否大於開始時間
+                    if ($endDT_unix >= $startDT_unix) {
+                        $interval = $endDT_unix - $startDT_unix;
+                        if ($interval < SMSEXPIRED) {
+                            $result = array(
+                                "status" => 0,
+                                "msg"=> "上次發送簡訊時間為".$SMSTime."，發送頻率需間隔一分鐘"
+                            );  
+                            return $result;
+                        }
                     }
                     $last_SMSNumber = SMS_NUM-$SMSNumber;
                     if($last_SMSNumber < 1){
@@ -109,18 +49,41 @@ class Login_service extends MY_Service
                         );  
                         return $result;
                     }
+                    $SMSDate = explode(" ",$SMSTime);
+                    $nowDate = date('Y-m-d');
+                    if($SMSDate[0]==$nowDate){
+                        $SMSNumber = $SMSNumber + 1;
+                    }else{
+                        $SMSNumber = 1;
+                    }
+                }else{
+                    $SMSNumber = 1;
                 }
-                /*
-                    -------簡訊驗證發送功能待開發-------
-                    // 發送後須更改資料表當日發送次數
-                */ 
-                // 寫入驗證碼
-                $verifyCode = "123456";
-                $this->users_model->update_verifyCode_by_id($verifyCode,$r[0]->id);
-                $result = array(
-                    "status" => 1,
-                    "msg"=> "手機號碼合法，當日簡訊發送次數剩餘n次(簡訊驗證發送功能待開發)"
-                );  
+                // 簡訊驗證發送
+                // $verifyCode = $this->common_service->GenRandomCode();
+                $verifyCode = '123456';
+                $message = "Business-card驗證碼： ".$verifyCode;
+                $result = $this->sms_service->send_sms($account,$message);
+                $send_data = array(
+                    'status'=> $result['status'],
+                    'mobile_number'=>$account,
+                    'msg' => $result['msg'],
+                );
+                if($result['status']){
+                    // 寫入驗證碼
+                    $this->users_model->update_verifyCode_by_id($verifyCode,$SMSNumber,$r[0]->id);
+                    $result = array(
+                        "status" => 1,
+                        "msg"=> "手機號碼合法，當日簡訊發送次數剩餘".(SMS_NUM-$SMSNumber)."次"  // (簡訊驗證發送功能待開發)
+                    );
+                }else{
+                    $this->users_model->update_verifyCode_by_id($verifyCode,$SMSNumber,$r[0]->id);
+                    $result = array(
+                        "status" => 1,
+                        "msg"=> "驗證簡訊發送失敗(暫不開啟發送功能)，驗證碼請輸入".$verifyCode
+                    );  
+                }
+                log_message('error', '發送簡訊紀錄：'.json_encode($send_data));
             }
         }else{
             // 執行註冊動作

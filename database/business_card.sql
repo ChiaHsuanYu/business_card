@@ -27,37 +27,51 @@ USE `business_card`;
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `avatar`
+--
+
+CREATE TABLE `avatar` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `ImageURL` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '圖片檔名',
+  `Name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '主題名稱',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 傾印資料表的資料 `avatar`
+--
+
+INSERT INTO `avatar` (`Id`, `ImageURL`, `Name`, `CreateTime`) VALUES
+(1, 'image1.png', '預設圖像1', '2022-04-19 11:05:15'),
+(2, 'image2.png', '預設圖像2', '2022-04-19 11:05:15'),
+(3, 'image3.png', '預設圖像3', '2022-04-19 11:05:15'),
+(4, 'image4.png', '預設圖像4', '2022-04-19 11:05:15');
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `company`
 --
 
 CREATE TABLE `company` (
   `Id` int(11) NOT NULL COMMENT 'ID',
   `UserId` int(11) NOT NULL COMMENT '使用者id(FK:Users->Id)',
-  `Order` text COLLATE utf8_unicode_ci NOT NULL COMMENT '欄位順序(以逗號分隔)',
+  `Order` text COLLATE utf8_unicode_ci NOT NULL DEFAULT 'company_name,company_logo,company_industryId,company_position,company_aboutus,company_phone,company_address,company_email,company_gui,company_social' COMMENT '欄位順序(以逗號分隔)',
   `Company` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '公司名稱',
   `Address` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '公司地址(以逗號分隔)',
   `Gui` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '統編',
   `Phone` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '電話(以逗號分隔)',
-  `IndustryId` int(11) DEFAULT NULL COMMENT '產業ID(FK:industryCategory->Id)',
+  `IndustryId` int(11) DEFAULT 1 COMMENT '產業ID(FK:industryCategory->Id)',
   `Position` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '職位',
   `Aboutus` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '服務介紹',
   `Email` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Email(以逗號分隔)',
-  `Logo` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Logo圖片(ImgUUIDName圖片檔名)',
+  `Logo` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Logo圖片(ImgUUIDName圖片檔名)',
   `Social` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '社群資料(包含socialCategory社群分類、socialTitle標題、socialURL網址連結)' CHECK (json_valid(`Social`)),
   `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
   `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
   `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- 傾印資料表的資料 `company`
---
-
-INSERT INTO `company` (`Id`, `UserId`, `Order`, `Company`, `Address`, `Gui`, `Phone`, `IndustryId`, `Position`, `Aboutus`, `Email`, `Logo`, `Social`, `isDeleted`, `CreateTime`, `ModifiedTime`, `DeleteTime`) VALUES
-(1, 1, 'company_name', '坂和科技有限公司', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2022-04-13 12:07:38', '2022-04-13 12:06:12', '2022-04-13 12:06:12'),
-(2, 1, 'company_name,company_address,company_gui,company_phone,company_industryCategory,company_position,company_aboutus,company_email,company_logo,company_social', '坂和科技有限公司', '高雄市前金區五福三路63號12樓', '987654321', '06666666,0998765431', 1, '前端工程師', '取之大眾，用之社會', 'company@gmail.com,company@gmail.com', NULL, '[{\"socialCategory\": \"facebook\",\"socialTitle\": \"我的臉書\",\"socialURL\": \"https://www.fb.com/fb\"},{\"socialCategory\": \"other\",\"socialTitle\": \"官方網站\",\"socialURL\": \"https://sakawa.sakawa.com.tw/\"}]', 0, '2022-04-13 12:07:38', '2022-04-13 13:54:59', '2022-04-13 12:06:12'),
-(3, 2, 'company_name,company_address,company_gui,company_phone,company_industryCategory,company_position,company_aboutus,company_email,company_logo,company_social', '坂和科技有限公司', '高雄市前金區五福三路63號12樓', '987654321', '06666666,0998765431', 1, '前端工程師', '取之大眾，用之社會', 'company@gmail.com,company@gmail.com', NULL, '[{\"socialCategory\": \"facebook\",\"socialTitle\": \"我的臉書\",\"socialURL\": \"https://www.fb.com/fb\"},{\"socialCategory\": \"other\",\"socialTitle\": \"官方網站\",\"socialURL\": \"https://sakawa.sakawa.com.tw/\"}]', 0, '2022-04-13 12:07:38', '2022-04-13 13:54:59', '2022-04-13 12:06:12');
 
 -- --------------------------------------------------------
 
@@ -88,6 +102,36 @@ INSERT INTO `industry` (`Id`, `Name`, `CreateTime`) VALUES
 (10, '服務業', '2022-04-14 11:24:58'),
 (11, '不動產業', '2022-04-14 11:24:58'),
 (12, '其他', '2022-04-14 11:24:58');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `mgt_users`
+--
+
+CREATE TABLE `mgt_users` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `Account` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '帳號',
+  `Password` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '密碼(MD5 hash)',
+  `Name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT '姓名',
+  `Phone` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '電話',
+  `Email` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Email',
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
+  `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間',
+  `Token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Token',
+  `TokenCreateTime` datetime DEFAULT NULL COMMENT 'Token建立時間',
+  `TokenUpdateTime` datetime DEFAULT NULL COMMENT 'Token更新時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 傾印資料表的資料 `mgt_users`
+--
+
+INSERT INTO `mgt_users` (`Id`, `Account`, `Password`, `Name`, `Phone`, `Email`, `isDeleted`, `CreateTime`, `ModifiedTime`, `DeleteTime`, `Token`, `TokenCreateTime`, `TokenUpdateTime`) VALUES
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Shine', '0911222333', 'shineyu0502@gmail.com', 0, '2022-04-18 18:14:08', '2022-04-25 11:45:09', '2022-04-18 18:13:31', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJhY2NvdW50IjoiYWRtaW4iLCJ0aW1lU3RhbXAiOiIyMDIyLTA0LTI1IDExOjI3OjM4In0.MzYfgRXij00eYDuPp-4oruizGItdcsgIaOuAC1UG6to', '2022-04-25 11:27:38', '2022-04-25 11:45:09'),
+(2, 'test001', 'fa820cc1ad39a4e99283e9fa555035ec', '測試帳號', '0912123123', 'shineyu0502@gmail.com', 0, '2022-04-20 17:09:52', '2022-04-25 11:31:52', '2022-04-20 17:09:06', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJhY2NvdW50IjoidGVzdDAwMSIsInRpbWVTdGFtcCI6IjIwMjItMDQtMjUgMTE6MjU6NDgifQ.531MIQ4TiMM_vUDpHZatKHPdY19IC5J2aUhqD-lciI4', '2022-04-25 11:25:48', '2022-04-25 11:31:52');
 
 -- --------------------------------------------------------
 
@@ -129,24 +173,67 @@ INSERT INTO `social` (`Id`, `Icon`, `Name`, `CreateTime`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `subject`
+--
+
+CREATE TABLE `subject` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `ImageURL` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '圖片檔名',
+  `SubjectFile` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'CSS檔案',
+  `Name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '主題名稱',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 傾印資料表的資料 `subject`
+--
+
+INSERT INTO `subject` (`Id`, `ImageURL`, `SubjectFile`, `Name`, `CreateTime`) VALUES
+(1, 'test1.png', 'test1.css', '預設主題一', '2022-04-15 13:27:10'),
+(2, 'test2.jpg', 'test2.css', '預設主題二', '2022-04-15 13:27:10'),
+(3, 'test3.jpg', 'test3.css', '預設主題三', '2022-04-15 13:27:36'),
+(4, 'test4.jpg', 'test4.css', '預設主題四', '2022-04-18 18:59:42'),
+(5, 'test5.jpg', 'test5.css', '預設主題五', '2022-04-19 18:50:08');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `token`
+--
+
+CREATE TABLE `token` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `UserId` int(11) NOT NULL COMMENT '使用者ID',
+  `Host` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '裝置host',
+  `Device` tinyint(1) NOT NULL COMMENT '裝置類型(0:電腦,1:行動裝置)',
+  `Token` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Token',
+  `TokenCreateTime` datetime NOT NULL COMMENT 'Token建立時間',
+  `TokenUpdateTime` datetime NOT NULL COMMENT 'Token更新時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `users`
 --
 
 CREATE TABLE `users` (
   `Id` int(11) NOT NULL COMMENT 'ID',
   `Account` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '手機號碼',
-  `Password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '密碼(MD5 hash)',
   `Verify` tinyint(1) NOT NULL DEFAULT 0 COMMENT '手機號碼驗證狀態(0:未驗證,1:已驗證)	',
   `VerifyCode` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '驗證碼',
   `SuperID` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'super ID',
+  `SMSNumber` int(11) NOT NULL DEFAULT 0 COMMENT '當日簡訊發送次數',
+  `SMSTime` datetime DEFAULT NULL COMMENT '簡訊最後發送時間',
   `Name` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '姓名',
   `Nickname` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '暱稱',
   `Phone` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '電話(以逗號分隔)',
   `Email` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Email(以逗號分隔)',
   `Social` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '社群資料(包含socialCategory社群分類、socialTitle標題、socialURL網址連結)',
-  `Order` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '欄位順序(以逗號分隔)',
+  `Order` text COLLATE utf8_unicode_ci DEFAULT 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social' COMMENT '欄位順序(以逗號分隔)',
   `CompanyOrder` text COLLATE utf8_unicode_ci NOT NULL COMMENT '公司資訊順序(以ID紀錄，逗號分隔)',
-  `Avatar` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '個人頭像(ImgUUIDName圖片檔名)',
+  `Avatar` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '個人頭像(ImgUUIDName圖片檔名)',
+  `SubjectId` int(11) NOT NULL DEFAULT 1 COMMENT '主題ID(FK:subject->Id)',
   `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
   `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
@@ -157,16 +244,16 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- 傾印資料表的資料 `users`
---
-
-INSERT INTO `users` (`Id`, `Account`, `Password`, `Verify`, `VerifyCode`, `SuperID`, `Name`, `Nickname`, `Phone`, `Email`, `Social`, `Order`, `CompanyOrder`, `Avatar`, `isDeleted`, `CreateTime`, `ModifiedTime`, `DeleteTime`, `Token`, `TokenCreateTime`, `TokenUpdateTime`) VALUES
-(1, '0912323062', 'e10adc3949ba59abbe56e057f20f883e', 1, '123456', 'C001', '王小明', 'Nick', '07-5882097,07123456,0912123123', '123@mail.com,test001@gmail.com', '[{\"socialCategory\": \"facebook\", \"socialTitle\": \"我的臉書\", \"socialURL\": \"https://www.fb.com/fb\"},{\"socialCategory\": \"other\", \"socialTitle\": \"官方網站\", \"socialURL\": \"https://sakawa.sakawa.com.tw/\"}]\n', 'personal_name,personal_nickname,personal_email,personal_social,personal_phone', '2,1', NULL, 0, '2022-04-11 13:17:34', '2022-04-14 17:59:00', NULL, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJhY2NvdW50IjoiMDkxMjMyMzA2MiIsInRpbWVTdGFtcCI6IjIwMjItMDQtMTQgMTc6NTg6MDgifQ.fD2wJJKEVsOBZo0kSQBa3XFEje2Mm4ljkqFQHixXnYA', '2022-04-14 17:58:08', '2022-04-14 17:59:00'),
-(2, '091232302', '351523b8e6eb36ae5115205886f36f86', 1, '123456', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, 0, '2022-04-14 17:38:30', '2022-04-14 18:53:09', NULL, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEzIiwiYWNjb3VudCI6IjA5MTIzMjMwMiIsInRpbWVTdGFtcCI6IjIwMjItMDQtMTQgMTg6NTA6NDgifQ.U34fuaD1lXEtcZ88jYgCZj22JnPxafnxqUBgT4NWbck', '2022-04-14 18:50:48', '2022-04-14 18:53:09');
-
---
 -- 已傾印資料表的索引
 --
+
+--
+-- 資料表索引 `avatar`
+--
+ALTER TABLE `avatar`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`);
 
 --
 -- 資料表索引 `company`
@@ -176,7 +263,9 @@ ALTER TABLE `company`
   ADD KEY `UserId` (`UserId`),
   ADD KEY `CreateTime` (`CreateTime`),
   ADD KEY `isDeleted` (`isDeleted`),
-  ADD KEY `Id` (`Id`);
+  ADD KEY `Id` (`Id`),
+  ADD KEY `Company` (`Company`),
+  ADD KEY `IndustryId` (`IndustryId`);
 
 --
 -- 資料表索引 `industry`
@@ -184,6 +273,20 @@ ALTER TABLE `company`
 ALTER TABLE `industry`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`);
+
+--
+-- 資料表索引 `mgt_users`
+--
+ALTER TABLE `mgt_users`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `Account` (`Account`),
+  ADD KEY `Password` (`Password`),
+  ADD KEY `isDeleted` (`isDeleted`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Token` (`Token`),
+  ADD KEY `TokenCreateTime` (`TokenCreateTime`),
+  ADD KEY `TokenUpdateTime` (`TokenUpdateTime`),
   ADD KEY `Id` (`Id`);
 
 --
@@ -195,12 +298,27 @@ ALTER TABLE `social`
   ADD KEY `Id` (`Id`);
 
 --
+-- 資料表索引 `subject`
+--
+ALTER TABLE `subject`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`);
+
+--
+-- 資料表索引 `token`
+--
+ALTER TABLE `token`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `UserId` (`UserId`),
+  ADD KEY `Id` (`Id`);
+
+--
 -- 資料表索引 `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `Cellphone` (`Account`),
-  ADD KEY `Password` (`Password`),
   ADD KEY `SuperID` (`SuperID`),
   ADD KEY `isDeleted` (`isDeleted`),
   ADD KEY `CreateTime` (`CreateTime`),
@@ -209,17 +327,26 @@ ALTER TABLE `users`
   ADD KEY `TokenUpdateTime` (`TokenUpdateTime`),
   ADD KEY `Id` (`Id`),
   ADD KEY `Verify` (`Verify`),
-  ADD KEY `VerifyCode` (`VerifyCode`);
+  ADD KEY `VerifyCode` (`VerifyCode`),
+  ADD KEY `subjectId` (`SubjectId`),
+  ADD KEY `SMSNumber` (`SMSNumber`),
+  ADD KEY `SMSTime` (`SMSTime`);
 
 --
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `avatar`
+--
+ALTER TABLE `avatar`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `company`
 --
 ALTER TABLE `company`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `industry`
@@ -228,16 +355,34 @@ ALTER TABLE `industry`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=13;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `mgt_users`
+--
+ALTER TABLE `mgt_users`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `social`
 --
 ALTER TABLE `social`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=19;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `subject`
+--
+ALTER TABLE `subject`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=6;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `token`
+--
+ALTER TABLE `token`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `users`
 --
 ALTER TABLE `users`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -39,7 +39,7 @@ class Company_model extends CI_Model
                 $obj->company_gui = $row->Gui;
                 $obj->company_phone = $row->Phone;
                 $obj->company_industryId = $row->IndustryId;
-                // $obj->company_industryName = $row->industryName;
+                $obj->company_industryName = $row->industryName;
                 $obj->company_position = $row->Position;
                 $obj->company_aboutus = $row->Aboutus;
                 $obj->company_email = $row->Email;

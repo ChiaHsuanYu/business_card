@@ -16,13 +16,13 @@ class Users_api extends BaseAPIController
         $this->load->library('session');
 
         // 登入驗證
-        // $r = $this->checkAA_front();
-        // if ($r['status'] == 1){             //Token合法並具有權限，將資料儲存在session           
-        //     $this->session->user_info = (array)$r['data'];   
-        // }else{                              //Token不合法或逾時，讓使用者執行登出
-        //     $this->response($r,401); // REST_Controller::HTTP_OK     
-        //     exit("Invalid Token");
-        // }
+        $r = $this->checkAA_front();
+        if ($r['status'] == 1){             //Token合法並具有權限，將資料儲存在session           
+            $this->session->user_info = (array)$r['data'];   
+        }else{                              //Token不合法或逾時，讓使用者執行登出
+            $this->response($r,401); // REST_Controller::HTTP_OK     
+            exit("Invalid Token");
+        }
     }
 
     // 取得使用者資料 by superId,method:POST
@@ -96,8 +96,6 @@ class Users_api extends BaseAPIController
         if($data['personal_nickname']){
             $this->form_validation->set_rules('personal_nickname', 'lang:「暱稱」', 'required|max_length[20]');
         }
-
-        //判斷規則是否成立
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
@@ -112,16 +110,13 @@ class Users_api extends BaseAPIController
             $config_status = null;
             //檢查有沒有個人圖像
             if (!empty($_FILES['personal_avatar']["tmp_name"])) {
-                // $data['personal_avatar_path'] = $_FILES['personal_avatar']["tmp_name"];
                 $path = AVATAR_PATH;
                 if (!is_dir($path)) {
                     mkdir($path, 0755);
                 }
                 //重新命名
-                $uuid = $this->common_service->create_uuid(); //取得UUID
                 $fileName = $_FILES['personal_avatar']['name'];
-                $name = explode('.', $fileName);
-                $newName = $uuid . '.' . $name[1];
+                $newName = $this->common_service->avatar_uuid($fileName); //取得UUID
                 $config['upload_path']= $path;//上傳路徑
                 $config['allowed_types']= 'jpg|jpeg|png|gif|svg';//檔案限制類型
                 $config['max_size'] = '5120'; //限制檔案上傳大小
@@ -142,16 +137,13 @@ class Users_api extends BaseAPIController
             }
             // //檢查有沒有公司LOGO
             if (!empty($_FILES['company_logo']["tmp_name"])) {
-                // $data['company_logo_path'] = $_FILES['company_logo']["tmp_name"];
                 $path = LOGO_PATH;
                 if (!is_dir($path)) {
                     mkdir($path, 0755);
                 }
                 //重新命名
-                $uuid = $this->common_service->create_uuid(); //取得UUID
                 $fileName = $_FILES['company_logo']['name']; 
-                $name = explode('.', $fileName);
-                $newName = $uuid . '.' . $name[1];
+                $newName = $this->common_service->logo_uuid($fileName); //取得UUID
                 $config['upload_path']= $path;
                 $config['allowed_types']= 'jpg|jpeg|png';//檔案限制類型
                 $config['max_size'] = '5120'; 
@@ -191,7 +183,6 @@ class Users_api extends BaseAPIController
             $data['company_logo_'.$i] = $this->security->xss_clean($this->input->post("company_logo_".$i));
         }
         $this->form_validation->set_rules('userInfo', 'lang:「個人資料」', 'required');
-        //判斷規則是否成立
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
@@ -201,17 +192,17 @@ class Users_api extends BaseAPIController
         }else{
             $data['userInfo']->personal_avatar_path = null;
             $config_status = null;
+            $userId = $this->session->user_info['id'];
             //檢查個人圖像並上傳
             if (!empty($_FILES['personal_avatar']["tmp_name"])) {
                 $path = AVATAR_PATH;
                 if (!is_dir($path)) {
                     mkdir($path, 0755);
                 }
+                $this->users_service->avatar_rename($userId);  // 移動舊頭像檔案
                 //重新命名
-                $uuid = $this->common_service->create_uuid(); //取得UUID
                 $fileName = $_FILES['personal_avatar']['name'];
-                $name = explode('.', $fileName);
-                $newName = $uuid . '.' . $name[1];
+                $newName = $this->common_service->avatar_uuid($fileName); //取得UUID
                 $config['upload_path']= $path;//上傳路徑
                 $config['allowed_types']= 'jpg|jpeg|png|gif|svg';//檔案限制類型
                 $config['max_size'] = '5120'; //限制檔案上傳大小
@@ -239,11 +230,12 @@ class Users_api extends BaseAPIController
                     if (!is_dir($path)) {
                         mkdir($path, 0755);
                     }
+                    if($companyInfo[$i]->id){
+                        $this->users_service->logo_rename($companyInfo[$i]->id,$userId);  // 移動舊LOGO圖片
+                    }
                     //重新命名
-                    $uuid = $this->common_service->create_uuid(); //取得UUID
                     $fileName = $_FILES[$logo_id]['name'];
-                    $name = explode('.', $fileName);
-                    $newName = $uuid . '.' . $name[1];
+                    $newName = $this->common_service->logo_uuid($fileName); //取得UUID
                     $config['upload_path']= $path;//上傳路徑
                     $config['allowed_types']= 'jpg|jpeg|png';//檔案限制類型
                     $config['max_size'] = '5120'; 
@@ -279,6 +271,7 @@ class Users_api extends BaseAPIController
             }
             $data['userInfo']->companyInfo = $companyInfo;
             $data['userInfo']->personal_avatar_id = $data['personal_avatar_id'];
+            // $this->response($data['userInfo'],200); // REST_Controller::HTTP_OK     
             $this->response($this->users_service->update_acc_by_id($data['userInfo']),200); // REST_Controller::HTTP_OK     
         }
     }
@@ -306,7 +299,6 @@ class Users_api extends BaseAPIController
             "superId" => $this->security->xss_clean($this->input->post("superId")),
         );
         $this->form_validation->set_rules('superId', 'lang:「SUPERID」', 'required|min_length[6]|max_length[15]');
-        //判斷規則是否成立
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,

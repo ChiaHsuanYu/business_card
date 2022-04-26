@@ -14,9 +14,9 @@ class Token_model extends CI_Model
     }
 
     // 檢查使用者裝置是否已存在
-    public function check_host_by_userId($user_id,$host){
-        $sql = "SELECT token.* FROM token WHERE token.UserId = ? AND token.Host = ?";
-        $query = $this->db->query($sql, array($user_id,$host));
+    public function check_host_by_userId($user_id,$host,$device){
+        $sql = "SELECT token.* FROM token WHERE token.UserId = ? AND token.Host = ? AND token.Device = ?";
+        $query = $this->db->query($sql, array($user_id,$host,$device));
         $result = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -49,7 +49,7 @@ class Token_model extends CI_Model
 
     // 查詢使用者token是否存在
     public function get_user_by_token($token){
-        $sql = "SELECT users.*,token.UserId,token.Host,token.Token,token.TokenCreateTime,token.TokenUpdateTime,`subject`.ImageURL as subject_imageURL,`subject`.Name as subjectName 
+        $sql = "SELECT users.*,token.UserId,token.Host,token.Token,token.TokenCreateTime,token.TokenUpdateTime,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName 
                 FROM users LEFT JOIN `token` ON token.UserId = `users`.Id LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE token.token = ? AND users.isDeleted = ?";
         $query = $this->db->query($sql, array($token, 0));
         $result = array();
@@ -67,6 +67,10 @@ class Token_model extends CI_Model
                 $obj->personal_email = $row->Email;
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
+                $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_name = $row->subjectName;
                 $obj->isDeleted = $row->isDeleted;
                 // $obj->host = $row->Host;
                 $obj->token = $row->Token;
@@ -95,7 +99,7 @@ class Token_model extends CI_Model
 
     // 查詢使用者Id
     public function get_user_by_id($id){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.Name as subjectName FROM users 
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
                 LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Id = ? AND users.isDeleted = ?";
         $query = $this->db->query($sql, array($id, 0));
         $result = array();
@@ -113,9 +117,10 @@ class Token_model extends CI_Model
                 $obj->personal_email = $row->Email;
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
-                // $obj->personal_subjectId = $row->SubjectId;
-                // $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
-                // $obj->subject_name = $row->subjectName;
+                $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_name = $row->subjectName;
                 // $obj->SMSNumber = $row->SMSNumber;
                 // $obj->SMSTime = $row->SMSTime;
                 // $obj->isDeleted = $row->isDeleted;

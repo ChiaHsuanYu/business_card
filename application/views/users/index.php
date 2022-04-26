@@ -14,6 +14,7 @@
 <input type="hidden" id="search_startDT" value="<?php echo $startDT; ?>">
 <input type="hidden" id="search_endDT" value="<?php echo $endDT; ?>">
 <div class="contentsBox padding_0 margin_bottom_10 textLeft">
+    <div class="contentsTitle blue">會員帳號查詢</div>
     <div class="contentsTitle ">篩選條件</div>
     <div class="padding_5">
         <div class="textCenter">

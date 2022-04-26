@@ -172,39 +172,52 @@ class Users_service extends MY_Service
 
     // 編輯個人檔案
     public function update_acc_by_id($data){
+        $data->company_order = array();
+        $data->id = $this->session->user_info['id'];
+        $companyInfo = $data->companyInfo;
+        
         // 檢查是否需要取得系統預設頭像資料
         if(empty($data->personal_avatar_path)){
             if($data->personal_avatar_id){
                 $avatar_data = $this->avatar_model->get_avatar_by_id($data->personal_avatar_id);
                 if(count($avatar_data)){
                     $data->personal_avatar_path = $avatar_data[0]->imageURL;
+                    $this->avatar_rename($data->id);  
+
                 }
             }
         }
-        $data->company_order = array();
-        $data->id = $this->session->user_info['id'];
-        $companyInfo = $data->companyInfo;
         // 刪除公司資訊 by userId
         $this->company_model->del_company_by_userId($data->id);
         for($i=0;$i<count($companyInfo);$i++){
             // 新增公司資訊 for 編輯個人檔案
-            $company_data = $data->companyInfo[$i];
+            $company_data = $companyInfo[$i];
             $company_data->order = implode(",",$company_data->order);
-            $company_data->company_address = null;
-            $company_data->company_phone = null;
-            $company_data->company_email = null;
-            $company_data->company_social = null;
-            if($company_data->company_address){
-                $company_data->company_address = implode(",",$company_data->company_address);
+            if($companyInfo[$i]->company_address){
+                $company_data->company_address = implode(",",$companyInfo[$i]->company_address);
             }
-            if($company_data->company_phone){
-                $company_data->company_phone = implode(",",$company_data->company_phone);
+            if($companyInfo[$i]->company_phone){
+                $company_data->company_phone = implode(",",$companyInfo[$i]->company_phone);
             }
-            if($company_data->company_email){
-                $company_data->company_email = implode(",",$company_data->company_email);
+            if($companyInfo[$i]->company_email){
+                $company_data->company_email = implode(",",$companyInfo[$i]->company_email);
             }
-            if($company_data->company_social){
-                $company_data->company_social = json_encode($company_data->company_social);
+            if($companyInfo[$i]->company_social){
+                $company_data->company_social = json_encode($companyInfo[$i]->company_social);
+            }else{
+                $company_data->company_social = null;
+            }
+            if(isset($company_data->company_orig_logo)){
+                if($company_data->company_orig_logo){
+                    $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
+                    $company_data->company_logo_path = $company_logo_path[1];
+                }
+            }
+            // 移動LOGO圖片
+            if(empty($company_data->company_logo_path)){
+                if($company_data->id){
+                    $this->logo_rename($company_data->id,$data->id);
+                }
             }
             $companyId = $this->company_model->add_company_for_acc($data->id, $company_data);
             if($companyId){
@@ -213,12 +226,10 @@ class Users_service extends MY_Service
         }
         // 更新使用者資訊
         $data->order = implode(",",$data->order);
-        $data->company_order = null;
-        $data->personal_phone = null;
-        $data->personal_email = null;
-        $data->personal_social = null;
         if($data->company_order){
             $data->company_order = implode(",",$data->company_order);
+        }else{
+            $data->company_order = null;
         }
         if($data->personal_phone){
             $data->personal_phone = implode(",",$data->personal_phone);
@@ -227,7 +238,19 @@ class Users_service extends MY_Service
             $data->personal_email = implode(",",$data->personal_email);
         }
         if($data->personal_social){
-        $data->personal_social = json_encode($data->personal_social);
+            $data->personal_social = json_encode($data->personal_social);
+        }else{
+            $data->personal_social = null;
+        }
+        if(isset($data->personal_orig_img)){
+            if($data->personal_orig_img){
+                $personal_avatar_path = explode(base_url().AVATAR_PATH,$data->personal_orig_img);
+                $data->personal_avatar_path = $personal_avatar_path[1];
+            }
+        }
+        // 移動頭像檔案
+        if(empty($data->personal_avatar_path)){
+            $this->avatar_rename($data->id);  
         }
         $r = $this->users_model->update_acc_by_id($data);
         if($r){
@@ -242,6 +265,40 @@ class Users_service extends MY_Service
             );    
         }
         return $result;
+    }
+
+    // 移動頭像檔案
+    public function avatar_rename($id){
+        $r = $this->users_model->get_user_by_id($id);
+        if(count($r)){
+            if($r[0]->personal_avatar){
+                $old_file_path = explode(base_url(), $r[0]->personal_avatar);
+                $old_file_name = explode(AVATAR_PATH, $old_file_path[1]);
+                if(file_exists(AVATAR_PATH.$old_file_name[1])){
+                    if(!file_exists(SYSTEM_AVATAR_PATH.$old_file_name[1])){
+                        rename(AVATAR_PATH.$old_file_name[1],DEL_AVATAR_PATH.$old_file_name[1]);
+                    }
+                }
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    // 移動LOGO檔案
+    public function logo_rename($companyId,$userId){
+        $r = $this->company_model->get_company_by_userId($companyId,$userId);
+        if(count($r)){
+            $old_file_path = explode(base_url(), $r[0]->company_logo);
+            $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
+            if(file_exists(LOGO_PATH.$old_file_name[1])){
+                rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);
+            }
+            return true;
+        }else{
+            return false;
+        }
     }
 
     // 更改使用者主題 by userId

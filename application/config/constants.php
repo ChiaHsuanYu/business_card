@@ -91,8 +91,13 @@ define('LOGIN_DEVICE_NUM', 1);                                          //登入
 
 define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑
 define('SUBJECT_IMAGE_PATH', 'appoint/images/subject/');                //主題圖片路徑
+define('SUBJECT_CSS_PATH', 'appoint/css/subject/');                     //主題CSS檔案路徑
+define('SYSTEM_AVATAR_PATH', 'appoint/images/system_avatar/');          //系統預設頭像圖片路徑
 define('AVATAR_PATH', 'appoint/images/avatar/');                        //個人頭像圖片路徑
+define('DEL_AVATAR_PATH', 'appoint/images/del_avatar/');                //未使用到的個人頭像圖片路徑
 define('LOGO_PATH', 'appoint/images/logo/');                            //公司LOGO圖片路徑
-
+define('DEL_LOGO_PATH', 'appoint/images/del_logo/');                    //未使用到的公司LOGO圖片路徑
 define('LOGIN_PAGE', 'mgt_login/index');                                    //define login page
 define('LOGOUT_PAGE', '/mgt_login/logout/');                                //define logout page
+
+define('PATH', 'C:\xampp\htdocs\business_card');                                //define logout page

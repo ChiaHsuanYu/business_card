@@ -22,6 +22,7 @@ class Subject_model extends CI_Model
                 $obj = new Subject_model();
                 $obj->id = $row->Id;
                 $obj->imageURL = base_url().SUBJECT_IMAGE_PATH.$row->ImageURL;
+                $obj->subjectFile = base_url().SUBJECT_CSS_PATH.$row->SubjectFile;
                 $obj->name = $row->Name;
                 array_push($result, $obj);
             }
@@ -31,8 +32,8 @@ class Subject_model extends CI_Model
 
     // 新增主題
     public function add_subject($data){
-        $sql = "INSERT INTO `subject` (ImageURL, `Name`) VALUES (?, ?)";
-        $query = $this->db->query($sql,array($data['image_path'],$data['name']));
+        $sql = "INSERT INTO `subject` (ImageURL, `SubjectFile`, `Name`) VALUES (?, ?, ?)";
+        $query = $this->db->query($sql,array($data['image_path'],$data['css_path'],$data['name']));
         return $this->db->insert_id();
     }
 }

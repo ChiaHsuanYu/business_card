@@ -1,0 +1,129 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.content .personal-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: gray;
+  position: relative;
+}
+.content .personal-content .personal-avatar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -80%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+}
+.content .personal-content .personal-name {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+.content .personal-content .personal-phone {
+  font-size: 20px;
+}
+.content .personal-content .personal-email {
+  font-size: 18px;
+}
+.content .personal-content .personal-social {
+  padding: 5px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.content .personal-content .personal-social .social-name {
+  padding-right: 10px;
+}
+.content .personal-content .personal-social .social-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+.content .company-content {
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+  background-color: #7fca7f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.content .company-content .company-name {
+  margin-top: 10px;
+  position: relative;
+  font-size: 26px;
+  font-weight: 700;
+}
+.content .company-content .company-name .company-logo {
+  position: absolute;
+  top: 50%;
+  left: -50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+.content .company-content .company-position {
+  font-size: 18px;
+}
+.content .company-content .company-aboutus {
+  padding-top: 10px;
+  font-size: 20px;
+}
+.content .company-content .company-phone {
+  padding-top: 10px;
+  font-size: 20px;
+}
+.content .company-content .company-email {
+  font-size: 18px;
+}
+.content .company-content .company-address {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.content .company-content .company-address .address-icon {
+  cursor: pointer;
+  margin-left: 5px;
+  width: 40px;
+  height: 40px;
+  background: url('http://192.168.88.138/business_card/appoint/images/map.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.content .company-content .company-social {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.content .company-content .company-social .social-icon {
+  margin: 0 10px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+.copyright {
+  color: black;
+  font-weight: 700;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

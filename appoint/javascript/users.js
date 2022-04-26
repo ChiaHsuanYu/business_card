@@ -1,15 +1,3 @@
-// 列表上一頁
-function users_last_page(pageId, countId) {
-    var data = check_last_page(pageId, countId);
-    users_list(data['page'], data['page_count']);
-}
-
-// 列表下一頁
-function users_next_page(pageId, countId) {
-    var data = check_next_page(pageId, countId);
-    users_list(data['page'], data['page_count']);
-}
-
 function search_list() {
     var account = document.getElementById('account').value;
     var superID = document.getElementById('superID').value;
@@ -46,7 +34,6 @@ function users_list(page_num, page_count) {
         page_count: page_count,
     };
     var result = call_api('mgt_users_api/query_users', data_obj);
-    console.log(result);
     if (result['status']) {
         var data = JSON.stringify(result['data']);
         data = JSON.parse(data);
@@ -78,6 +65,7 @@ function users_noData() {
 
 // 列表-依序列出所有使用者
 function users_data(seachText, data_obj) {
+    var AVATAR_PATH = document.getElementById('AVATAR_PATH').value;
     var data_obj = JSON.stringify(data_obj);
     var hideobj = document.getElementById("allPageCountBox");
     var users = seachText['users'];
@@ -89,8 +77,8 @@ function users_data(seachText, data_obj) {
         //輸出使用者列表
         tab += "<table class='web_table contentsTable' width='auto' cellpadding='0' cellspacing='0'>"
         tab += "<tr align='center'>";
-        tab += "<td class='contentsTh'>No</td><td class='contentsTh'>姓名</td><td class='contentsTh'>帳號</td><td class='contentsTh'>SUPER ID</td>";
-        tab += "<td class='contentsTh'>註冊時間</td><td class='contentsTh'>會員資料</td><td class='contentsTh'>功能</td>";
+        tab += "<td class='contentsTh'>No</td><td class='contentsTh'>姓名</td><td class='contentsTh' colspan='2'>帳號</td><td class='contentsTh' colspan='2'>SUPER ID</td>";
+        tab += "<td class='contentsTh' colspan='2'>註冊時間</td><td class='contentsTh'>會員資料</td><td class='contentsTh'>功能</td>";
         tab += "</tr>";
         //逐步輸出所有使用者資料
         var no = 0;
@@ -99,57 +87,226 @@ function users_data(seachText, data_obj) {
         for (var i = 0; i < count; i++) {
             no++;
             var name = '-',
-                account = '-',
-                superID = '-',
-                createTime = "";
+                superID = '-';
+            var user_detail_id = "user_detail" + users[i]['id'];
+            var user_detail_id_phone = "user_detail_phone_" + users[i]['id'];
+            var company_id = "company_" + users[i]['id'];
+            var company_id_phone = "company_phone_" + users[i]['id'];
             if (users[i]['personal_superID']) {
                 superID = users[i]['personal_superID'];
             }
             if (users[i]['personal_name']) {
                 name = users[i]['personal_name'];
             }
-            // if (users[i]['email']) {
-            //     email = users[i]['email'];
-            // }
-            // if (users[i]['remark']) {
-            //     var note = users[i]['remark'].replace(/\r\n|\n/g, "");
-            // }
+            var user_data = {
+                id:users[i]['id'],
+                account:users[i]['account']
+            };
+            if(users[i]['isDeleted'] == '1'){
+                user_data['isDeleted'] = '0';
+                user_data = JSON.stringify(user_data);
+                var del_btn = "<button class='red_button width_80px' onclick='update_isDeleted(" + user_data + ',' + data_obj + ")'>解凍帳號</button> ";
+            }else{
+                user_data['isDeleted'] = '1';
+                user_data = JSON.stringify(user_data);
+                var del_btn = "<button class='button width_80px' onclick='update_isDeleted(" + user_data + ',' + data_obj + ")'>凍結帳號</button> ";
+            }
             // <!-- 電腦版 -->
             tab += "<tr align='center' class='contentsTr'>";
-            tab += "<td>" + no + "</td><td>" + name + "</td><td>" + users[i]['account'] + "</td><td>" + superID + "</td>";
-            tab += "<td>" + users[i]['createTime'] + "</td>";
+            tab += "<td>" + no + "</td><td>" + name + "</td><td colspan='2'>" + users[i]['account'] + "</td><td colspan='2'>" + superID + "</td>";
+            tab += "<td colspan='2'>" + users[i]['createTime'] + "</td>";
             tab += "<td>";
-            tab += "<div class='fault_a' onclick='look_slideToggle(" + users+ ")'>查看會員資料</div>";
+            tab += "<div class='fault_a' onclick='look_slideToggle(" + '"' + user_detail_id + '"' + ")'>查看會員資料</div>";
             tab += "</td>";
-            tab += "<td>";
-            if(users[i]['isDeleted'] == '1'){
-                tab += "<button class='button width_80px' onclick='locationDetail(" + users[i]['id'] + ',' + data_obj + ")'>解凍帳號</button> ";
-            }else{
-                tab += "<button class='button width_80px' onclick='locationDetail(" + users[i]['id'] + ',' + data_obj + ")'>凍結帳號</button> ";
-            }
+            tab += "<td>"+del_btn+"</td>";
             tab += "</tr>";
 
             // <!-- 手機板 -->
-            // tab_phone += "<div class='phone_table margin_bottom_10px' width='100%' cellpadding='0' cellspacing='0'>";
-            // tab_phone += "<div class='contentsTh'>No." + no + "</div>";
-            // tab_phone += "<div class='content_phone'>帳號： " + users[i]['account'] + "</div>";
-            // tab_phone += "<div class='content_phone'>狀態： " + isEnable + "</div>";
-            // tab_phone += "<div class='content_phone'>廠區： " + users[i]['areaName'] + "</div>";
-            // tab_phone += "<div class='content_phone'>群組名稱： " + users[i]['groups'] + "</div>";
-            // tab_phone += "<div class='content_phone'>人員編號： " + users[i]['staffNo'] + "</div>";
-            // tab_phone += "<div class='content_phone'>人員名稱： " + users[i]['name'] + "</div>";
-            // tab_phone += "<div class='content_phone'>聯絡電話： " + phone + "</div>";
-            // tab_phone += "<div class='content_phone'>E-mail： " + email + "</div>";
-            // if (note) {
-            //     tab_phone += "<div class='content_phone'>備註： <button class='button width_60px' onclick='USER_NOTE(" + '"' + note + '"' + ")'>備註</button></div>";
-            // } else {
-            //     tab_phone += "<div class='content_phone'>備註： - </div>";
-            // }
-            // tab_phone += "<div class='content_phone'>功能： ";
-            // tab_phone += "<button class='button width_60px' onclick='locationDetail(" + users[i]['id'] + ',' + data_obj + ")'>檢視</button> ";
-            // tab_phone += "<button class='button width_60px' onclick='locationEdit(" + users[i]['id'] + ',' + data_obj + ")'>修改</button> ";
-            // tab_phone += "<button class='button width_60px' onclick='del_acc(" + users[i]['id'] + ',' + '"' + users[i]['account'] + '"' + ")'>刪除</button> ";
-            // tab_phone += "</div></div>";
+            tab_phone += "<div class='phone_table margin_bottom_10px' width='100%' cellpadding='0' cellspacing='0'>";
+            tab_phone += "<div class='contentsTh'>No." + no + "</div>";
+            tab_phone += "<div class='content_phone'>姓名： " + name + "</div>";
+            tab_phone += "<div class='content_phone'>帳號： " + users[i]['account'] + "</div>";
+            tab_phone += "<div class='content_phone'>SUPER ID： " + superID + "</div>";
+            tab_phone += "<div class='content_phone'>註冊時間： " + users[i]['createTime'] + "</div>";
+            tab_phone += "<div class='content_phone'>會員資料： <p class='inline_block margin_0 fault_a' onclick='look_slideToggle(" + '"' + user_detail_id_phone + '"' + ")'>查看會員資料</p></div>";            
+            tab_phone += "<div class='content_phone'>功能： "+del_btn+"</div>";
+            tab_phone += "</div>";
+
+            var nickname = "-",
+                avatar = "-",
+                phone = "-",
+                email = "-",
+                social = "-",
+                companyInfo_btn = "-",
+                companyInfo_btn_phone = "-";
+            if(users[i]['personal_nickname']){
+                nickname = users[i]['personal_nickname'];
+            }
+            if(users[i]['personal_avatar']){
+                avatar = "<img class='img img_pointer' title='另開圖片視窗' src='" + users[i]['personal_avatar'] + "' onclick='openImg(" + '"' + users[i]['personal_avatar'] + '"' + ")'>";
+            }
+            if(users[i]['personal_phone']){
+                phone = "";
+                for(var k=0;k<users[i]['personal_phone'].length;k++){
+                    if(k>0){
+                        phone += "<br>";
+                    }
+                    phone += users[i]['personal_phone'][k];
+                }
+            }
+            if(users[i]['personal_email']){
+                email = "";
+                for(var k=0;k<users[i]['personal_email'].length;k++){
+                    if(k>0){
+                        email += "<br>";
+                    }
+                    email += users[i]['personal_email'][k];
+                }
+            }
+            if(users[i]['personal_social']){
+                social = "";
+                for(var k=0;k<users[i]['personal_social'].length;k++){
+                    if(k>0){
+                        social += "<br>";
+                    }
+                    social += "<img class='img img_pointer' title='另開圖片視窗' src='" + users[i]['personal_social'][k]['iconURL'] + "' onclick='openImg(" + '"' + users[i]['personal_social'][k]['iconURL'] + '"' + ")'> ";
+                    social += "<a href='"+users[i]['personal_social'][k]['socialURL']+"'>"+users[i]['personal_social'][k]['socialTitle']+"</a>";
+                }
+            }
+            if(users[i]['companyInfo'].length){
+                companyInfo_btn = "<p class='inline_block margin_0 fault_a' onclick='look_slideToggle(" + '"' + company_id + '"' + ")'>檢視</p>";
+                companyInfo_btn_phone = "<p class='inline_block margin_0 fault_a' onclick='look_slideToggle(" + '"' + company_id_phone + '"' + ")'>檢視</p>";
+            }
+            tab += "<div id='" + user_detail_id + "'>";
+            tab_phone += "<div id='" + user_detail_id_phone + "'></div>";
+            tab_phone += "<div class='medium_orange " + user_detail_id_phone + "' style='display: none;'>會員詳細資料</div>";
+            tab_phone += "</div>";
+            tab += "<tr align='center' class='contentsTr orange " + user_detail_id + "' style='display: none;'>";
+            tab += "<td>個人頭像</td><td>暱稱</td><td colspan='2'>連絡電話</td><td colspan='2'>信箱</td><td colspan='2'>個人社群</td><td>公司資訊</td><td>最後一次更新時間</td>";
+            tab += "</tr>";
+
+            tab += "<tr class='light_orange " + user_detail_id + "' style='display: none;'>";
+            tab += "<td>"+avatar+"</td>";
+            tab += "<td>"+nickname+"</td>";
+            tab += "<td colspan='2'>"+phone+"</td>";
+            tab += "<td colspan='2'>"+email+"</td>";;
+            tab += "<td colspan='2'>"+social+"</td>";;
+            tab += "</td>";
+            tab += "<td>"+companyInfo_btn+"</td>";
+            tab += "<td>"+users[i]['modifiedTime']+"</td>";
+            tab += "</tr>";
+
+            // 手機板
+            tab_phone += "<div class='margin_bottom_10px light_orange " + user_detail_id_phone + "' width='100%' cellpadding='0' cellspacing='0' style='display: none;'>";
+            tab_phone += "<div>個人頭像： " + avatar + "</div>";
+            tab_phone += "<div>暱稱： " + nickname + "</div>";
+            tab_phone += "<div>連絡電話： " + phone + "</div>";
+            tab_phone += "<div>信箱： " + email + "</div>";
+            tab_phone += "<div>個人社群： " + social + "</div>";
+            tab_phone += "<div>公司資訊："+companyInfo_btn_phone+"</div>";
+            tab_phone += "<div>最後一次更新時間： " + users[i]['modifiedTime'] + "</div>";
+            tab_phone += "</div>";
+            tab += "</div>";
+
+            var company_no = 0;
+            var companyInfo = users[i]['companyInfo'];
+            for (var k = 0; k < companyInfo.length; k++) {
+                var div_class = 'medium_red margin_bottom_10px ';
+                if (k % 2 == 0) {
+                    div_class = 'light_red ';
+                }
+                if (k == 0) {
+                    tab += "<div id='" + company_id + "'>";
+                    tab_phone += "<div id='" + company_id_phone + "'></div>";
+                    tab_phone += "<div class='grey " + company_id_phone + "' style='display: none;'>公司詳細資訊</div>";
+                    tab_phone += "</div>";
+                    tab += "<tr align='center' class='contentsTr grey " + company_id + "' style='display: none;'>";
+                    tab += "<td>公司名稱</td><td>公司LOGO</td><td>產業類別</td><td>職位</td><td>服務介紹</td><td>電話分機</td><td>地址</td><td>信箱</td><td>統一編號</td><td>公司社群</td>";
+                    tab += "</tr>";
+                }
+                company_no++;
+                var name = "-",
+                    logo_img = '-',
+                    industry = '-',
+                    position = '-',
+                    aboutus = '-',
+                    gui = '-',
+                    phone = '-',
+                    address = '-',
+                    email = '-',
+                    social = '-';
+                if (companyInfo[k]['company_logo']) {
+                    logo_img = "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_logo'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_logo'] + '"' + ")'>";
+                }
+                if(companyInfo[k]['company_industryName']){
+                    industry = companyInfo[k]['company_industryName'];
+                }
+                if(companyInfo[k]['company_position']){
+                    position = companyInfo[k]['company_position'];
+                }
+                if(companyInfo[k]['company_aboutus']){
+                    aboutus = companyInfo[k]['company_aboutus'];
+                }
+                if(companyInfo[k]['company_gui']){
+                    gui = companyInfo[k]['company_gui'];
+                }
+                if(companyInfo[k]['company_phone']){
+                    phone = "";
+                    for(var m=0;m<companyInfo[k]['company_phone'].length;m++){
+                        if(m>0){
+                            phone += "<br>";
+                        }
+                        phone += companyInfo[k]['company_phone'][m];
+                    }
+                }
+                if(companyInfo[k]['company_address']){
+                    address = "";
+                    for(var m=0;m<companyInfo[k]['company_address'].length;m++){
+                        if(m>0){
+                            address += "<br>";
+                        }
+                        address += companyInfo[k]['company_address'][m];
+                    }
+                }
+                if(companyInfo[k]['company_email']){
+                    email = "";
+                    for(var m = 0 ; m < companyInfo[k]['company_email'].length ; m++){
+                        if(m>0){
+                            email += "<br>";
+                        }
+                        email += companyInfo[k]['company_email'][m];
+                    }
+                }
+                if(companyInfo[k]['company_social']){
+                    social = "";
+                    for(var m=0;m<companyInfo[k]['company_social'].length;m++){
+                        if(m>0){
+                            social += "<br>";
+                        }
+                        social += "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_social'][m]['iconURL'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_social'][m]['iconURL'] + '"' + ")'> ";
+                        social += "<a href='"+companyInfo[k]['company_social'][m]['socialURL']+"'>"+companyInfo[k]['company_social'][m]['socialTitle']+"</a>";
+                    }
+                }
+                tab += "<tr align='center' class='contentsTr light_grey " + company_id + "' style='display: none;'>";
+                tab += "<td>" + companyInfo[k]['company_name'] + "</td>";
+                tab += "<td>" + logo_img + "</td><td>" +industry + "</td><td>" + position + "</td><td>" + aboutus + "</td><td>" + phone + "</td>";
+                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td>" + social + "</td>";
+                tab += "</tr>";
+                // 手機板
+                tab_phone += "<div class=' " + div_class + company_id_phone + "' width='100%' cellpadding='0' cellspacing='0' style='display: none;'>";
+                tab_phone += "<div>公司名稱： " + companyInfo[k]['company_name'] + "</div>";
+                tab_phone += "<div>公司LOGO： " + logo_img + "</div>";
+                tab_phone += "<div>產業類別： " + industry + "</div>";
+                tab_phone += "<div>職位： " + position + "</div>";
+                tab_phone += "<div>服務介紹	： " + aboutus + "</div>";
+                tab_phone += "<div>電話分機： " + phone + "</div>";
+                tab_phone += "<div>地址： " + address + "</div>";
+                tab_phone += "<div>信箱	： " + email + "</div>";
+                tab_phone += "<div>統一編號	： " + gui + "</div>";
+                tab_phone += "<div>公司社群	： " + social + "</div>";
+                tab_phone += "</div>";
+            }
+            tab += "</div>";
         }
         hideobj.style.display = "inline-block"; //隱藏筆數頁數層 
     } else {
@@ -184,29 +341,22 @@ function industry_select_option() {
     }
 }
 
-// 刪除帳號
-function del_acc(id, account) {
-    var page = document.getElementById('list_page').value;
-    var page_count = document.getElementById('list_page_count').value;
-    if (id == "") {
-        alert("執行錯誤");
-    } else {
-        if (confirm("確定刪除「" + account + "」?")) {
-            var data_obj = {
-                id: id,
-            };
-            if (id == localStorage.getItem('UsertId')) {
-                alert("不可刪除，此帳號您正在使用中");
-            } else {
-                var result = call_api('mgt_users_api/del_acc_by_id', data_obj);
-                if (result['status']) {
-                    alert(result['message']);
-                    // 重新呼叫帳號列表
-                    users_list(page, page_count);
-                } else {
-                    document.getElementById('page_status').innerHTML = result['message'];
-                }
-            }
+// 更改帳號狀態
+function update_isDeleted(user_data, data_obj) {
+    var action = "解凍";
+    if(user_data['isDeleted'] == '1'){
+        action = "凍結";
+    }
+    if (confirm("確定"+action+"帳號「" + user_data['account'] + "」?")) {
+        var data_obj = {
+            userId: user_data['id'],
+            isDeleted: user_data['isDeleted']
+        };
+        var result = call_api('mgt_users_api/update_isDeleted_by_id', data_obj);
+        alert(result['msg']);
+        if (result['status']) {
+            // 重新呼叫帳號列表
+            users_list(1,10);
         }
     }
 }
