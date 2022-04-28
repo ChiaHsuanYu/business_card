@@ -195,12 +195,18 @@ class Users_service extends MY_Service
             $company_data->order = implode(",",$company_data->order);
             if($companyInfo[$i]->company_address){
                 $company_data->company_address = implode(",",$companyInfo[$i]->company_address);
+            }else{
+                $company_data->company_address = null;
             }
             if($companyInfo[$i]->company_phone){
                 $company_data->company_phone = implode(",",$companyInfo[$i]->company_phone);
+            }else{
+                $company_data->company_phone = null;
             }
             if($companyInfo[$i]->company_email){
                 $company_data->company_email = implode(",",$companyInfo[$i]->company_email);
+            }else{
+                $company_data->company_email = null;
             }
             if($companyInfo[$i]->company_social){
                 $company_data->company_social = json_encode($companyInfo[$i]->company_social);
@@ -233,9 +239,13 @@ class Users_service extends MY_Service
         }
         if($data->personal_phone){
             $data->personal_phone = implode(",",$data->personal_phone);
+        }else{
+            $data->personal_phone = null;
         }
         if($data->personal_email){
             $data->personal_email = implode(",",$data->personal_email);
+        }else{
+            $data->personal_email = null;
         }
         if($data->personal_social){
             $data->personal_social = json_encode($data->personal_social);
