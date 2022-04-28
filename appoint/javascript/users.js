@@ -1,3 +1,15 @@
+// 列表上一頁
+function users_last_page(pageId, countId) {
+    var data = check_last_page(pageId, countId);
+    users_list(data['page'], data['page_count']);
+}
+
+// 列表下一頁
+function users_next_page(pageId, countId) {
+    var data = check_next_page(pageId, countId);
+    users_list(data['page'], data['page_count']);
+}
+
 function search_list() {
     var account = document.getElementById('account').value;
     var superID = document.getElementById('superID').value;
@@ -65,7 +77,8 @@ function users_noData() {
 
 // 列表-依序列出所有使用者
 function users_data(seachText, data_obj) {
-    var AVATAR_PATH = document.getElementById('AVATAR_PATH').value;
+    var page_num = parseInt(data_obj['page']);
+    var page_count = parseInt(data_obj['page_count']);
     var data_obj = JSON.stringify(data_obj);
     var hideobj = document.getElementById("allPageCountBox");
     var users = seachText['users'];
@@ -81,9 +94,8 @@ function users_data(seachText, data_obj) {
         tab += "<td class='contentsTh' colspan='2'>註冊時間</td><td class='contentsTh'>會員資料</td><td class='contentsTh'>功能</td>";
         tab += "</tr>";
         //逐步輸出所有使用者資料
-        var no = 0;
-        var isEnable = "";
-
+        var page_star = (page_num - 1) * page_count;
+        var no = page_star;
         for (var i = 0; i < count; i++) {
             no++;
             var name = '-',
@@ -321,6 +333,17 @@ function users_data(seachText, data_obj) {
     tab += "</table>";
     $("#usersAll").html(tab);
     $("#usersAll_phone").html(tab_phone);
+
+    // 清除筆數頁數select裡的所有option
+    document.getElementById("list_page").innerHTML = "";
+    document.getElementById("list_page_count").innerHTML = "";
+    if (seachText['total_page']) {
+        var total_page = seachText['total_page'];
+    } else {
+        var total_page = 1;
+    }
+    // 輸出資料筆數及頁數
+    page_count_select(total_page, page_num, page_count)
     document.getElementById('total_count').innerHTML = '資料總筆數：' + seachText['total_count'];
 }
 
@@ -343,6 +366,8 @@ function industry_select_option() {
 
 // 更改帳號狀態
 function update_isDeleted(user_data, data_obj) {
+    var page = document.getElementById('list_page').value;
+    var page_count = document.getElementById('list_page_count').value;
     var action = "解凍";
     if(user_data['isDeleted'] == '1'){
         action = "凍結";
@@ -356,7 +381,7 @@ function update_isDeleted(user_data, data_obj) {
         alert(result['msg']);
         if (result['status']) {
             // 重新呼叫帳號列表
-            users_list(1,10);
+            users_list(page,page_count);
         }
     }
 }

@@ -165,7 +165,7 @@ input:disabled {
 
 .pageBtn {
     border: 0;
-    background-color: #77787a;
+    background-color: #acaeb1;
     color: #fff7f7;
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -190,6 +190,9 @@ input:disabled {
     .phone_table {
         display: block !important;
         /* background-color: #fff7f7; */
+    }
+    .rwd_table{
+        font-size: 0.7rem;
     }
 }
 
@@ -308,6 +311,10 @@ input:disabled {
     padding-left: 8% !important;
 }
 
+.margin_top_10px {
+    margin-top: 10px;
+}
+
 .margin_bottom_10px {
     margin-bottom: 10px;
 }
@@ -400,4 +407,7 @@ input:disabled {
 .blue {
     background-color: #4173ad;
     color: white;
+}
+.red {
+    color: #db0505;
 }

@@ -39,18 +39,4 @@
 </div>
 
 <script type="text/javascript" src='<?php echo base_url(); ?>appoint/javascript/common_function.js'></script>
-<script>
-    // 主題新增上傳
-    function add_subject() {
-        var name = document.getElementById('name').value;
-        var imageURL = $('#subject').prop('files')[0]; //取得上傳檔案屬性
-        var subjectFile = $('#subjectFile').prop('files')[0]; //取得上傳檔案屬性
-        var data = new FormData();
-        data.append('name', name);
-        data.append('imageURL', imageURL);
-        data.append('subjectFile', subjectFile);
-        var result = call_api_upload("mgt_subject_api/add_subject/",data);
-        console.log(result);
-        document.getElementById("alertMsg").innerHTML = result['msg'];
-    }
-</script>
+<script type="text/javascript" src='<?php echo base_url();?>appoint/javascript/subject.js'></script>

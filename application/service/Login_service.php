@@ -9,6 +9,7 @@ class Login_service extends MY_Service
         $this->load->service("sms_service");
         $this->load->model('users_model');
         $this->load->model('social_model');
+        $this->load->model('sms_log_model');
     }
     
     public function login($account){
@@ -51,11 +52,11 @@ class Login_service extends MY_Service
                     }
                     $SMSDate = explode(" ",$SMSTime);
                     $nowDate = date('Y-m-d');
-                    if($SMSDate[0]==$nowDate){
-                        $SMSNumber = $SMSNumber + 1;
-                    }else{
+                    // if($SMSDate[0]==$nowDate){
+                    //     $SMSNumber = $SMSNumber + 1;
+                    // }else{
                         $SMSNumber = 1;
-                    }
+                    // }
                 }else{
                     $SMSNumber = 1;
                 }
@@ -69,6 +70,7 @@ class Login_service extends MY_Service
                     'mobile_number'=>$account,
                     'msg' => $result['msg'],
                 );
+                $this->sms_log_model->add_sms_log($send_data);
                 if($result['status']){
                     // 寫入驗證碼
                     $this->users_model->update_verifyCode_by_id($verifyCode,$SMSNumber,$r[0]->id);
@@ -83,7 +85,6 @@ class Login_service extends MY_Service
                         "msg"=> "驗證簡訊發送失敗(暫不開啟發送功能)，驗證碼請輸入".$verifyCode
                     );  
                 }
-                log_message('error', '發送簡訊紀錄：'.json_encode($send_data));
             }
         }else{
             // 執行註冊動作

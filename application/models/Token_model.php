@@ -72,7 +72,7 @@ class Token_model extends CI_Model
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
                 $obj->isDeleted = $row->isDeleted;
-                // $obj->host = $row->Host;
+                $obj->identity = $row->Identity;
                 $obj->token = $row->Token;
                 $obj->tokenCreateTime = $row->TokenCreateTime;
                 $obj->tokenUpdateTime = $row->TokenUpdateTime;
@@ -124,6 +124,7 @@ class Token_model extends CI_Model
                 // $obj->SMSNumber = $row->SMSNumber;
                 // $obj->SMSTime = $row->SMSTime;
                 // $obj->isDeleted = $row->isDeleted;
+                $obj->identity = $row->Identity;
                 $obj->token = $row->Token;
                 $obj->tokenCreateTime = $row->TokenCreateTime;
                 $obj->tokenUpdateTime = $row->TokenUpdateTime;

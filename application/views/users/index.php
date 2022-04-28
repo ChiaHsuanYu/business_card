@@ -110,12 +110,12 @@
             <div class="totalCount" id="total_count"></div>
             <div class="pagination" id="allPageCountBox">
                 <!-- 筆數頁數  -->
-                <!-- <div>
+                <div>
                     每頁：<select id="list_page_count" name="page_count"></select> 筆 
                     <button class="pageBtn" id="users_last_page" onclick="users_last_page('list_page','list_page_count');"> ←上頁 </button>
                     第 <select id="list_page" name="page"></select> 頁
                     <button class="pageBtn" id="users_next_page" onclick="users_next_page('list_page','list_page_count');"> 下頁→ </button>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
@@ -133,16 +133,16 @@
     users_list(1,10);
 
     //分頁-筆數函數 當筆數發生變化時觸發事件
-    // $('#list_page_count').change(function () {
-    //     document.getElementById("page_status").innerHTML = '';
-    //     var page_count = document.getElementById('list_page_count').value;
-    //     users_list(1,page_count);
-    // });
-    // //分頁-頁數函數 當頁數發生變化時觸發事件
-    // $('#list_page').change(function () {
-    //     document.getElementById("page_status").innerHTML = '';
-    //     var page = document.getElementById('list_page').value;
-    //     var page_count = document.getElementById('list_page_count').value;
-    //     users_list(page,page_count);
-    // });
+    $('#list_page_count').change(function () {
+        document.getElementById("page_status").innerHTML = '';
+        var page_count = document.getElementById('list_page_count').value;
+        users_list(1,page_count);
+    });
+    //分頁-頁數函數 當頁數發生變化時觸發事件
+    $('#list_page').change(function () {
+        document.getElementById("page_status").innerHTML = '';
+        var page = document.getElementById('list_page').value;
+        var page_count = document.getElementById('list_page_count').value;
+        users_list(page,page_count);
+    });
 </script>

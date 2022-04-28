@@ -34,6 +34,8 @@ class Mgt_login extends BaseController
         }
         //清除session
         if(isset($this->session->mgt_user_info)){
+            $host = $this->common_service->get_ip();
+            $this->common_service->logger("account:".$this->session->mgt_user_info['account'].",IP:".$host);
             $this->login_service->logout($this->session->mgt_user_info['account']);
         }
         $this->load->view(LOGIN_PAGE,$data);

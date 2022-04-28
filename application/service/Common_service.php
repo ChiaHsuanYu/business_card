@@ -356,4 +356,33 @@ class Common_service extends MY_Service
         }
         return $uuid;
     }
+
+    //寫入Log
+    public function logger($desc){
+        $user_id = 0;
+        if (isset($this->session->mgt_user_info)){  //從 session 取得 userID
+            $user_id = $this->session->mgt_user_info['id'];
+        }
+        $log_data = array(
+            'user_id'=>$user_id,
+            'router_class'=>$this->router->class,
+            'router_method'=>$this->router->method,
+            'desc'=>$desc,
+        );
+        // backstage_log
+        log_message('error', '後台操作紀錄：'.json_encode($log_data));
+    }
+
+    //取得client端IP
+    public function get_ip(){
+        $host = "";
+        if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+            $host = $_SERVER['HTTP_CLIENT_IP'];
+        }else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+            $host = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }else{
+            $host= $_SERVER['REMOTE_ADDR'];
+        }
+        return $host;
+    }
 }

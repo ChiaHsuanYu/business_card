@@ -14,6 +14,7 @@ class Mgt_users_service extends MY_Service
 
     // 取得產業類別
     public function get_industry(){
+        $this->common_service->logger("get_industry");
         $r = $this->industry_model->query_all();
         if ($r){
             $result = array(
@@ -36,6 +37,7 @@ class Mgt_users_service extends MY_Service
         $r = $this->mgt_users_model->check_user_by_password($data);
         if($r){
             // 更新使用者新密碼
+            $this->common_service->logger("user_id:".$data['id']);
             $data['password'] = $data['password_new'];
             $r = $this->mgt_users_model->update_password_by_id($data);
             $result = array(
@@ -53,6 +55,7 @@ class Mgt_users_service extends MY_Service
 
     // 修改使用者帳號狀態(凍結/解凍) by userId
     public function update_isDeleted_by_id($data){
+        $this->common_service->logger("userId:".$data['userId'].",isDeleted:".$data['isDeleted']);
         $r = $this->users_model->update_isDeleted_by_id($data);
         if($r){
             $result = array(
@@ -70,6 +73,7 @@ class Mgt_users_service extends MY_Service
 
     // 使用者名片查詢
     public function query_users($data){
+        $this->common_service->logger("query_users");
         $r = $this->users_model->query_users($data);
         if($r['total_count']){
             for($m=0;$m<count($r['users']);$m++){

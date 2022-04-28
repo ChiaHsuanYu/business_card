@@ -29,4 +29,13 @@ class Mgt_subject extends BaseController {
         $this->load->view('mgt_subject/add',$data);
         $this->load->view('templates/footer');
     }
+
+    public function index(){
+        $data = array(
+            'title' => '主題維護'
+        );
+        $this->load->view('templates/header',$data);
+        $this->load->view('mgt_subject/index',$data);
+        $this->load->view('templates/footer');
+    }
 }

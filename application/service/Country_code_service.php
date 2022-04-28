@@ -1,18 +1,17 @@
 <?php
-class Subject_service extends MY_Service
+class Country_code_service extends MY_Service
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('subject_model');
+        $this->load->model('country_code_model');
         $this->load->service('common_service');
         $this->load->library('session');
     }
    
-    // 取得主題清單
+    // 取得國碼清單
     public function query_all(){
-        $identity = $this->session->user_info['identity'];
-        $r = $this->subject_model->query_all($identity);
+        $r = $this->country_code_model->query_all();
         if ($r){
             $result = array(
                 "status" => 1,

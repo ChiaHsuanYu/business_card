@@ -101,3 +101,4 @@ define('LOGIN_PAGE', 'mgt_login/index');                                    //de
 define('LOGOUT_PAGE', '/mgt_login/logout/');                                //define logout page
 
 define('PATH', 'C:\xampp\htdocs\business_card');                                //define logout page
+

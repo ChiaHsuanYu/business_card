@@ -118,4 +118,43 @@ class Mgt_subject_api extends BaseAPIController
             $this->response($this->mgt_subject_service->add_subject($data),200); // REST_Controller::HTTP_OK
         }
     }
+
+    // 取得主題清單
+    public function query_all_post(){   
+        $this->response( $this->mgt_subject_service->query_all(),200); // REST_Controller::HTTP_OK     
+    } 
+
+    // 發布主題 by subjectId
+    public function update_isReleased_by_id_post(){   
+        $data = array(
+            "subjectId" => $this->security->xss_clean($this->input->post("subjectId")),
+        );
+        $this->form_validation->set_rules("subjectId", "lang:「主題ID」", "trim|required");
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "msg" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->mgt_subject_service->update_isReleased_by_id($data),200); // REST_Controller::HTTP_OK
+        }
+    }
+
+    // 刪除主題 by subjectId
+    public function update_isDeleted_by_id_post(){   
+        $data = array(
+            "subjectId" => $this->security->xss_clean($this->input->post("subjectId")),
+        );
+        $this->form_validation->set_rules("subjectId", "lang:「主題ID」", "trim|required");
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "msg" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->mgt_subject_service->update_isDeleted_by_id($data),200); // REST_Controller::HTTP_OK
+        }
+    }
 }

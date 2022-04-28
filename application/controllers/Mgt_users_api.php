@@ -80,17 +80,21 @@ class Mgt_users_api extends BaseAPIController
             "industryId" => $this->security->xss_clean($this->input->post("industryId")),
             "startDT" => $this->security->xss_clean($this->input->post("startDT")),
             "endDT" => $this->security->xss_clean($this->input->post("endDT")),
+            "page" => $this->security->xss_clean($this->input->post("page")),
+            "page_count" => $this->security->xss_clean($this->input->post("page_count")),
         );
+        $this->form_validation->set_rules("page", "page", "trim|required|numeric");
+        $this->form_validation->set_rules("page_count", "page_count", "trim|required|numeric");
         if(!empty($data['startDT']) || !empty($data['endDT'])){
             $this->form_validation->set_rules("startDT", "lang:「起始時間」", "trim|required|callback_timestamp_validation");
             $this->form_validation->set_rules("endDT", "lang:「結束時間」", "trim|required|callback_timestamp_validation");
-            if ($this->form_validation->run() === FALSE) {
-                $result = array(
-                    "status" => 0,
-                    "msg" => $this->form_validation->error_string()
-                ); 
-                $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
-            }
+        }
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "msg" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }
         $this->response($this->mgt_users_service->query_users($data),200); // REST_Controller::HTTP_OK
     }

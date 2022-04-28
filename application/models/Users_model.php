@@ -292,16 +292,16 @@ class Users_model extends CI_Model
 
     // 修改帳號狀態(凍結/解凍) by id
     public function update_isDeleted_by_id($data){
-        $sql = "UPDATE users SET `isDeleted` = ? WHERE Id = ?;";
-        $query = $this->db->query($sql, array($data['isDeleted'],$data['userId']));
+        $sql = "UPDATE users SET `isDeleted` = ?, DeleteTime = ? WHERE Id = ?;";
+        $query = $this->db->query($sql, array($data['isDeleted'],date('Y-m-d H:i:s'),$data['userId']));
         return $query;
     }
 
     // 使用者名片查詢
     public function query_users($data){
-        // $data['page_count'] = (int)$data['page_count']; //字串轉數字
-        // $data['page'] = (int)$data['page']; //字串轉數字
-        // $PageStar = ($data['page'] - 1) * $data['page_count']; //本頁起始紀錄筆數
+        $data['page_count'] = (int)$data['page_count']; //字串轉數字
+        $data['page'] = (int)$data['page']; //字串轉數字
+        $PageStar = ($data['page'] - 1) * $data['page_count']; //本頁起始紀錄筆數
 
         // 取得使用者資訊
         $all_sql = array(
@@ -313,7 +313,7 @@ class Users_model extends CI_Model
             "where_company" => " company.Company LIKE ? AND ",
             "where_dataTime" => " (`users`.CreateTime BETWEEN ? AND ?) AND ",
             "isDelete" => " users.Id != '' GROUP BY users.Id ORDER BY users.CreateTime DESC ",
-            // "LIMIT" => " LIMIT ?,? ",
+            "LIMIT" => " LIMIT ?,? ",
         );
         $sql = $all_sql['select'];
         $sql_array = array();
@@ -343,15 +343,15 @@ class Users_model extends CI_Model
         // 取得總數
         $query = $this->db->query($sql, $sql_array);
         $result['total_count'] = $query->num_rows();
-        // $total_page = $result['total_count'] / $data['page_count'];
-        // $result['page'] = $data['page'];
-        // $result['page_count'] = $data['page_count'];
-        // $result['total_page'] = ceil($total_page);
-        // // 取得限制筆數資料
-        // $sql = $sql . $all_sql['LIMIT'];
-        // array_push($sql_array, $PageStar);
-        // array_push($sql_array, $data['page_count']);
-        // $query = $this->db->query($sql, $sql_array);
+        $total_page = $result['total_count'] / $data['page_count'];
+        $result['page'] = $data['page'];
+        $result['page_count'] = $data['page_count'];
+        $result['total_page'] = ceil($total_page);
+        // 取得限制筆數資料
+        $sql = $sql . $all_sql['LIMIT'];
+        array_push($sql_array, $PageStar);
+        array_push($sql_array, $data['page_count']);
+        $query = $this->db->query($sql, $sql_array);
         $result['users'] = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
