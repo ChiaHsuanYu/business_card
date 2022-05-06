@@ -81,6 +81,7 @@ class Users_api extends BaseAPIController
             "personal_superID" => $this->security->xss_clean($this->input->post("personal_superID")),
             "personal_name" => $this->security->xss_clean($this->input->post("personal_name")),
             "personal_nickname" => $this->security->xss_clean($this->input->post("personal_nickname")),
+            "personal_orig_img" => $this->security->xss_clean($this->input->post("personal_orig_img")),
             "personal_avatar" => $this->security->xss_clean($this->input->post("personal_avatar")),
             "personal_avatar_id" => $this->security->xss_clean($this->input->post("personal_avatar_id")),
             "company_name" => $this->security->xss_clean($this->input->post("company_name")),
@@ -222,54 +223,55 @@ class Users_api extends BaseAPIController
             // 依序檢查公司LOGO並上傳
             $companyInfo = $data['userInfo']->companyInfo;
             for($i=0;$i<count($companyInfo);$i++){
-                $logo_id = 'company_logo_'.($i+1);
-                if (!empty($_FILES[$logo_id]['tmp_name'])) {
-                    $path = LOGO_PATH;
-                    if (!is_dir($path)) {
-                        mkdir($path, 0755);
-                    }
-                    if($companyInfo[$i]->id){
-                        $this->users_service->logo_rename($companyInfo[$i]->id,$userId);  // 移動舊LOGO圖片
-                    }
-                    //重新命名
-                    $fileName = $_FILES[$logo_id]['name'];
-                    $newName = $this->common_service->logo_uuid($fileName); //取得UUID
-                    $config['upload_path']= $path;//上傳路徑
-                    $config['allowed_types']= 'jpg|jpeg|png';//檔案限制類型
-                    $config['max_size'] = '5120'; 
-                    // $config['max_width'] = '1024';
-                    // $config['max_height'] = '768';
-                    $config['file_name'] = $newName;
-                    if($config_status){
-                        $this->upload->initialize($config); //調用初始化函數initialize,加載新的配置
-                    }else{
-                        $config_status = 1;
-                        $this->load->library('upload', $config);
-                    }
-
-                    // 判斷是否上傳成功
-                    if ( ! $this->upload->do_upload("$logo_id")){     
-                        $result['file']= $this->upload->display_errors();
-                        //沒選擇檔案
-                        if($result['file']=="<p>尚未選擇上傳檔案</p>"){
-                            $companyInfo[$i]->company_logo_path = null;
+                if(empty($companyInfo[$i]->del_id)){
+                    $logo_id = 'company_logo_'.($i+1);
+                    if (!empty($_FILES[$logo_id]['tmp_name'])) {
+                        $path = LOGO_PATH;
+                        if (!is_dir($path)) {
+                            mkdir($path, 0755);
+                        }
+                        if($companyInfo[$i]->id){
+                            $this->users_service->logo_rename($companyInfo[$i]->id,$userId);  // 移動舊LOGO圖片
+                        }
+                        //重新命名
+                        $fileName = $_FILES[$logo_id]['name'];
+                        $newName = $this->common_service->logo_uuid($fileName); //取得UUID
+                        $config['upload_path']= $path;//上傳路徑
+                        $config['allowed_types']= 'jpg|jpeg|png';//檔案限制類型
+                        $config['max_size'] = '5120'; 
+                        // $config['max_width'] = '1024';
+                        // $config['max_height'] = '768';
+                        $config['file_name'] = $newName;
+                        if($config_status){
+                            $this->upload->initialize($config); //調用初始化函數initialize,加載新的配置
                         }else{
-                            $result['status']=0;
-                            $result['message']=$result['file'];
-                            $this->response($result,200);//檔案新增失敗訊息
-                            return false;
-                        }   
+                            $config_status = 1;
+                            $this->load->library('upload', $config);
+                        }
+    
+                        // 判斷是否上傳成功
+                        if ( ! $this->upload->do_upload("$logo_id")){     
+                            $result['file']= $this->upload->display_errors();
+                            //沒選擇檔案
+                            if($result['file']=="<p>尚未選擇上傳檔案</p>"){
+                                $companyInfo[$i]->company_logo_path = null;
+                            }else{
+                                $result['status']=0;
+                                $result['message']=$result['file'];
+                                $this->response($result,200);//檔案新增失敗訊息
+                                return false;
+                            }   
+                        }else{
+                            $result= array('upload_data' => $this->upload->data());
+                            $companyInfo[$i]->company_logo_path=$result['upload_data']['orig_name'];
+                        }
                     }else{
-                        $result= array('upload_data' => $this->upload->data());
-                        $companyInfo[$i]->company_logo_path=$result['upload_data']['orig_name'];
+                        $companyInfo[$i]->company_logo_path = null;
                     }
-                }else{
-                    $companyInfo[$i]->company_logo_path = null;
                 }
             }
             $data['userInfo']->companyInfo = $companyInfo;
             $data['userInfo']->personal_avatar_id = $data['personal_avatar_id'];
-            // $this->response($data['userInfo'],200); // REST_Controller::HTTP_OK     
             $this->response($this->users_service->update_acc_by_id($data['userInfo']),200); // REST_Controller::HTTP_OK     
         }
     }

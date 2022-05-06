@@ -1,5 +1,6 @@
 // 主題新增上傳
 function add_subject() {
+    var baseUrl = document.getElementById('base_url').value;
     var name = document.getElementById('name').value;
     var imageURL = $('#subject').prop('files')[0]; //取得上傳檔案屬性
     var subjectFile = $('#subjectFile').prop('files')[0]; //取得上傳檔案屬性
@@ -8,8 +9,12 @@ function add_subject() {
     data.append('imageURL', imageURL);
     data.append('subjectFile', subjectFile);
     var result = call_api_upload("mgt_subject_api/add_subject/",data);
-    console.log(result);
     document.getElementById("alertMsg").innerHTML = result['msg'];
+    if(result['status']){
+        sleep(1000).then(() => {
+            location.href = baseUrl + "mgt_subject/index/";
+        });
+    }
 }
 
 // 列表-呼叫取得所有主題資訊API

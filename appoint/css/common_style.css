@@ -378,7 +378,7 @@ input:disabled {
     color: #fff;
 }
 .light_orange {
-    background-color: #ffffff !important;
+    background-color: #ffeee4 !important;
     color: #3f3f3f;
 }
 
@@ -401,7 +401,8 @@ input:disabled {
 }
 
 .light_grey {
-    background-color: #ffffff !important;
+    background-color: #975f5f60 !important;
+    color: #fff;
 }
 
 .blue {

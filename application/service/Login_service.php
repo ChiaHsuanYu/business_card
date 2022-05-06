@@ -119,13 +119,6 @@ class Login_service extends MY_Service
         return $result;
     }
 
-    // 登出
-    public function logout($account){
-        if ($account){
-            $this->session->sess_destroy();
-        }
-    }
-
     // 整理使用者資料 by companyId,userId
     public function get_company($user_data){
         $user_data->companyInfo = array();
@@ -165,5 +158,230 @@ class Login_service extends MY_Service
             'userInfo'=>$user_data
         );
         return $userInfo;
+    }
+
+    // google登入驗證
+    public function google_login($code){
+        $google_client = new Google_Client();
+        $google_client->setClientId(GOOGLE_CLIENTID); //Define your ClientID
+        $google_client->setClientSecret(GOOGLE_CLIENTSECRET); //Define your Client Secret Key
+        $google_client->setRedirectUri('https://shine.sub.sakawa.com.tw/bc_test.html'); //Define your Redirect Uri
+        $google_client->addScope('email');
+        $google_client->addScope('profile');
+        $token = $google_client->fetchAccessTokenWithAuthCode($code);
+
+        if (!isset($token["error"])) {
+            $google_client->setAccessToken($token['access_token']);
+            $this->session->set_userdata('access_token', $token['access_token']);
+            $google_service = new Google_Service_Oauth2($google_client);
+            $data = $google_service->userinfo->get();
+            if ($check_result = $this->users_model->check_user_by_google_uid($data['id'])) {
+                if($check_result[0]->isDeleted == '1'){
+                    $result = array(
+                        "status" => 0,
+                        "msg"=> "帳戶已被凍結"
+                    );
+                    return $result;
+                }
+                $this->users_model->update_google_access_token($token['access_token'], $data['id']);
+            } else {
+                //insert data
+                $user_data = array(
+                    'google_uid' => $data['id'],
+                    'name' => $data['family_name'].$data['given_name'],
+                    'email' => $data['email'],
+                    'google_access_token' => $token['access_token'],
+                    'avatar' => $data['picture'],
+                );
+                $this->users_model->add_google_user($user_data);
+            }
+        }
+        if (!$this->session->userdata('access_token')) {
+            $result = array(
+                "status" => 0,
+                "msg"=> "登入失敗"
+            );
+        }else{
+            $google_client->revokeToken();
+            $result = array(
+                "status" => 1,
+                "msg"=> "登入成功",
+            );
+        }
+        return $result;
+    }
+
+    public function get_google_login_data($access_token){
+        if ($r = $this->users_model->get_user_by_google_access_token($access_token)) {
+            $result = array(
+                "status" => 1,
+                "data"=> $r
+            );
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "驗證失敗"
+            );
+        }
+        return $result;
+    }
+
+    public function facebook_login($code){
+        // 取得 access_token
+        $url = $this->config->item('facebook_access_token_api').
+                "?client_id=".$this->config->item('facebook_app_id').
+                "&redirect_uri=".$this->config->item('facebook_login_redirect_url').
+                "&client_secret=".$this->config->item('facebook_app_secret').
+                "&code=".$code;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $output = json_decode($output, true);
+        if(isset($output['access_token'])){
+            // 存取token並取得使用者資訊
+            $this->session->set_userdata('fb_access_token', $output['access_token']); 
+            $this->facebook->setAccessToken($output['access_token']);
+            $fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,picture',[],$output['access_token']); 
+            
+            $fb_uid = !empty($fbUser['id'])?$fbUser['id']:'';
+            if ($check_result = $this->users_model->check_user_by_facebook_uid($fb_uid)) {
+                if($check_result[0]->isDeleted == '1'){
+                    $result = array(
+                        "status" => 0,
+                        "msg"=> "帳戶已被凍結"
+                    );
+                    return $result;
+                }
+                $this->users_model->update_facebook_access_token($output['access_token'], $fb_uid);
+            } else {
+                //insert data
+                $user_data = array(
+                    'facebook_uid' => $fb_uid,
+                    'name' => (!empty($fbUser['first_name'])?$fbUser['first_name']:'') . (!empty($fbUser['last_name'])?$fbUser['last_name']:''),
+                    'email' => !empty($fbUser['email'])?$fbUser['email']:'',
+                    'facebook_access_token' => $output['access_token'],
+                    'avatar' => !empty($fbUser['picture']['data']['url'])?$fbUser['picture']['data']['url']:'',
+                );
+                $this->users_model->add_facebook_user($user_data);
+            }
+            $result = array(
+                "status" => 1,
+                "msg"=> "登入成功"
+            );
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "登入失敗",
+            );
+        }
+        return $result;
+    }
+    
+    public function line_login($code){
+        // 取得 access_token
+        $url = line_access_token_api;
+        $postData = array(
+            "grant_type" => 'authorization_code',
+            "code" => $code,
+            "redirect_uri" => line_login_redirect_url,
+            "client_id" => line_app_id,
+            "client_secret" => line_app_secret
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/x-www-form-urlencoded',
+        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData)); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        print_r($output);
+        $output = json_decode($output, true);
+        if(isset($output['access_token'])){
+           
+            // 存取token並取得使用者資訊
+            $this->session->set_userdata('line_access_token', $output['access_token']); 
+            $url = line_profile_api;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Bearer '.$output['access_token'],
+            ));
+            $profile = curl_exec($ch);
+            curl_close($ch);
+            print_r($profile);
+            $profile = json_decode($profile, true);
+            
+            $line_uid = !empty($profile['userId'])?$profile['userId']:'';
+            if ($check_result = $this->users_model->check_user_by_line_uid($line_uid)) {
+                if($check_result[0]->isDeleted == '1'){
+                    $result = array(
+                        "status" => 0,
+                        "msg"=> "帳戶已被凍結"
+                    );
+                    return $result;
+                }
+                $this->users_model->update_line_access_token($output['access_token'], $line_uid);
+            } else {
+                // insert data
+                $user_data = array(
+                    'line_uid' => $line_uid,
+                    'name' => (!empty($profile['displayName'])?$profile['displayName']:''),
+                    'line_access_token' => $output['access_token'],
+                    'avatar' => !empty($profile['pictureUrl'])?$profile['pictureUrl']:'',
+                );
+                $this->users_model->add_line_user($user_data);
+            }
+            $result = array(
+                "status" => 1,
+                "msg"=> "登入成功",
+            );
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "登入失敗",
+            );
+        }
+        return $result;
+    }
+
+    public function get_social_login_data($social_type,$access_token){
+        switch($social_type){
+            case 1:
+                $r = $this->users_model->get_user_by_google_access_token($access_token);
+                break;
+            case 2:
+                $r = $this->users_model->get_user_by_facebook_access_token($access_token);
+                break;
+            case 3:
+                $r = $this->users_model->get_user_by_line_access_token($access_token);
+                break;
+            default:
+                break;
+        }
+        if ($r) {
+            $result = array(
+                "status" => 1,
+                "data"=> $r
+            );
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "驗證失敗"
+            );
+        }
+        return $result;
+    }
+
+    // 登出
+    public function logout($account){
+        if ($account){
+            $this->session->sess_destroy();
+        }
     }
 }

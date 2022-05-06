@@ -102,21 +102,14 @@ class BaseAPIController extends RestController {
         return $device;
     }
 
-    
-
     // 檢查登入狀態 Authentication/使用權限 Authorization
     public function checkAA(){
-        // $received_Token = null;
-        // if($this->session->mgt_user_info){
-        //     $received_Token = $this->session->mgt_user_info['token'];
-        // }
         $bearer = array("Bearer ", "bearer ", "BEARER ");     
         $received_Token = "";
         $headers = $this->input->request_headers('Authorization');
         if (array_key_exists('Authorization', $headers) && $headers['Authorization'] != '') {
             $received_Token = str_replace($bearer, "", $headers['Authorization']); //取得Token
         }
-        // return $headers;
         //檢查token是否合法(存在於database)；
         $r = $this->common_service->checkToken($received_Token);
         if ($r['status']) {
@@ -219,32 +212,43 @@ class BaseAPIController extends RestController {
 
      // 檢查日期格式
     public function datetamp_validation($dateTime){
-        if( date('Y-m-d', strtotime($dateTime)) != $dateTime && date('Y/m/d', strtotime($dateTime)) != $dateTime)
-        {
+        if( date('Y-m-d', strtotime($dateTime)) != $dateTime && date('Y/m/d', strtotime($dateTime)) != $dateTime){
             $this->form_validation->set_message('datetamp_validation', '{field} 格式錯誤');
             return FALSE;
-        }
-        else
-        {
+        }else{
             return TRUE;
         }
     }
 
+    // 檢查手機號碼格式(含國碼)
+    public function phone_validation($fullphone){
+        try{
+            $phoneNumberUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+            $phoneNumberObject = $phoneNumberUtil->parse($fullphone,null);
+            if($phoneNumberUtil->isValidNumber($phoneNumberObject)){
+                return TRUE;
+            }else{
+                $this->form_validation->set_message('phone_validation', '{field} 格式錯誤');
+                return FALSE;
+            }
+        }catch(libphonenumber\NumberParseException $e){
+            $this->form_validation->set_message('phone_validation', '{field} 格式錯誤');
+            return FALSE;
+        }
+    }
+
+    // 檢查裝置類型
     public function is_mobile_request(){
         // 如果有HTTP_X_WAP_PROFILE則一定是移動設備
-        if (isset ($_SERVER['HTTP_X_WAP_PROFILE']))
-        {
+        if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
             return true;
         }
         // 如果via信息含有wap則一定是移動設備,部分服務商會屏蔽該信息
-        if (isset ($_SERVER['HTTP_VIA']))
-        {
-            // 找不到為flase,否則為true
-            return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
+        if (isset ($_SERVER['HTTP_VIA'])){
+            return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false; // 找不到為flase,否則為true
         }
         // 判斷手機發送的客戶端標誌,兼容性有待提高,把常見的類型放到前面
-        if (isset ($_SERVER['HTTP_USER_AGENT']))
-        {
+        if (isset ($_SERVER['HTTP_USER_AGENT'])){
             $clientkeywords = array (
                 'android',
                 'iphone',
@@ -280,18 +284,15 @@ class BaseAPIController extends RestController {
                 'midp'
             );
             // 從HTTP_USER_AGENT中查找手機瀏覽器的關鍵字
-            if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT'])))
-            {
+            if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))){
                 return true;
             }
         }
         // 協議法，因為有可能不准確，放到最後判斷
-        if (isset ($_SERVER['HTTP_ACCEPT']))
-        {
+        if (isset ($_SERVER['HTTP_ACCEPT'])){
             // 如果只支持wml並且不支持html那一定是移動設備
             // 如果支持wml和html但是wml在html之前則是移動設備
-            if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html'))))
-            {
+            if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))){
                 return true;
             }
         }

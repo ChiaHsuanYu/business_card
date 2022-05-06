@@ -90,7 +90,7 @@ function users_data(seachText, data_obj) {
         //輸出使用者列表
         tab += "<table class='web_table contentsTable' width='auto' cellpadding='0' cellspacing='0'>"
         tab += "<tr align='center'>";
-        tab += "<td class='contentsTh'>No</td><td class='contentsTh'>姓名</td><td class='contentsTh' colspan='2'>帳號</td><td class='contentsTh' colspan='2'>SUPER ID</td>";
+        tab += "<td class='contentsTh'>No</td><td class='contentsTh'>註冊類型</td><td class='contentsTh'>姓名</td><td class='contentsTh' colspan='2'>帳號</td><td class='contentsTh' colspan='2'>SUPER ID</td>";
         tab += "<td class='contentsTh' colspan='2'>註冊時間</td><td class='contentsTh'>會員資料</td><td class='contentsTh'>功能</td>";
         tab += "</tr>";
         //逐步輸出所有使用者資料
@@ -98,12 +98,27 @@ function users_data(seachText, data_obj) {
         var no = page_star;
         for (var i = 0; i < count; i++) {
             no++;
-            var name = '-',
+            var login_type = '手機號碼',
+                name = '-',
                 superID = '-';
             var user_detail_id = "user_detail" + users[i]['id'];
             var user_detail_id_phone = "user_detail_phone_" + users[i]['id'];
             var company_id = "company_" + users[i]['id'];
             var company_id_phone = "company_phone_" + users[i]['id'];
+            var account = users[i]['account'];
+            if(!users[i]['account']){
+                account = users[i]['personal_email'];
+                if(users[i]['google_uid']){
+                    login_type = 'Google';
+                    account = users[i]['google_uid'];
+                }else if(users[i]['facebook_uid']){
+                    login_type = 'Facebook';
+                    account = users[i]['facebook_uid'];
+                }else if(users[i]['line_uid']){
+                    login_type = 'Line';
+                    account = users[i]['line_uid'];
+                }else{ login_type = ''; }
+            }
             if (users[i]['personal_superID']) {
                 superID = users[i]['personal_superID'];
             }
@@ -112,7 +127,7 @@ function users_data(seachText, data_obj) {
             }
             var user_data = {
                 id:users[i]['id'],
-                account:users[i]['account']
+                account:account
             };
             if(users[i]['isDeleted'] == '1'){
                 user_data['isDeleted'] = '0';
@@ -125,10 +140,10 @@ function users_data(seachText, data_obj) {
             }
             // <!-- 電腦版 -->
             tab += "<tr align='center' class='contentsTr'>";
-            tab += "<td>" + no + "</td><td>" + name + "</td><td colspan='2'>" + users[i]['account'] + "</td><td colspan='2'>" + superID + "</td>";
+            tab += "<td>" + no + "</td><td>" + login_type + "</td><td>" + name + "</td><td colspan='2'>" + account + "</td><td colspan='2'>" + superID + "</td>";
             tab += "<td colspan='2'>" + users[i]['createTime'] + "</td>";
             tab += "<td>";
-            tab += "<div class='fault_a' onclick='look_slideToggle(" + '"' + user_detail_id + '"' + ")'>查看會員資料</div>";
+            tab += "<div class='fault_a' onclick='show_user(" + '"' + user_detail_id + '"' + ")'>查看會員資料</div>";
             tab += "</td>";
             tab += "<td>"+del_btn+"</td>";
             tab += "</tr>";
@@ -136,11 +151,12 @@ function users_data(seachText, data_obj) {
             // <!-- 手機板 -->
             tab_phone += "<div class='phone_table margin_bottom_10px' width='100%' cellpadding='0' cellspacing='0'>";
             tab_phone += "<div class='contentsTh'>No." + no + "</div>";
+            tab_phone += "<div class='content_phone'>註冊類型： " + login_type + "</div>";
             tab_phone += "<div class='content_phone'>姓名： " + name + "</div>";
-            tab_phone += "<div class='content_phone'>帳號： " + users[i]['account'] + "</div>";
+            tab_phone += "<div class='content_phone'>帳號： " + account + "</div>";
             tab_phone += "<div class='content_phone'>SUPER ID： " + superID + "</div>";
             tab_phone += "<div class='content_phone'>註冊時間： " + users[i]['createTime'] + "</div>";
-            tab_phone += "<div class='content_phone'>會員資料： <p class='inline_block margin_0 fault_a' onclick='look_slideToggle(" + '"' + user_detail_id_phone + '"' + ")'>查看會員資料</p></div>";            
+            tab_phone += "<div class='content_phone'>會員資料： <p class='inline_block margin_0 fault_a' onclick='show_user(" + '"' + user_detail_id_phone + '"' + ")'>查看會員資料</p></div>";            
             tab_phone += "<div class='content_phone'>功能： "+del_btn+"</div>";
             tab_phone += "</div>";
 
@@ -150,7 +166,8 @@ function users_data(seachText, data_obj) {
                 email = "-",
                 social = "-",
                 companyInfo_btn = "-",
-                companyInfo_btn_phone = "-";
+                companyInfo_btn_phone = "-",
+                modifiedTime = "-";
             if(users[i]['personal_nickname']){
                 nickname = users[i]['personal_nickname'];
             }
@@ -175,6 +192,9 @@ function users_data(seachText, data_obj) {
                     email += users[i]['personal_email'][k];
                 }
             }
+            if(users[i]['modifiedTime']){
+                modifiedTime = users[i]['modifiedTime'];
+            }
             if(users[i]['personal_social']){
                 social = "";
                 for(var k=0;k<users[i]['personal_social'].length;k++){
@@ -191,13 +211,13 @@ function users_data(seachText, data_obj) {
             }
             tab += "<div id='" + user_detail_id + "'>";
             tab_phone += "<div id='" + user_detail_id_phone + "'></div>";
-            tab_phone += "<div class='medium_orange " + user_detail_id_phone + "' style='display: none;'>會員詳細資料</div>";
+            tab_phone += "<div class='medium_orange " + user_detail_id_phone + "' hidden='true'>會員詳細資料</div>";
             tab_phone += "</div>";
-            tab += "<tr align='center' class='contentsTr orange " + user_detail_id + "' style='display: none;'>";
-            tab += "<td>個人頭像</td><td>暱稱</td><td colspan='2'>連絡電話</td><td colspan='2'>信箱</td><td colspan='2'>個人社群</td><td>公司資訊</td><td>最後一次更新時間</td>";
+            tab += "<tr align='center' class='contentsTr orange " + user_detail_id + "' hidden='true'>";
+            tab += "<td>個人頭像</td><td>暱稱</td><td colspan='2'>連絡電話</td><td colspan='2'>信箱</td><td colspan='2'>個人社群</td><td>公司資訊</td><td colspan='2'>最後一次更新時間</td>";
             tab += "</tr>";
 
-            tab += "<tr class='light_orange " + user_detail_id + "' style='display: none;'>";
+            tab += "<tr class='light_orange " + user_detail_id + "' hidden='true'>";
             tab += "<td>"+avatar+"</td>";
             tab += "<td>"+nickname+"</td>";
             tab += "<td colspan='2'>"+phone+"</td>";
@@ -205,18 +225,18 @@ function users_data(seachText, data_obj) {
             tab += "<td colspan='2'>"+social+"</td>";;
             tab += "</td>";
             tab += "<td>"+companyInfo_btn+"</td>";
-            tab += "<td>"+users[i]['modifiedTime']+"</td>";
+            tab += "<td colspan='2'>"+modifiedTime+"</td>";
             tab += "</tr>";
 
             // 手機板
-            tab_phone += "<div class='margin_bottom_10px light_orange " + user_detail_id_phone + "' width='100%' cellpadding='0' cellspacing='0' style='display: none;'>";
+            tab_phone += "<div class='margin_bottom_10px light_orange " + user_detail_id_phone + "' width='100%' cellpadding='0' cellspacing='0' hidden='true'>";
             tab_phone += "<div>個人頭像： " + avatar + "</div>";
             tab_phone += "<div>暱稱： " + nickname + "</div>";
             tab_phone += "<div>連絡電話： " + phone + "</div>";
             tab_phone += "<div>信箱： " + email + "</div>";
             tab_phone += "<div>個人社群： " + social + "</div>";
             tab_phone += "<div>公司資訊："+companyInfo_btn_phone+"</div>";
-            tab_phone += "<div>最後一次更新時間： " + users[i]['modifiedTime'] + "</div>";
+            tab_phone += "<div>最後一次更新時間： " + modifiedTime + "</div>";
             tab_phone += "</div>";
             tab += "</div>";
 
@@ -230,10 +250,10 @@ function users_data(seachText, data_obj) {
                 if (k == 0) {
                     tab += "<div id='" + company_id + "'>";
                     tab_phone += "<div id='" + company_id_phone + "'></div>";
-                    tab_phone += "<div class='grey " + company_id_phone + "' style='display: none;'>公司詳細資訊</div>";
+                    tab_phone += "<div class='grey " + company_id_phone + " " + user_detail_id_phone + "' hidden='true'>公司詳細資訊</div>";
                     tab_phone += "</div>";
-                    tab += "<tr align='center' class='contentsTr grey " + company_id + "' style='display: none;'>";
-                    tab += "<td>公司名稱</td><td>公司LOGO</td><td>產業類別</td><td>職位</td><td>服務介紹</td><td>電話分機</td><td>地址</td><td>信箱</td><td>統一編號</td><td>公司社群</td>";
+                    tab += "<tr align='center' class='contentsTr grey " + company_id + " " + user_detail_id + "' hidden='true'>";
+                    tab += "<td>公司名稱</td><td>公司LOGO</td><td>產業類別</td><td>職位</td><td>服務介紹</td><td>電話分機</td><td>地址</td><td>信箱</td><td>統一編號</td><td colspan='2'>公司社群</td>";
                     tab += "</tr>";
                 }
                 company_no++;
@@ -299,13 +319,13 @@ function users_data(seachText, data_obj) {
                         social += "<a href='"+companyInfo[k]['company_social'][m]['socialURL']+"'>"+companyInfo[k]['company_social'][m]['socialTitle']+"</a>";
                     }
                 }
-                tab += "<tr align='center' class='contentsTr light_grey " + company_id + "' style='display: none;'>";
+                tab += "<tr align='center' class='contentsTr light_grey " + company_id + " " + user_detail_id + "' hidden='true'>";
                 tab += "<td>" + companyInfo[k]['company_name'] + "</td>";
                 tab += "<td>" + logo_img + "</td><td>" +industry + "</td><td>" + position + "</td><td>" + aboutus + "</td><td>" + phone + "</td>";
-                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td>" + social + "</td>";
+                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td colspan='2'>" + social + "</td>";
                 tab += "</tr>";
                 // 手機板
-                tab_phone += "<div class=' " + div_class + company_id_phone + "' width='100%' cellpadding='0' cellspacing='0' style='display: none;'>";
+                tab_phone += "<div class=' " + div_class + company_id_phone + " " + user_detail_id_phone + "' width='100%' cellpadding='0' cellspacing='0' hidden='true'>";
                 tab_phone += "<div>公司名稱： " + companyInfo[k]['company_name'] + "</div>";
                 tab_phone += "<div>公司LOGO： " + logo_img + "</div>";
                 tab_phone += "<div>產業類別： " + industry + "</div>";
@@ -345,6 +365,17 @@ function users_data(seachText, data_obj) {
     // 輸出資料筆數及頁數
     page_count_select(total_page, page_num, page_count)
     document.getElementById('total_count').innerHTML = '資料總筆數：' + seachText['total_count'];
+}
+
+function show_user(divId){
+    var box = document.querySelectorAll('.'+divId);
+    for(var i=0;i<box.length;i++){
+        if(box[i].hidden){
+            box[i].hidden = false;
+        }else{
+            box[i].hidden = true;
+        }
+    }
 }
 
 // 選單-寫入產業清單

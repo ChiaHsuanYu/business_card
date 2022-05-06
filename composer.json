@@ -13,7 +13,10 @@
     "require": {
         "php": ">=5.3.7",
         "chriskacerguis/codeigniter-restserver": "^3.1",
-        "firebase/php-jwt": "^6.1"
+        "firebase/php-jwt": "^6.1",
+        "google/apiclient":"^2.7",
+        "facebook/graph-sdk": "~5.0",
+        "giggsey/libphonenumber-for-php": "8.12.47.1"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x"

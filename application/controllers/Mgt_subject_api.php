@@ -88,7 +88,7 @@ class Mgt_subject_api extends BaseAPIController
                 if (file_exists(SUBJECT_CSS_PATH.$_FILES['subjectFile']['name'])) {
                     $result = array(
                         "status" => 0,
-                        "msg" => "檔名已存在，請重新命名"
+                        "msg" => $_FILES['subjectFile']['name']."檔名已存在，請重新命名"
                     ); 
                     $this->response($result,200); 
                 }

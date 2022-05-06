@@ -199,22 +199,6 @@ function getDate() {
     return date;
 }
 
-// 日期時間自動補0
-function formatDate(date) {
-    var y = date.getFullYear();
-    var m = date.getMonth() + 1;
-    m = m < 10 ? '0' + m : m;
-    var d = date.getDate();
-    d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
-    h = h < 10 ? ('0' + h) : h;
-    var minute = date.getMinutes();
-    minute = minute < 10 ? ('0' + minute) : minute;
-    var seconds = date.getSeconds();
-    seconds = seconds < 10 ? ('0' + seconds) : seconds;
-    return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + seconds;
-}
-
 // 另開啟圖片視窗 for color
 function openImg(imgUrl) {
     window.open(imgUrl, 'Img', config = 'height=500,width=500');

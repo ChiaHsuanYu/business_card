@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'https://192.168.88.138/business_card/';
+$config['base_url'] = 'https://192.168.88.154/business_card/';
 
 /*
 |--------------------------------------------------------------------------

@@ -82,9 +82,23 @@ class Company_model extends CI_Model
     }
 
     // 刪除公司資訊 by userId
-    public function del_company_by_userId($userId){
-        $sql = "DELETE FROM company WHERE company.UserId = ? ";
-        $query = $this->db->query($sql, array($userId));
+    // public function del_company_by_userId($userId){
+    //     $sql = "DELETE FROM company WHERE company.UserId = ? ";
+    //     $query = $this->db->query($sql, array($userId));
+    //     return $query;
+    // }
+
+    // 修改公司資訊 for 編輯個人檔案
+    public function update_company_for_id($data){
+        $sql = "UPDATE company SET `Order` = ?,Company = ?,`Address` = ?,Gui = ?,Phone = ?,IndustryId = ?,Position = ?,Aboutus = ?,Email = ?,Logo = ?,Social = ?,ModifiedTime = ? WHERE Id = ?";
+        $query = $this->db->query($sql,array($data->order,$data->company_name,$data->company_address,$data->company_gui,$data->company_phone,$data->company_industryId,$data->company_position,$data->company_aboutus,$data->company_email,$data->company_logo_path,$data->company_social,date('Y-m-d H:i:s'),$data->id));
+        return $query;
+    }
+
+    // 刪除公司資訊 by id
+    public function del_company_by_id($id){
+        $sql = "UPDATE company SET `isDeleted` = ?, DeleteTime = ? WHERE Id = ?;";
+        $query = $this->db->query($sql, array('1',date('Y-m-d H:i:s'),$id));
         return $query;
     }
 }

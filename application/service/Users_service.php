@@ -59,6 +59,16 @@ class Users_service extends MY_Service
                 }
             }
         }
+        if(isset($data['personal_orig_img'])){
+            if($data['personal_orig_img']){
+                $personal_avatar_path = explode(base_url().AVATAR_PATH,$data['personal_orig_img']);
+                if(count($personal_avatar_path)>1){
+                    $data['personal_avatar_path'] = $personal_avatar_path[1];
+                }else{
+                    $data['personal_avatar_path'] = $personal_avatar_path[0];
+                }
+            }
+        }
         // 新增公司資訊
         $data['id'] = $this->session->user_info['id'];
         $companyId = $this->company_model->add_company($data);
@@ -90,7 +100,8 @@ class Users_service extends MY_Service
         }else{
             $result = array(
                 "status" => 0,
-                "msg"=> "修改失敗"
+                "msg"=> "修改失敗",
+                "data"=>$data
             );
         }
         return $result;
@@ -170,7 +181,6 @@ class Users_service extends MY_Service
         return $result;
     }
 
-    // 編輯個人檔案
     public function update_acc_by_id($data){
         $data->company_order = array();
         $data->id = $this->session->user_info['id'];
@@ -187,47 +197,58 @@ class Users_service extends MY_Service
                 }
             }
         }
-        // 刪除公司資訊 by userId
-        $this->company_model->del_company_by_userId($data->id);
         for($i=0;$i<count($companyInfo);$i++){
             // 新增公司資訊 for 編輯個人檔案
             $company_data = $companyInfo[$i];
-            $company_data->order = implode(",",$company_data->order);
-            if($companyInfo[$i]->company_address){
-                $company_data->company_address = implode(",",$companyInfo[$i]->company_address);
-            }else{
-                $company_data->company_address = null;
-            }
-            if($companyInfo[$i]->company_phone){
-                $company_data->company_phone = implode(",",$companyInfo[$i]->company_phone);
-            }else{
-                $company_data->company_phone = null;
-            }
-            if($companyInfo[$i]->company_email){
-                $company_data->company_email = implode(",",$companyInfo[$i]->company_email);
-            }else{
-                $company_data->company_email = null;
-            }
-            if($companyInfo[$i]->company_social){
-                $company_data->company_social = json_encode($companyInfo[$i]->company_social);
-            }else{
-                $company_data->company_social = null;
-            }
-            if(isset($company_data->company_orig_logo)){
-                if($company_data->company_orig_logo){
-                    $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
-                    $company_data->company_logo_path = $company_logo_path[1];
+            if(empty($company_data->del_id)){
+                $company_data->order = implode(",",$company_data->order);
+                if($companyInfo[$i]->company_address){
+                    $company_data->company_address = implode(",",$companyInfo[$i]->company_address);
+                }else{
+                    $company_data->company_address = null;
                 }
-            }
-            // 移動LOGO圖片
-            if(empty($company_data->company_logo_path)){
+                if($companyInfo[$i]->company_phone){
+                    $company_data->company_phone = implode(",",$companyInfo[$i]->company_phone);
+                }else{
+                    $company_data->company_phone = null;
+                }
+                if($companyInfo[$i]->company_email){
+                    $company_data->company_email = implode(",",$companyInfo[$i]->company_email);
+                }else{
+                    $company_data->company_email = null;
+                }
+                if($companyInfo[$i]->company_social){
+                    $company_data->company_social = json_encode($companyInfo[$i]->company_social);
+                }else{
+                    $company_data->company_social = null;
+                }
+                if(isset($company_data->company_orig_logo)){
+                    if($company_data->company_orig_logo){
+                        $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
+                        $company_data->company_logo_path = $company_logo_path[1];
+                    }
+                }
+                // 移動LOGO圖片
+                if(empty($company_data->company_logo_path)){
+                    if($company_data->id){
+                        $this->logo_rename($company_data->id,$data->id);
+                    }
+                }
                 if($company_data->id){
-                    $this->logo_rename($company_data->id,$data->id);
+                    $companyId = $company_data->id;
+                    $this->company_model->update_company_for_id($company_data);
+                }else{
+                    $companyId = $this->company_model->add_company_for_acc($data->id, $company_data);
                 }
-            }
-            $companyId = $this->company_model->add_company_for_acc($data->id, $company_data);
-            if($companyId){
-                array_push($data->company_order,$companyId);
+                if($companyId){
+                    array_push($data->company_order,$companyId);
+                }
+            }else{
+                // 移動LOGO圖片
+                if($company_data->del_id){
+                    $this->logo_rename($company_data->del_id,$data->id);
+                }
+                $this->company_model->del_company_by_id($company_data->del_id); // 刪除公司資訊 by id
             }
         }
         // 更新使用者資訊
@@ -255,7 +276,11 @@ class Users_service extends MY_Service
         if(isset($data->personal_orig_img)){
             if($data->personal_orig_img){
                 $personal_avatar_path = explode(base_url().AVATAR_PATH,$data->personal_orig_img);
-                $data->personal_avatar_path = $personal_avatar_path[1];
+                if(count($personal_avatar_path)>1){
+                    $data->personal_avatar_path = $personal_avatar_path[1];
+                }else{
+                    $data->personal_avatar_path = $personal_avatar_path[0];
+                }
             }
         }
         // 移動頭像檔案
@@ -301,9 +326,11 @@ class Users_service extends MY_Service
         $r = $this->company_model->get_company_by_userId($companyId,$userId);
         if(count($r)){
             $old_file_path = explode(base_url(), $r[0]->company_logo);
-            $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
-            if(file_exists(LOGO_PATH.$old_file_name[1])){
-                rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);
+            if(count($old_file_path)>1){
+                $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
+                if(file_exists(LOGO_PATH.$old_file_name[1])){
+                    rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);
+                }
             }
             return true;
         }else{

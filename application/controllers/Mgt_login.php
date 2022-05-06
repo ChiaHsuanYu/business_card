@@ -14,17 +14,17 @@ class Mgt_login extends BaseController
         $this->load->library('session');
         $this->load->service("Login_service");
     }
+
     //登入
-    public function index()
-    {
+    public function index(){
         $data = array(
             'login' => 1,
         );
         $this->load->view(LOGIN_PAGE,$data);
     }
+
     //登出
-    public function logout()
-    {
+    public function logout(){
         $data = array(
             'login' => 0,
         );

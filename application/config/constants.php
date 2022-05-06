@@ -84,11 +84,13 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+/* 設定 */
 define('TOKENEXPIRED', 28800);                                          //define token expired time 8 hours
 define('SMS_NUM', 3);                                                   //簡訊當日發送限制次數
 define('SMSEXPIRED', 60);                                               //簡訊發送間隔時間
 define('LOGIN_DEVICE_NUM', 1);                                          //登入設備類型限制數量
 
+/* 前台URI */
 define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑
 define('SUBJECT_IMAGE_PATH', 'appoint/images/subject/');                //主題圖片路徑
 define('SUBJECT_CSS_PATH', 'appoint/css/subject/');                     //主題CSS檔案路徑
@@ -97,8 +99,18 @@ define('AVATAR_PATH', 'appoint/images/avatar/');                        //個人
 define('DEL_AVATAR_PATH', 'appoint/images/del_avatar/');                //未使用到的個人頭像圖片路徑
 define('LOGO_PATH', 'appoint/images/logo/');                            //公司LOGO圖片路徑
 define('DEL_LOGO_PATH', 'appoint/images/del_logo/');                    //未使用到的公司LOGO圖片路徑
-define('LOGIN_PAGE', 'mgt_login/index');                                    //define login page
-define('LOGOUT_PAGE', '/mgt_login/logout/');                                //define logout page
 
-define('PATH', 'C:\xampp\htdocs\business_card');                                //define logout page
+/* 第三方登入 */
+define('TOKEN_URL', 'https://192.168.88.138:8080/SocialLoginToken');                                   // 前端取得token頁面並執行登入頁面
+define('GOOGLE_CLIENTID', '850954696376-rvhmmuktms09hb9d0v08bss1gskq8j3i.apps.googleusercontent.com'); // define google clientId
+define('GOOGLE_CLIENTSECRET', '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');                                  // define google Secret Key
 
+define('line_app_id', '1657106852');                                                     // define line appId
+define('line_app_secret', '7b2ed300faa203ef91bf8321d14cd7be');                           // define line appId
+define('line_login_redirect_url', 'https://shine.sub.sakawa.com.tw/bc_test_line.html');  // define line redirectURL
+define('line_access_token_api', 'https://api.line.me/oauth2/v2.1/token');                // define line get access_token API
+define('line_profile_api', 'https://api.line.me/v2/profile');                            // define line get profile API
+
+/* 後台URI */
+define('LOGIN_PAGE', 'mgt_login/index');                                //define login page
+define('LOGOUT_PAGE', '/mgt_login/logout/');                            //define logout page

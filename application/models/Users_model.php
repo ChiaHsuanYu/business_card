@@ -39,9 +39,7 @@ class Users_model extends CI_Model
                 $obj->personal_email = $row->Email;
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
-                $obj->token = $row->Token;
-                $obj->tokenCreateTime = $row->TokenCreateTime;
-                $obj->tokenUpdateTime = $row->TokenUpdateTime;
+                // strpos($mystring, "program.")
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
                 }
@@ -55,7 +53,10 @@ class Users_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result, $obj);
             }
@@ -89,9 +90,6 @@ class Users_model extends CI_Model
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
                 $obj->isDeleted = $row->isDeleted;
-                $obj->token = $row->Token;
-                $obj->tokenCreateTime = $row->TokenCreateTime;
-                $obj->tokenUpdateTime = $row->TokenUpdateTime;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
                 }
@@ -105,7 +103,10 @@ class Users_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result, $obj);
             }
@@ -164,9 +165,6 @@ class Users_model extends CI_Model
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
                 $obj->isDeleted = $row->isDeleted;
-                $obj->token = $row->Token;
-                $obj->tokenCreateTime = $row->TokenCreateTime;
-                $obj->tokenUpdateTime = $row->TokenUpdateTime;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
                 }
@@ -180,7 +178,10 @@ class Users_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result, $obj);
             }
@@ -200,6 +201,268 @@ class Users_model extends CI_Model
         $sql = "UPDATE users SET Verify = ? WHERE Id = ? AND isDeleted = 0;";
         $query = $this->db->query($sql, array('1',$id));
         return $query;
+    }
+
+    // 檢查google帳戶是否存在
+    public function check_user_by_google_uid($google_uid){
+        $sql = "SELECT Id,isDeleted FROM users WHERE Google_uid=?";
+        $query = $this->db->query($sql, array($google_uid));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->isDeleted = $row->isDeleted;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // google登入驗證
+    public function get_user_by_google_access_token($access_token){
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Google_access_token=? AND users.isDeleted = 0";
+        $query = $this->db->query($sql, array($access_token));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->google_uid = $row->Google_uid;
+                $obj->google_access_token = $row->Google_access_token;
+                $obj->facebook_uid = $row->Facebook_uid;
+                $obj->facebook_access_token = $row->Facebook_access_token;
+                $obj->line_uid = $row->Line_uid;
+                $obj->line_access_token = $row->Line_access_token;
+                $obj->account = $row->Account;
+                $obj->order = $row->Order;
+                $obj->companyOrder = $row->CompanyOrder;
+                $obj->personal_superID = $row->SuperID;
+                $obj->personal_name = $row->Name;
+                $obj->personal_avatar = $row->Avatar;
+                $obj->personal_nickname = $row->Nickname;
+                $obj->personal_email = $row->Email;
+                $obj->personal_phone = $row->Phone;
+                $obj->personal_social = json_decode($row->Social);
+                $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_name = $row->subjectName;
+                $obj->SMSNumber = $row->SMSNumber;
+                $obj->SMSTime = $row->SMSTime;
+                $obj->isDeleted = $row->isDeleted;
+                if($row->Order){
+                    $obj->order = explode(',',$row->Order);
+                }
+                if($row->CompanyOrder){
+                    $obj->companyOrder = explode(',',$row->CompanyOrder);
+                }
+                if($row->Email){
+                    $obj->personal_email = explode(',',$row->Email);
+                }
+                if($row->Phone){
+                    $obj->personal_phone = explode(',',$row->Phone);
+                }
+                if($row->Avatar){
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
+                }
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // 更改google access Token by google_uid
+    public function update_google_access_token($access_token,$google_uid){
+        $sql = "UPDATE users SET Google_access_token = ? WHERE Google_uid = ? AND isDeleted = 0;";
+        $query = $this->db->query($sql, array($access_token,$google_uid));
+        return $query;
+    }
+    
+    // 新增google使用者
+    public function add_google_user($data){
+        $sql = "INSERT INTO users (Google_uid, Google_access_token, Name, Avatar, Email, CreateTime) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['google_uid'],$data['google_access_token'],$data['name'],$data['avatar'],$data['email'],date('Y-m-d H:i:s')));
+        return $this->db->insert_id();
+    }
+
+    // 檢查facebook帳戶是否存在
+    public function check_user_by_facebook_uid($facebook_uid){
+        $sql = "SELECT Id,isDeleted FROM users WHERE Facebook_uid=? AND isDeleted = 0";
+        $query = $this->db->query($sql, array($facebook_uid));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->isDeleted = $row->isDeleted;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // facebook登入驗證
+    public function get_user_by_facebook_access_token($access_token){
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Facebook_access_token=? AND users.isDeleted = 0";
+        $query = $this->db->query($sql, array($access_token));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->google_uid = $row->Google_uid;
+                $obj->google_access_token = $row->Google_access_token;
+                $obj->facebook_uid = $row->Facebook_uid;
+                $obj->facebook_access_token = $row->Facebook_access_token;
+                $obj->line_uid = $row->Line_uid;
+                $obj->line_access_token = $row->Line_access_token;
+                $obj->account = $row->Account;
+                $obj->order = $row->Order;
+                $obj->companyOrder = $row->CompanyOrder;
+                $obj->personal_superID = $row->SuperID;
+                $obj->personal_name = $row->Name;
+                $obj->personal_avatar = $row->Avatar;
+                $obj->personal_nickname = $row->Nickname;
+                $obj->personal_email = $row->Email;
+                $obj->personal_phone = $row->Phone;
+                $obj->personal_social = json_decode($row->Social);
+                $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_name = $row->subjectName;
+                $obj->SMSNumber = $row->SMSNumber;
+                $obj->SMSTime = $row->SMSTime;
+                $obj->isDeleted = $row->isDeleted;
+                if($row->Order){
+                    $obj->order = explode(',',$row->Order);
+                }
+                if($row->CompanyOrder){
+                    $obj->companyOrder = explode(',',$row->CompanyOrder);
+                }
+                if($row->Email){
+                    $obj->personal_email = explode(',',$row->Email);
+                }
+                if($row->Phone){
+                    $obj->personal_phone = explode(',',$row->Phone);
+                }
+                if($row->Avatar){
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
+                }
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // 更改facebook access Token by facebook_uid
+    public function update_facebook_access_token($access_token,$facebook_uid){
+        $sql = "UPDATE users SET Facebook_access_token = ? WHERE Facebook_uid = ? AND isDeleted = 0;";
+        $query = $this->db->query($sql, array($access_token,$facebook_uid));
+        return $query;
+    }
+    
+    // 新增facebook使用者
+    public function add_facebook_user($data){
+        $sql = "INSERT INTO users (Facebook_uid, Facebook_access_token, Name, Avatar, Email, CreateTime) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['facebook_uid'],$data['facebook_access_token'],$data['name'],$data['avatar'],$data['email'],date('Y-m-d H:i:s')));
+        return $this->db->insert_id();
+    }
+
+    
+    // 檢查line帳戶是否存在
+    public function check_user_by_line_uid($line_uid){
+        $sql = "SELECT Id,isDeleted FROM users WHERE Line_uid=? AND isDeleted = 0";
+        $query = $this->db->query($sql, array($line_uid));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->isDeleted = $row->isDeleted;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // line登入驗證
+    public function get_user_by_line_access_token($access_token){
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Line_access_token=? AND users.isDeleted = 0";
+        $query = $this->db->query($sql, array($access_token));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->google_uid = $row->Google_uid;
+                $obj->google_access_token = $row->Google_access_token;
+                $obj->facebook_uid = $row->Facebook_uid;
+                $obj->facebook_access_token = $row->Facebook_access_token;
+                $obj->line_uid = $row->Line_uid;
+                $obj->line_access_token = $row->Line_access_token;
+                $obj->account = $row->Account;
+                $obj->order = $row->Order;
+                $obj->companyOrder = $row->CompanyOrder;
+                $obj->personal_superID = $row->SuperID;
+                $obj->personal_name = $row->Name;
+                $obj->personal_avatar = $row->Avatar;
+                $obj->personal_nickname = $row->Nickname;
+                $obj->personal_email = $row->Email;
+                $obj->personal_phone = $row->Phone;
+                $obj->personal_social = json_decode($row->Social);
+                $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_name = $row->subjectName;
+                $obj->SMSNumber = $row->SMSNumber;
+                $obj->SMSTime = $row->SMSTime;
+                $obj->isDeleted = $row->isDeleted;
+                if($row->Order){
+                    $obj->order = explode(',',$row->Order);
+                }
+                if($row->CompanyOrder){
+                    $obj->companyOrder = explode(',',$row->CompanyOrder);
+                }
+                if($row->Email){
+                    $obj->personal_email = explode(',',$row->Email);
+                }
+                if($row->Phone){
+                    $obj->personal_phone = explode(',',$row->Phone);
+                }
+                if($row->Avatar){
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
+                }
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    // 更改line access Token by line_uid
+    public function update_line_access_token($access_token,$line_uid){
+        $sql = "UPDATE users SET Line_access_token = ? WHERE Line_uid = ? AND isDeleted = 0;";
+        $query = $this->db->query($sql, array($access_token,$line_uid));
+        return $query;
+    }
+    
+    // 新增line使用者
+    public function add_line_user($data){
+        $sql = "INSERT INTO users (Line_uid, Line_access_token, Name, Avatar, CreateTime) VALUES (?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['line_uid'],$data['line_access_token'],$data['name'],$data['avatar'],date('Y-m-d H:i:s')));
+        return $this->db->insert_id();
     }
 
     // 取得使用者資料 by superId
@@ -239,7 +502,10 @@ class Users_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result, $obj);
             }
@@ -358,6 +624,9 @@ class Users_model extends CI_Model
                 $obj = new Users_model();
                 $obj->id = $row->Id;
                 $obj->account = $row->Account;
+                $obj->google_uid = $row->Google_uid;
+                $obj->facebook_uid = $row->Facebook_uid;
+                $obj->line_uid = $row->Line_uid;
                 $obj->order = $row->Order;
                 $obj->companyOrder = $row->CompanyOrder;
                 $obj->personal_superID = $row->SuperID;
@@ -383,7 +652,10 @@ class Users_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result['users'], $obj);
             }

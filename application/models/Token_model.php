@@ -57,6 +57,12 @@ class Token_model extends CI_Model
             foreach ($query->result() as $row) {
                 $obj = new Token_model();
                 $obj->id = $row->Id;
+                $obj->google_uid = $row->Google_uid;
+                $obj->google_access_token = $row->Google_access_token;
+                $obj->facebook_uid = $row->Facebook_uid;
+                $obj->facebook_access_token = $row->Facebook_access_token;
+                $obj->line_uid = $row->Line_uid;
+                $obj->line_access_token = $row->Line_access_token;
                 $obj->account = $row->Account;
                 $obj->order = $row->Order;
                 $obj->companyOrder = $row->CompanyOrder;
@@ -89,7 +95,10 @@ class Token_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result, $obj);
             }
@@ -141,7 +150,10 @@ class Token_model extends CI_Model
                     $obj->personal_phone = explode(',',$row->Phone);
                 }
                 if($row->Avatar){
-                    $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    $obj->personal_avatar = $row->Avatar;
+                    if(strpos($obj->personal_avatar, "http") === false){
+                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                    };
                 }
                 array_push($result, $obj);
             }
