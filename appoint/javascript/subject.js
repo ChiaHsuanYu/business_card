@@ -9,11 +9,15 @@ function add_subject() {
     data.append('imageURL', imageURL);
     data.append('subjectFile', subjectFile);
     var result = call_api_upload("mgt_subject_api/add_subject/",data);
-    document.getElementById("alertMsg").innerHTML = result['msg'];
+    modal_show("msgModal");
+    document.getElementById("model_body").innerHTML = string_replace(result['msg']);
     if(result['status']){
+        document.getElementById("modal_label").innerHTML = "系統訊息";
         sleep(1000).then(() => {
             location.href = baseUrl + "mgt_subject/index/";
         });
+    }else{
+        document.getElementById("modal_label").innerHTML = "格式錯誤";
     }
 }
 
@@ -52,7 +56,6 @@ function subject_noData() {
 
 // 列表-依序列出所有主題
 function subject_data(subject, data_obj) {
-    console.log(subject);
     var data_obj = JSON.stringify(data_obj);
     var hideobj = document.getElementById("allPageCountBox");
     var count = json_count(subject); // 群組筆數
@@ -73,8 +76,8 @@ function subject_data(subject, data_obj) {
             var subject_data = JSON.stringify(subject[i]);
             var img = "<img class='img img_pointer' title='另開圖片視窗' src='" + subject[i]['imageURL'] + "' onclick='openImg(" + '"' + subject[i]['imageURL'] + '"' + ")'>";
             var file_btn = '<a href="'+subject[i]['subjectFile']+'" class="inline_block margin_0 fault_a" download="subject.css">點選下載</a>';
-            var releas_btn = "<button class='button width_80px inline_block' onclick='release_subject(" + subject_data + ")'>發布</button>";
-            var del_btn = "<button class='button width_80px inline_block' onclick='del_subject(" + subject_data + ")'>刪除</button>";
+            var releas_btn = "<button class='button width_80px inline_block' onclick='confirm_release_subject(" + subject_data + ")'>發布</button>";
+            var del_btn = "<button class='button width_80px inline_block' onclick='confirm_del_subject(" + subject_data + ")'>刪除</button>";
 
             tab += "<tr align='center' class='contentsTr'>";
             tab += "<td>" + no + "</td><td>" + subject[i]['name'] + "</td><td>" + img + "</td><td>" + file_btn + "</td>";
@@ -104,32 +107,42 @@ function subject_data(subject, data_obj) {
     document.getElementById('total_count').innerHTML = '資料總筆數：' + count;
 }
 
-// 發布主題
-function release_subject(subject_data) {
-    if (confirm("確定發布主題「" + subject_data['name'] + "」?")) {
-        var data_obj = {
-            subjectId: subject_data['id'],
-        };
-        var result = call_api('mgt_subject_api/update_isReleased_by_id', data_obj);
-        alert(result['msg']);
-        if (result['status']) {
-            // 重新呼叫列表
-            subject_list();
-        }
-    }
+// 確認是否發布主題
+function confirm_release_subject(subject_data) {
+    modal_show("confirmModal");
+    document.getElementById("confirm_modal_label").innerHTML = "系統訊息";
+    document.getElementById("confirm_model_body").innerHTML = "是否確定發布主題「" + subject_data['name'] + "」?";
+    document.getElementById("confirm_subjectId").value = subject_data['id'];
+    document.getElementById("confirm_action").value = '1';
 }
 
-// 刪除主題
-function del_subject(subject_data) {
-    if (confirm("確定刪除主題「" + subject_data['name'] + "」?")) {
-        var data_obj = {
-            subjectId: subject_data['id'],
-        };
+// 確認是否刪除主題
+function confirm_del_subject(subject_data) {
+    modal_show("confirmModal");
+    document.getElementById("confirm_modal_label").innerHTML = "系統訊息";
+    document.getElementById("confirm_model_body").innerHTML = "是否確定刪除主題「" + subject_data['name'] + "」?";
+    document.getElementById("confirm_subjectId").value = subject_data['id'];
+    document.getElementById("confirm_action").value = '2';
+}
+
+// 執行功能(發布/主題)
+function subject_function() {
+    modal_hide("confirmModal");
+    var id = document.getElementById("confirm_subjectId").value;
+    var action = document.getElementById("confirm_action").value;
+    var data_obj = {
+        subjectId: id,
+    };
+    if(action == '1'){
+        var result = call_api('mgt_subject_api/update_isReleased_by_id', data_obj);
+    }else{
         var result = call_api('mgt_subject_api/update_isDeleted_by_id', data_obj);
-        alert(result['msg']);
-        if (result['status']) {
-            // 重新呼叫列表
-            subject_list();
-        }
+    }
+    modal_show("msgModal");
+    document.getElementById("modal_label").innerHTML = "系統訊息";
+    document.getElementById("model_body").innerHTML = string_replace(result['msg']);
+    if (result['status']) {
+        // 重新呼叫列表
+        subject_list();
     }
 }

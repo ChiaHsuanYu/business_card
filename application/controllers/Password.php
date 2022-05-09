@@ -26,6 +26,7 @@ class Password extends BaseController {
             'title' => '管理員密碼修改'
         );
         $this->load->view('templates/header',$data);
+        $this->load->view('password/model');
         $this->load->view('password/edit',$data);
         $this->load->view('templates/footer');
     }

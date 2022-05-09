@@ -61,8 +61,8 @@ class Mgt_subject_api extends BaseAPIController
                 $this->load->library('upload', $config);
                 // 判斷是否上傳成功
                 if ( !$this->upload->do_upload('imageURL')){  
-                        $result['status'] = 2;
-                        $result['msg'] = $this->upload->display_errors();
+                        $result['status'] = 0;
+                        $result['msg'] = '主題縮圖-'.$this->upload->display_errors();
                         $this->response($result,200);//上傳檔案失敗訊息
                 }else{   
                     $result= array('upload_data' => $this->upload->data()); 
@@ -101,8 +101,8 @@ class Mgt_subject_api extends BaseAPIController
                 $this->upload->initialize($config); //調用初始化函數initialize,加載新的配置
                 // 判斷是否上傳成功
                 if ( !$this->upload->do_upload('subjectFile')){  
-                        $result['status'] = 3;
-                        $result['msg'] = $this->upload->display_errors();
+                        $result['status'] = 0;
+                        $result['msg'] = "主題檔案-".$this->upload->display_errors();
                         $this->response($result,200);//上傳檔案失敗訊息
                 }else{   
                     $result= array('upload_data' => $this->upload->data()); 

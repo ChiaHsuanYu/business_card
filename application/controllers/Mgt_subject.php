@@ -26,6 +26,7 @@ class Mgt_subject extends BaseController {
             'title' => '主題新增上傳'
         );
         $this->load->view('templates/header',$data);
+        $this->load->view('mgt_subject/model');
         $this->load->view('mgt_subject/add',$data);
         $this->load->view('templates/footer');
     }
@@ -35,6 +36,7 @@ class Mgt_subject extends BaseController {
             'title' => '主題維護'
         );
         $this->load->view('templates/header',$data);
+        $this->load->view('mgt_subject/model');
         $this->load->view('mgt_subject/index',$data);
         $this->load->view('templates/footer');
     }

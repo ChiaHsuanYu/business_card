@@ -21,7 +21,11 @@
     //引入css
     echo link_tag('appoint/css/common_style.css?run=' . $run);
     echo link_tag('appoint/css/style.css?run=' . $run);
+    //網頁icon
+    echo link_tag('appoint/images/webicon.png', 'icon', 'image/x-icon');
     ?>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"> -->
+    
     <!-- 引入js 套件 -->
     <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/icon.js" crossorigin="anonymous"></script>
@@ -32,6 +36,7 @@
     <!-- tempusdominus-bootstrap-4 套件 -->
     <script src="<?php echo base_url(); ?>appoint/javascript/vendor/tempusdominus-bootstrap-4/moment.min.js"></script>
     <script src="<?php echo base_url(); ?>appoint/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="<?php echo base_url(); ?>appoint/bootstrap4/js/bootstrap.min.js"></script>
 
     <title>電子名片後台系統</title>
 </head>
@@ -76,8 +81,8 @@
             </button>
             <div class="collapse" id="password-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="<?php echo base_url("password/edit"); ?>" class="link-dark rounded">管理員密碼修改</a></li>
-                    <li><a onclick="logout();" class="link-dark rounded cursor_pointer">登出</a></li>
+                    <li><a onclick="modal_show('confirmPasswordModal');" class="link-dark rounded">管理員密碼修改</a></li>
+                    <li><a onclick="modal_show('confirmLogoutModal');" class="link-dark rounded cursor_pointer">登出</a></li>
                 </ul>
             </div>
             </li>
@@ -91,15 +96,46 @@
             <div class="navUserAccount">
                 登入帳號：<?php echo $this->session->mgt_user_info['account']; ?>
             </div>
-            
+
+            <!-- Confirm Modal -->
+            <div class="modal fade" id="confirmPasswordModal" tabindex="-1" role="dialog" aria-labelledby="confirm_password_modal_label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirm_password_modal_label">系統訊息</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="modal_hide('confirmPasswordModal');">&times;</button>
+                        </div>
+                        <div class="modal-body textCenter" id="confirm_password_model_body">管理者是否重設密碼</div>
+                        <div class="btnBox">
+                            <button type="button" class="button width_60px" data-dismiss="modal" onclick="gotohref('<?php echo base_url('password/edit'); ?>')">確定</button>
+                            <button type="button" class="button width_60px" data-dismiss="modal" onclick="modal_hide('confirmPasswordModal');">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logout Modal -->
+            <div class="modal fade" id="confirmLogoutModal" tabindex="-1" role="dialog" aria-labelledby="confirm_logout_modal_label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirm_logout_modal_label">系統訊息</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="modal_hide('confirmLogoutModal');">&times;</button>
+                        </div>
+                        <div class="modal-body textCenter" id="confirm_logout_model_body">是否確定登出系統?</div>
+                        <div class="btnBox">
+                            <button type="button" class="button width_60px" data-dismiss="modal" onclick="gotohref('<?php echo base_url('mgt_login/logout'); ?>')">確定</button>
+                            <button type="button" class="button width_60px" data-dismiss="modal" onclick="modal_hide('confirmLogoutModal');">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     <script>
         localStorage.setItem('token', '<?php echo $this->session->mgt_user_info['token']; ?>');
         localStorage.setItem('UsertId', '<?php echo $this->session->mgt_user_info['id']; ?>');
 
-        function logout() {
-            if (confirm("確定登出系統?")) {
-                document.location.href = '<?php echo base_url("mgt_login/logout"); ?>';
-            }
+        function gotohref(url){
+            document.location.href = url;
         }
 
         $(function () {

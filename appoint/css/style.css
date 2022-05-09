@@ -1,12 +1,29 @@
 /*--------- login css ---------*/
 
 .loginBody {
-    background: -moz-radial-gradient(circle, #f7f7f7, #d6d6d6);
-    background: -webkit-radial-gradient(circle, #f7f7f7, #d6d6d6);
-    background: -o-radial-gradient(circle, #f7f7f7, #d6d6d6);
-    background: radial-gradient(circle, #f7f7f7, #d6d6d6);
+    /* background-color: #81818156; */
+    background: -moz-radial-gradient(circle, rgb(255, 255, 255), #b2d2e4);
+    background: -webkit-radial-gradient(circle, rgb(255, 255, 255), #b2d2e4);
+    background: -o-radial-gradient(circle, rgb(255, 255, 255), #b2d2e4);
+    background: radial-gradient(circle, rgb(255, 255, 255), #e7e7e7);
+    /* box-shadow :10px 0 0px 0px #d4d3d3; */
     width: 100%;
     min-height: 100%;
+    /* font-family: 微軟正黑體, Arial, Helvetica, sans-serif; */
+}
+
+.webtitle{
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #ffffff;
+    padding-left: 8%;
+}
+
+.webicon {
+    max-width: 140px;
+    max-height: 140px;
+    border-radius: 15px;
+    display: inline-block;
 }
 
 .loginTitle {
@@ -17,40 +34,44 @@
     color: rgb(22, 22, 22);
 }
 
+.little_title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: -moz-radial-gradient(circle, #f7f7f7, #d6d6d6);
+    background: -webkit-radial-gradient(circle, #f7f7f7, #d6d6d6);
+    background: -o-radial-gradient(circle, #f7f7f7, #d6d6d6);
+    background: radial-gradient(circle, #314b92, #525fac);
+    margin-bottom: 18px;
+    color: #dddddd;
+}
+
 .loginBox {
-    width: 300px;
+    width: 320px;
     margin: 0px auto;
     background: #FFFFFF;
-    box-shadow: 0px 1px 8px 0px rgb(155, 155, 155);
+    box-shadow: 2px 2px 7px 2px rgb(155, 155, 155);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     text-align: center;
-    padding: 10px 0px;
+    margin-top: 100px;
 }
 
 .loginBox label {
+    font-size: 1.1rem;
     padding: 0px 10px;
+    font-weight: bold;
+    color: #313338;
 }
 
 .loginBox input {
-    padding: 0px;
+    border: 1.5px solid rgb(122, 122, 122);
+    border-radius: 10px;
+    padding: 4px;
     margin: 8px;
-    width: 150px;
-    height: 25px;
+    width: 200px;
+    height: 30px;
 }
-
-.loginBox .button {
-    margin-top: 10px;
-    width: 80px;
-    border: 1px solid #3f3f3f0e;
-    color: #3f3f3f;
-}
-
-.loginBox .button:hover {
-    background: #e2e2e2;
-}
-
 
 /* sidebar & content */
 

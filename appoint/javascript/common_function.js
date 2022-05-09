@@ -172,10 +172,27 @@ function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+// 顯示浮動視窗
+function modal_show(divId){
+    $('#'+divId).modal('show');
+}
+
+// 隱藏浮動視窗
+function modal_hide(divId){
+    $('#'+divId).modal('hide');
+}
+
 //轉跳頁面
 function gotoPage(path) {
     var baseUrl = document.getElementById('base_url').value;
     location.href = baseUrl + path;
+}
+
+// 取代回車換行符
+function string_replace(string){
+    string = string.replace(/\r\n/g,"<br>")
+    string = string.replace(/\n/g,"<br>");
+    return string;
 }
 
 // 取代換行符號

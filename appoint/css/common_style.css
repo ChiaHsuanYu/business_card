@@ -60,6 +60,10 @@ input:disabled {
     color: rgb(90, 90, 90);
 }
 
+a{
+    cursor: pointer;
+}
+
 /* Error style */
 
 .alertMsg {
@@ -200,6 +204,15 @@ input:disabled {
 .labelInput {
     display: inline-block;
     vertical-align: top;
+}
+
+/* Model */
+
+.close{
+    line-height:0;
+}
+.modal-header{
+    padding: 0.5rem 0.5rem;
 }
 
 /* Button */

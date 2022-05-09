@@ -27,6 +27,16 @@ function search_list() {
     users_list(1, 10);
 }
 
+function cancel_search(){
+    document.getElementById('account').value = "";
+    document.getElementById('superID').value = "";
+    document.getElementById('company').value = "";
+    document.getElementById('industrySelect').value = "";
+    document.getElementById('startDT').value = "";
+    document.getElementById('endDT').value = "";
+    search_list();
+}
+
 // 列表-呼叫取得所有使用者資訊API
 function users_list(page_num, page_count) {
     var account = document.getElementById('search_account').value;
@@ -132,11 +142,11 @@ function users_data(seachText, data_obj) {
             if(users[i]['isDeleted'] == '1'){
                 user_data['isDeleted'] = '0';
                 user_data = JSON.stringify(user_data);
-                var del_btn = "<button class='red_button width_80px' onclick='update_isDeleted(" + user_data + ',' + data_obj + ")'>解凍帳號</button> ";
+                var del_btn = "<button class='red_button width_80px' onclick='confirm_isDeleted(" + user_data + ")'>解凍帳號</button> ";
             }else{
                 user_data['isDeleted'] = '1';
                 user_data = JSON.stringify(user_data);
-                var del_btn = "<button class='button width_80px' onclick='update_isDeleted(" + user_data + ',' + data_obj + ")'>凍結帳號</button> ";
+                var del_btn = "<button class='button width_80px' onclick='confirm_isDeleted(" + user_data + ")'>凍結帳號</button> ";
             }
             // <!-- 電腦版 -->
             tab += "<tr align='center' class='contentsTr'>";
@@ -253,7 +263,7 @@ function users_data(seachText, data_obj) {
                     tab_phone += "<div class='grey " + company_id_phone + " " + user_detail_id_phone + "' hidden='true'>公司詳細資訊</div>";
                     tab_phone += "</div>";
                     tab += "<tr align='center' class='contentsTr grey " + company_id + " " + user_detail_id + "' hidden='true'>";
-                    tab += "<td>公司名稱</td><td>公司LOGO</td><td>產業類別</td><td>職位</td><td>服務介紹</td><td>電話分機</td><td>地址</td><td>信箱</td><td>統一編號</td><td colspan='2'>公司社群</td>";
+                    tab += "<td>公司名稱</td><td>公司LOGO</td><td>產業類別</td><td>職位</td><td>服務介紹</td><td>電話分機</td><td>地址</td><td>信箱</td><td>統一編號</td><td>公司社群</td><td>最後一次更新時間</td>";
                     tab += "</tr>";
                 }
                 company_no++;
@@ -266,7 +276,8 @@ function users_data(seachText, data_obj) {
                     phone = '-',
                     address = '-',
                     email = '-',
-                    social = '-';
+                    social = '-',
+                    modifiedTime = companyInfo[k]['createTime'];
                 if (companyInfo[k]['company_logo']) {
                     logo_img = "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_logo'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_logo'] + '"' + ")'>";
                 }
@@ -319,10 +330,13 @@ function users_data(seachText, data_obj) {
                         social += "<a href='"+companyInfo[k]['company_social'][m]['socialURL']+"'>"+companyInfo[k]['company_social'][m]['socialTitle']+"</a>";
                     }
                 }
+                if(companyInfo[k]['modifiedTime']){
+                    modifiedTime = companyInfo[k]['modifiedTime'];
+                }
                 tab += "<tr align='center' class='contentsTr light_grey " + company_id + " " + user_detail_id + "' hidden='true'>";
                 tab += "<td>" + companyInfo[k]['company_name'] + "</td>";
                 tab += "<td>" + logo_img + "</td><td>" +industry + "</td><td>" + position + "</td><td>" + aboutus + "</td><td>" + phone + "</td>";
-                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td colspan='2'>" + social + "</td>";
+                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td>" + social + "</td><td>"+modifiedTime+"</td>";
                 tab += "</tr>";
                 // 手機板
                 tab_phone += "<div class=' " + div_class + company_id_phone + " " + user_detail_id_phone + "' width='100%' cellpadding='0' cellspacing='0' hidden='true'>";
@@ -336,6 +350,7 @@ function users_data(seachText, data_obj) {
                 tab_phone += "<div>信箱	： " + email + "</div>";
                 tab_phone += "<div>統一編號	： " + gui + "</div>";
                 tab_phone += "<div>公司社群	： " + social + "</div>";
+                tab_phone += "<div>最後一次更新時間	： " + modifiedTime + "</div>";
                 tab_phone += "</div>";
             }
             tab += "</div>";
@@ -395,24 +410,36 @@ function industry_select_option() {
     }
 }
 
-// 更改帳號狀態
-function update_isDeleted(user_data, data_obj) {
-    var page = document.getElementById('list_page').value;
-    var page_count = document.getElementById('list_page_count').value;
+// 確認是否更改帳號狀態
+function confirm_isDeleted(user_data) {
     var action = "解凍";
     if(user_data['isDeleted'] == '1'){
         action = "凍結";
     }
-    if (confirm("確定"+action+"帳號「" + user_data['account'] + "」?")) {
-        var data_obj = {
-            userId: user_data['id'],
-            isDeleted: user_data['isDeleted']
-        };
-        var result = call_api('mgt_users_api/update_isDeleted_by_id', data_obj);
-        alert(result['msg']);
-        if (result['status']) {
-            // 重新呼叫帳號列表
-            users_list(page,page_count);
-        }
+    modal_show("confirmModal");
+    document.getElementById("confirm_modal_label").innerHTML = "系統訊息";
+    document.getElementById("confirm_model_body").innerHTML = "是否確定"+action+"帳號「" + user_data['account'] + "」?";
+    document.getElementById("confirm_userId").value = user_data['id'];
+    document.getElementById("confirm_isDeleted").value = user_data['isDeleted'];
+}
+
+// 更改帳號狀態
+function update_isDeleted(){
+    modal_hide("confirmModal");
+    var page = document.getElementById('list_page').value;
+    var page_count = document.getElementById('list_page_count').value;
+    var userId = document.getElementById("confirm_userId").value;
+    var isDeleted = document.getElementById("confirm_isDeleted").value;
+    var data_obj = {
+        userId: userId,
+        isDeleted: isDeleted
+    };
+    var result = call_api('mgt_users_api/update_isDeleted_by_id', data_obj);
+    modal_show("msgModal");
+    document.getElementById("modal_label").innerHTML = "系統訊息";
+    document.getElementById("model_body").innerHTML = string_replace(result['msg']);
+    if (result['status']) {
+        // 重新呼叫帳號列表
+        users_list(page,page_count);
     }
 }

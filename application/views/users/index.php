@@ -92,7 +92,8 @@
             </div>
             <div class="btnBox">
                 <div class="alertMsg" id="search_error"></div>
-                <button class='button width_60px' onclick='search_list();'>搜尋</button>
+                <button class='button width_60px inline_block' onclick='search_list();'>搜尋</button>
+                <button class='button width_60px inline_block' onclick='cancel_search();'>取消</button>
             </div>
         </div>
     </div>
@@ -145,4 +146,5 @@
         var page_count = document.getElementById('list_page_count').value;
         users_list(page,page_count);
     });
+    
 </script>

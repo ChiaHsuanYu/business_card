@@ -33,6 +33,7 @@ class Users extends BaseController {
             'title' => '用戶管理'
         );
         $this->load->view('templates/header',$data);
+        $this->load->view('users/model');
         $this->load->view('users/index',$data);
         $this->load->view('templates/footer');
     }

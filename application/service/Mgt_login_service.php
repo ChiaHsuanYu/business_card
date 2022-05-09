@@ -23,7 +23,7 @@ class Mgt_login_service extends MY_Service
         }else{
             $result = array(
                 "status" => 0,
-                "msg"=> $this->input->request_headers()
+                "msg"=> "帳號密碼錯誤"
             );    
         }
         return $result;

@@ -1,0 +1,915 @@
+/*---------  order css ---------*/
+
+.order {
+    font-family: '微軟正黑體', '標楷體', serif, sans-serif;
+    font-weight: 700;
+    color: #696969;
+}
+
+input {
+    border-radius: 5px !important;
+}
+
+td {
+    max-width: 100px;
+    word-wrap: break-word;
+    word-break: normal;
+}
+
+.orderPathName {
+    width: 100%;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 30px;
+    padding: 2px;
+    font-size: 2rem;
+    text-align: center;
+    background: #045B9F;
+}
+
+.orderFieldset {
+    padding: 10px 10px 10px 10px;
+    margin: 35px 10px 10px 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    vertical-align: top;
+    background-color: #fff;
+    box-shadow: 0px 1px 8px 0px rgb(83, 83, 83);
+}
+
+.orderLegend {
+    width: 170px;
+    padding: 2px 0px;
+    margin: -25px 0px 5px 0px;
+    background-color: #3f9ee7;
+    color: #FFF;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    letter-spacing: 5px;
+}
+
+.orderRowBox {
+    width: 49%;
+    display: inline-block;
+    padding-top: 10px;
+}
+
+.orderWidth_80 {
+    width: 400px;
+}
+
+.orderWidth_100p {
+    width: 100%;
+}
+
+.orderLabel {
+    display: inline;
+}
+
+.orderInputBox {
+    width: 400px;
+    /* float: left; */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#datalist_clientVal,
+#modOrder_datalist_clientVal {
+    width: 200px !important;
+}
+
+.orderInput {
+    width: 200px;
+}
+
+@media (max-width: 768px) {
+    .orderRowBox {
+        width: 100%;
+    }
+    .orderInputBox {
+        width: 100%;
+    }
+    .orderDatetimeBox {
+        display: block !important;
+        width: 200px;
+    }
+    .orderPathName {
+        text-align: center;
+    }
+}
+
+.orderDatetimeBox {
+    display: inline-block;
+    width: 200px;
+}
+
+.orderDatetimeBox .container,
+.orderDatetimeBox .form-group,
+.orderDatetimeBox .row,
+.orderDatetimeBox .col-sm-6 {
+    height: 20px !important;
+    width: 200px !important;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.orderInlineBlock {
+    display: inline-block;
+    position: relative;
+}
+
+.qaWidth_100p {
+    width: 100%;
+}
+
+.orderWidth_120 {
+    width: 120px;
+}
+
+.orderWidth_100 {
+    width: 100px;
+}
+
+.orderCenter {
+    text-align: center;
+}
+
+.orderBtn {
+    width: 60px !important;
+    height: 30px !important;
+    background-image: -webkit-linear-gradient(top, #2F93E1, #1D73B7);
+    background-image: -moz-linear-gradient(top, #2F93E1, #1D73B7);
+    background-image: -o-linear-gradient(top, #2F93E1, #1D73B7);
+    background-image: linear-gradient(to bottom, #2F93E1, #1D73B7);
+    color: #fff;
+    text-decoration: none;
+    border: 0px none;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.orderBtn:hover {
+    background-image: -webkit-linear-gradient(top, #2F93E1, rgb(22, 102, 163));
+    background-image: -moz-linear-gradient(top, #2F93E1, rgb(22, 102, 163));
+    background-image: -o-linear-gradient(top, #2F93E1, rgb(22, 102, 163));
+    background-image: linear-gradient(to bottom, #2F93E1, rgb(22, 102, 163));
+}
+
+
+/* ------------ orderTable -----------*/
+
+.orderTable {
+    margin: auto;
+    margin-top: 1%;
+    margin-bottom: 40px;
+    width: 98%;
+}
+
+.orderTitle {
+    font-size: 18px;
+    position: relative;
+    line-height: 35px;
+    height: 35px;
+    margin: auto;
+    color: white;
+    background: #7DC6FF;
+    font-weight: 1000;
+    overflow-x: auto;
+}
+
+.ordertr {
+    height: 35px;
+    line-height: 35px;
+    border-width: 90%;
+    color: #696969;
+    border-bottom: 1px #7DC6FF solid;
+}
+
+.orderSelect {
+    width: 300px;
+    text-align: right;
+    display: inline;
+}
+
+.orderTotal {
+    text-align: left;
+    width: 150px;
+    display: inline-block;
+}
+
+.allPage {
+    padding-right: 10px;
+    width: 300px;
+    float: right;
+    display: inline;
+}
+
+@media (max-width: 768px) {
+    .orderTable_phone {
+        display: block !important;
+    }
+    .orderTable {
+        display: none;
+    }
+    .orderTable_block {
+        width: 100%;
+        display: block;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 100px;
+    }
+    .accoSend {
+        max-width: 95% !important;
+    }
+    .allPage {
+        width: 200px;
+    }
+}
+
+@media (max-width: 500px) {
+    .orderTotal {
+        width: 80px;
+    }
+}
+
+
+/* ------------ orderTable手機板 -----------*/
+
+.orderTable_phone {
+    display: none;
+    margin: auto;
+    border: 4px #22334279 solid;
+    border-radius: 8px;
+    margin-top: 6%;
+    margin-bottom: 40px;
+    width: 90%;
+}
+
+.orderTitle_phone,
+.orderContent_phone,
+.orderTitleNo_phone {
+    font-size: 20px;
+    text-align: left;
+    position: relative;
+    line-height: 35px;
+    min-height: 35px;
+    margin: auto;
+    color: white;
+    background: #7DC6FF;
+    font-weight: 1000;
+    overflow-x: auto;
+}
+
+.orderContent_phone {
+    color: #696969;
+    background: white;
+}
+
+.orderTitleNo_phone {
+    text-align: center;
+    color: white;
+    background: #2a80cf;
+}
+
+.order_icon {
+    /* width: 100%; */
+    min-height: 45px;
+    padding-left: 70px;
+    display: inline;
+    text-align: center;
+}
+
+@media (max-width: 630px) {
+    .order_icon {
+        padding: 0 !important;
+    }
+}
+
+.img_icon {
+    height: 2rem;
+    border: 0px;
+    float: center;
+}
+
+.must {
+    color: rgb(250, 7, 7);
+    display: inline;
+    font-weight: 600;
+}
+
+.must2 {
+    color: rgba(255, 30, 30, 0.726);
+    padding-left: 35%;
+}
+
+.must3 {
+    color: rgba(255, 30, 30, 0.726);
+    padding-left: 35%;
+}
+
+.require {
+    margin-left: -25px;
+}
+
+
+/* ------------order_note -----------*/
+
+#hidebg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: rgb(8, 8, 12);
+    width: 100%;
+    /* height: 100%; */
+    filter: alpha(opacity=30);
+    opacity: 0.3;
+    display: none;
+    z-Index: 1000;
+}
+
+.hidebox {
+    position: fixed;
+    font-family: 微軟正黑體;
+    box-shadow: 5px 5px 5px rgba(155, 154, 154, 0.781);
+    border-radius: 20px;
+    display: inline;
+    display: inline block !important;
+    background-color: #fff;
+    display: none;
+    z-Index: 1010;
+}
+
+#hidebox {
+    width: 40vw;
+    max-height: auto;
+    min-height: 150px;
+    top: 30%;
+    left: 30%;
+    z-Index: 1010;
+}
+
+.hide_remark {
+    position: relative;
+    font-size: 30px;
+    font-weight: 900;
+    text-align: left;
+    left: 12px;
+}
+
+.topBorder {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 10px;
+    text-align: center;
+    border-top: 1px solid rgb(90, 89, 89);
+}
+
+.noteContent {
+    width: auto;
+    height: auto;
+    text-align: center;
+    float: center;
+    font-size: 22px;
+    font-weight: bold;
+    display: inline;
+    display: inline block !important;
+    display: block;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.noteButton {
+    position: relative;
+    float: right;
+    text-align: center;
+    color: rgb(8, 8, 12);
+    width: 30px;
+    height: 30px;
+    line-height: 18px;
+    padding-top: 2px;
+    top: 5px;
+    right: 8px;
+    font-size: 25px;
+    z-index: 1100;
+    ;
+}
+
+.noteButton:hover {
+    background-color: #a8a1a1;
+    color: rgb(8, 8, 12);
+    z-Index: 1100;
+}
+
+.orderCenter {
+    padding-top: 20px;
+    text-align: center;
+}
+
+
+/* order-新增Button */
+
+.send {
+    position: relative;
+    width: 100%;
+    top: 5px;
+    text-align: center;
+    widows: 1000px;
+}
+
+.accoSend {
+    max-width: 99%;
+    min-width: auto;
+    text-align: right !important;
+}
+
+.addOrderBtn {
+    width: 120px !important;
+    height: 40px;
+    line-height: 20px;
+    z-index: 899;
+    /* margin-top: 12px; */
+    right: 0;
+    /* padding-top: 4px; */
+    padding: 0;
+}
+
+
+/* 新增訂單 */
+
+.order_file {
+    max-width: 200px;
+}
+
+.addOrderRowBox {
+    width: 100%;
+    display: inline-block;
+    padding-left: 30px;
+    padding-top: 6px;
+}
+
+.labelBox {
+    padding-left: 30px !important;
+}
+
+.paddingTop_10 {
+    padding-top: 6px;
+}
+
+@media (max-width: 768px) {
+    .addOrderRowBox {
+        width: 100%;
+        padding-left: 0 !important;
+    }
+    .addOrderInputBox,
+    .addOrderInputBox_350 {
+        width: 100% !important;
+    }
+    .addLabel {
+        width: 80px !important;
+        text-align: left !important;
+    }
+    .addInput {
+        width: 100% !important;
+        /* display: block !important; */
+    }
+    .addOrderNo,
+    .orderFile {
+        width: 100% !important;
+    }
+    .addOrderset {
+        text-align: left;
+    }
+    .orderNoteItem {
+        position: inherit;
+        top: 0 !important;
+    }
+    .orderNote {
+        max-width: 80% !important;
+    }
+    .addOrderInput {
+        width: 180px !important;
+    }
+}
+
+@media (max-width: 990px) {
+    .addLabel {
+        width: 80px !important;
+        text-align: left !important;
+    }
+    .addLabel_120 {
+        width: 77px !important;
+    }
+    .addLabel_110 {
+        width: 110px !important;
+    }
+    .addOrderset {
+        text-align: left;
+    }
+    .require {
+        margin-left: 0;
+    }
+    .must2,
+    .must3 {
+        padding-left: 25%;
+    }
+}
+
+.orderFile {
+    width: 600px;
+    padding-top: 10px;
+}
+
+.orderBtnBox {
+    margin-top: 5px;
+}
+
+.addOrderInputBox {
+    width: 400px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.addOrderInputBox_350 {
+    width: 350px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.addOrderNo {
+    width: 440px;
+}
+
+.addLabel {
+    text-align: right;
+    position: relative;
+    width: 80px;
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.addLabel_120 {
+    width: 110px;
+}
+
+.orderWidth_200 {
+    width: 200px !important;
+}
+
+.addOrderInput {
+    width: 200px;
+}
+
+.addInput {
+    width: 200px;
+    display: inline;
+    padding-bottom: 3px;
+}
+
+.addOrderItem {
+    font-family: '微軟正黑體', '標楷體', serif, sans-serif;
+    font-weight: bold;
+    color: #696969;
+    width: 90% !important;
+    text-align: left;
+    padding-left: 120px;
+    margin: 0px auto;
+}
+
+.modOrderItem {
+    position: relative;
+    font-family: '微軟正黑體', '標楷體', serif, sans-serif;
+    font-weight: bold;
+    color: #696969;
+    width: 90% !important;
+    text-align: left;
+    padding-left: 100px;
+    margin: 0px auto;
+}
+
+.orderNoteItem {
+    position: inherit;
+    top: -50px;
+}
+
+.modOrderNoteItem {
+    position: inherit;
+    top: -45px;
+}
+
+.orderNote {
+    width: 70%;
+}
+
+.btn_100 {
+    width: 100px !important;
+}
+
+.addOrderset {
+    padding: 10px 10px 10px 10px;
+    margin: 20px 10px 0px 10px;
+}
+
+.orderCenter_Ptop {
+    padding-top: 0;
+}
+
+.OrderNoBtn {
+    border: 0.5px #696969 solid;
+    color: black;
+    font-weight: 550;
+    background-image: -webkit-linear-gradient(top, #fafafa 0%, #aca9a9 90%) !important;
+    background-image: -moz-linear-gradient(top, #fafafa 0%, #aca9a9 90%) !important;
+    background-image: -o-linear-gradient(top, #fafafa 0%, #aca9a9 90%) !important;
+    background-image: linear-gradient(to bottom, #fafafa 0%, #aca9a9 90%) !important;
+}
+
+
+/* 修改訂單 */
+
+#old_photoName {
+    display: inline;
+}
+
+.modOrder_250 {
+    width: 350px !important;
+}
+
+.modLabel_110 {
+    width: 110px !important;
+}
+
+.addOrder_color {
+    width: 350px;
+}
+
+.modOrder_file {
+    max-width: 200px;
+}
+
+@media (max-width: 768px) {
+    .modLabel_110 {
+        width: 80px !important;
+    }
+    .modOrder_file {
+        max-width: 200px;
+    }
+    .must2,
+    .must3 {
+        padding-left: 0;
+    }
+    .addOrderItem,
+    .modOrderItem {
+        padding-left: 0px;
+    }
+}
+
+#addOrder_datalist_color,
+#addOrder_datalist_material,
+#datalist_areaNo {
+    width: 200px !important;
+    border-radius: 5px;
+}
+
+
+/* 訂單詳細資料 */
+
+.center {
+    text-align: center;
+}
+
+.detailOrderTitle {
+    background: #2773ad;
+}
+
+.detailqaTitle {
+    background: #479db8;
+}
+
+.bg_color {
+    background: #f3f8fa
+}
+
+.qahidden {
+    display: none !important;
+}
+
+.produce_tr {
+    height: 50px;
+    border-bottom: 1px #479db8 solid;
+}
+
+.inline {
+    display: inline;
+}
+
+.reworkTitle {
+    font-size: 18px;
+    position: relative;
+    line-height: 35px;
+    height: 35px;
+    margin: auto;
+    color: white !important;
+    background: #2773ad;
+    font-weight: 1000;
+    overflow-x: auto;
+}
+
+.qaTable_phone {
+    margin: auto;
+    border: 4px #22334279 solid;
+    border-radius: 8px;
+    margin-top: 6%;
+    margin-bottom: 40px;
+    width: 90%;
+}
+
+@media (min-width: 768px) {
+    .qaTable_phone {
+        display: none;
+    }
+}
+
+.detail_qaTitle {
+    font-size: 20px;
+}
+
+.othertr {
+    height: 40px;
+    line-height: 40px;
+    border-width: 90%;
+}
+
+.ordertr2 {
+    height: 35px;
+    line-height: 35px;
+    border-width: 90%;
+    color: #696969;
+    border-bottom: 1px #2773ad solid;
+}
+
+.detailqaTitle_ph {
+    background: #c47a3f;
+}
+
+.detailqaph {
+    background: #fdb776;
+}
+
+.qalater {
+    color: #fa9747;
+    border-top: 2px #fa9747 solid;
+    border-bottom: 10px;
+    bottom: 20px;
+}
+
+.qaPhonelater {
+    font-size: 18px;
+}
+
+.order_icon2 {
+    min-height: 45px;
+    padding-left: 90px;
+    display: inline;
+    text-align: center;
+}
+
+@media (max-width: 630px) {
+    .order_icon2 {
+        padding: 0 !important;
+    }
+}
+
+.lookqa_phone {
+    color: chocolate;
+}
+
+.lookqa {
+    color: #479db8;
+}
+
+div {
+    /* border: 1px rgb(15, 134, 41) solid; */
+}
+
+table {
+    /* border: 1px rgb(15, 134, 41) solid; */
+}
+
+
+/* 戰情版 */
+
+.rtdPathName {
+    width: 100%;
+    font-weight: bold;
+    color: #045B9F;
+    letter-spacing: 5px;
+    padding: 10px;
+    padding-top: 20px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.rtdFieldset {
+    width: 35%;
+    padding: 10px 10px 10px 10px;
+    margin: 35px 3% 10px 3%;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    vertical-align: top;
+    background-color: #fff;
+    box-shadow: 0px 1px 8px 0px rgb(83, 83, 83);
+    display: inline-block;
+}
+
+.macAllData {
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.macData {
+    margin: 0 auto;
+    width: 85%;
+    display: inline-block;
+}
+
+@media (max-width: 800px) {
+    .rtdFieldset {
+        width: 90%;
+        display: block;
+        margin: 35px auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .macData {
+        width: 95% !important;
+    }
+    .rtdData {
+        width: 70%;
+    }
+}
+
+.rtdTable {
+    margin: 0 10px 0 10px;
+    color: black;
+    margin-top: 10px;
+    width: 95%;
+}
+
+.rtdMacData {
+    font-size: 20px;
+    position: relative;
+    width: 100%;
+    line-height: 35px;
+    height: 35px;
+    text-align: left;
+    font-weight: 1000;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.rtdTitle {
+    font-size: 18px;
+    position: relative;
+    width: 30%;
+    line-height: 35px;
+    height: 35px;
+    text-align: left;
+    font-weight: 1000;
+    overflow-x: auto;
+    border: 1px #696969 solid;
+    padding-left: 5px;
+}
+
+.rtd_bg1 {
+    background-color: #d2e8fa;
+}
+
+.rtdData {
+    font-size: 18px;
+    position: relative;
+    width: 60%;
+    line-height: 35px;
+    height: 35px;
+    text-align: left;
+    font-weight: 1000;
+    overflow-x: auto;
+    border: 1px #696969 solid;
+    padding-left: 5px;
+}
+
+.macDataTime {
+    color: #696969;
+    font-size: 14px;
+}

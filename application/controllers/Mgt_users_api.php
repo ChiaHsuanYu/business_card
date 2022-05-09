@@ -33,8 +33,8 @@ class Mgt_users_api extends BaseAPIController
             "check_password" => $this->security->xss_clean($this->input->post("check_password"))
         );
         $this->form_validation->set_rules("password_old", "lang:「舊密碼」", "trim|required");
-        $this->form_validation->set_rules("password_new", "lang:「新密碼」","trim|required|min_length[4]|max_length[20]");
-        $this->form_validation->set_rules("check_password", "lang:「確認密碼」","trim|required|min_length[4]|max_length[20]|matches[password_new]");
+        $this->form_validation->set_rules("password_new", "lang:「新密碼」","trim|required|min_length[5]|max_length[12]|alpha_numeric");
+        $this->form_validation->set_rules("check_password", "lang:「確認密碼」","trim|required|min_length[5]|max_length[12]|alpha_numeric|matches[password_new]");
 
         if ($this->form_validation->run() === FALSE) {
             $result = array(

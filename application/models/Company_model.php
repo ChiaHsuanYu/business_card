@@ -46,6 +46,7 @@ class Company_model extends CI_Model
                 $obj->company_logo = $row->Logo;
                 $obj->company_social = json_decode($row->Social);
                 $obj->createTime = $row->CreateTime;
+                $obj->modifiedTime = $row->ModifiedTime;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
                 }

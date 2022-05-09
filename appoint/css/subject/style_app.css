@@ -1,0 +1,558 @@
+    /*--------- APP common 調整 ---------*/
+    
+    html,
+    body {
+        font-size: 30px;
+    }
+    
+    input {
+        height: 50px !important;
+        width: 250px;
+        font-size: 1rem;
+        border-radius: 7px;
+        -webkit-border-radius: 7px;
+        -moz-border-radius: 7px;
+        border: #c4c4c4 1px solid;
+    }
+    
+    .button {
+        height: 60px;
+        font-size: 1.2rem;
+        width: 100%;
+        font-weight: bold;
+        letter-spacing: 5px;
+    }
+    /*--------- APP common ---------*/
+    
+    .app_pageTitle {
+        width: 100%;
+        font-size: 0.5rem;
+        background: #0F2F3E;
+        padding: 5px 10px;
+    }
+    
+    .app_pageContents {
+        width: 95%;
+        font-size: 1rem;
+        text-align: center;
+        margin: 0px auto;
+    }
+    
+    .app_alertMsg {
+        background-color: #eeff00;
+        color: rgb(255, 0, 0);
+        text-align: center;
+        display: inline-block;
+        padding: 5px;
+        margin: 5px;
+    }
+    
+    .app_selectTitle {
+        text-align: center;
+        background-color: #000000;
+        color: #fff;
+    }
+    
+    .app_selectBox,
+    .app_checkBox {
+        background-color: rgba(255, 255, 255, 0.1);
+        text-align: center;
+        padding: 5px 0px;
+        margin-bottom: 10px;
+        /* border: #ff2f00 1px solid; */
+    }
+    
+    .app_select {
+        display: inline-block;
+        min-width: 300px;
+        padding: 10px;
+    }
+    
+    .app_selectBox input[type="radio"],
+    .pageBtnBox input[type="radio"],
+    .app_selectBox input[type="checkbox"] {
+        display: none;
+    }
+    
+    .app_selectBox input[type="radio"]+label,
+    .pageBtnBox input[type="radio"]+label,
+    .app_selectBox input[type="checkbox"]+label,
+    .app_selectBox input[type="checkbox"]:not(:checked)+label {
+        width: 100%;
+        background-image: -webkit-linear-gradient(top, #ebebeb, #5e5e5e);
+        background-image: -moz-linear-gradient(top, #ebebeb, #5e5e5e);
+        background-image: -o-linear-gradient(top, #ebebeb, #5e5e5e);
+        background-image: linear-gradient(to bottom, #ebebeb, #5e5e5e);
+        border: rgb(94, 94, 94) 1px solid;
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        color: rgb(0, 0, 0);
+        height: auto;
+        font-weight: bold;
+        font-size: 1.4rem;
+        letter-spacing: 5px;
+        padding: 20px 0px;
+    }
+    
+    .app_selectBox input[type="radio"]+label:hover,
+    .app_selectBox input[type="radio"]:checked+label,
+    .pageBtnBox input[type="radio"]+label:hover,
+    .pageBtnBox input[type="radio"]:checked+label,
+    .app_selectBox input[type="checkbox"]+label:hover,
+    .app_selectBox input[type="checkbox"]:checked+label {
+        background-image: -webkit-linear-gradient(top, #FFD4CC, #FF937C);
+        background-image: -moz-linear-gradient(top, #FFD4CC, #FF937C);
+        background-image: -o-linear-gradient(top, #FFD4CC, #FF937C);
+        background-image: linear-gradient(to bottom, #FFD4CC, #FF937C);
+        border: #fd8368 1px solid;
+    }
+    
+    .app_input {
+        padding: 5px;
+        width: 100%;
+    }
+    
+    .app_input input {
+        width: 90%;
+    }
+    
+    .hr {
+        margin: 10px;
+        border: 5px;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+    }
+    /*--------- header css ---------*/
+    
+    .minBodyHeight {
+        color: #fff;
+        min-width: 320px;
+        min-height: 1180px;
+        position: relative;
+        background: -moz-radial-gradient(circle, #7ea5c5, #001B2E);
+        background: -webkit-radial-gradient(circle, #7ea5c5, #001B2E);
+        background: -o-radial-gradient(circle, #7ea5c5, #001B2E);
+        background: radial-gradient(circle, #7ea5c5, #001B2E);
+    }
+    
+    .navTitle {
+        width: 100%;
+        padding: 5px;
+        text-align: center;
+        font-size: 1rem;
+        letter-spacing: 2px;
+        background-color: #000000;
+    }
+    
+    .menu_open {
+        display: block;
+    }
+    
+    .menu_close {
+        display: none;
+    }
+    /***選單樣式***/
+    
+    .menu {
+        color: #FFF;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0px 0px 4px 0px rgb(83, 83, 83);
+        background: linear-gradient(to bottom, #0893c2, #003e77);
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+    /* 第一階層選單 */
+    
+    ul {
+        margin: 0px !important;
+        padding: 0px !important;
+        list-style: none;
+    }
+    
+    ul.ul_level_1 {
+        display: inline-block;
+    }
+    
+    ul.ul_level_1 li {
+        position: relative;
+        min-width: 160px;
+        display: inline-block;
+        margin: 0px !important;
+    }
+    
+    ul.ul_level_1>li {
+        display: inline-block;
+        padding: 5px 0px;
+    }
+    
+    ul.ul_level_1>li>a {
+        color: #FFF;
+        display: block;
+        text-decoration: none;
+        background: linear-gradient(to bottom, #0893c2, #003e77);
+        box-shadow: inset 2px 2px 5px rgb(51, 51, 51);
+        padding: 0px 5px;
+    }
+    
+    ul.ul_level_1>li:hover>a {
+        background: #fff;
+        color: #333;
+    }
+    /* 第二階層選單 */
+    
+    ul.ul_level_1 ul {
+        display: none;
+        position: absolute;
+        z-index: 99;
+    }
+    
+    ul.ul_level_1 ul li:last-child {
+        border-bottom: none;
+    }
+    
+    ul.ul_level_1 ul li a {
+        font-size: 0.6rem;
+        padding: 5px;
+        color: #333;
+        display: block;
+        text-decoration: none;
+        background: #fff;
+        box-shadow: inset 2px 2px 5px rgb(51, 51, 51);
+        border-bottom: #fff 3px solid;
+        min-width: 155px;
+    }
+    
+    ul.ul_level_1 ul ul {
+        z-index: 999;
+        top: 10px;
+        left: 90%;
+    }
+    
+    ul.ul_level_1 li:hover>ul {
+        display: block;
+        opacity: 1;
+        -webkit-transition: opacity 0.3s;
+        transition: opacity 0.3s;
+        left: 0px;
+        border-right: 5px;
+    }
+    
+    ul.ul_level_1 li:hover>ul ul {
+        left: 99999px;
+    }
+    
+    ul.ul_level_1 ul li:hover>ul {
+        left: 90%;
+    }
+    
+    .ul_level_2 li:hover a {
+        background: #d6d5d5;
+    }
+    
+    .nav_produce a {
+        width: 170px !important;
+        min-width: 0px !important;
+    }
+    
+    .nav_acc,
+    .nav_produce {
+        min-width: 0px !important;
+    }
+    
+    .nav_acc a {
+        width: 120px !important;
+        min-width: 0px !important;
+    }
+    /*--------- footer css ---------*/
+    
+    footer {
+        background-color: #000000;
+        padding: 5px 0px;
+        margin: 0px;
+        color: white;
+        bottom: 0px;
+        position: relative;
+    }
+    
+    .footerCopyright {
+        padding: 2px 0px;
+        text-align: center;
+        font-size: 0.8rem;
+    }
+    /*--------- login css ---------*/
+    
+    .loginBody {
+        background: -moz-radial-gradient(circle, #7ea5c5, #001B2E);
+        background: -webkit-radial-gradient(circle, #7ea5c5, #001B2E);
+        background: -o-radial-gradient(circle, #7ea5c5, #001B2E);
+        background: radial-gradient(circle, #7ea5c5, #001B2E);
+        width: 100%;
+        height: 100%;
+    }
+    
+    .loginBg {
+        padding: 10px;
+    }
+    
+    .loginTitle {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.4rem;
+        padding: 100px 0px 50px 0px;
+        color: #fff;
+    }
+    
+    .loginBox {
+        width: 420px;
+        margin: 0px auto;
+        background: #FFFFFF;
+        box-shadow: 0px 1px 10px 0px rgb(83, 83, 83);
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .loginBox label {
+        padding: 0px 10px;
+        font-weight: bold;
+    }
+    /*--------- Station_record_history css ---------*/
+    
+    .app_table,
+    .sr_h_table,
+    .sr_h_pageTable {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 2px;
+        text-align: left;
+        padding: 2px 5px;
+        color: #fff;
+    }
+    
+    .app_table tr:nth-child(even),
+    .sr_h_table tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .app_table tr:nth-child(odd),
+    .sr_h_table tr:nth-child(odd) {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    .app_table th {
+        font-weight: bold;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .app_table td,
+    .sr_h_table td {
+        padding: 5px 10px;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    .app_tdTitle {
+        width: 240px;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    .app_tbBtnBox {
+        margin: 5px 0px;
+        width: 100px;
+        display: inline-block;
+    }
+    
+    .app_tbBtnBox .button {
+        font-size: 1rem;
+        height: 50px;
+    }
+    
+    .app_viewImg {
+        width: 500px;
+        text-align: center;
+        margin: 0px auto;
+    }
+    
+    .app_viewImg img {
+        width: 100%;
+    }
+    
+    .app_btnBox {
+        display: inline-block;
+        width: 48%;
+        margin: 0px 2px;
+    }
+    
+    .stationRecordBox {
+        width: 100%;
+        text-align: left;
+    }
+    
+    .sr_inputBox {
+        padding: 5px;
+        display: inline-block;
+        width: 70%;
+    }
+    
+    .sr_inputBoxUnit {
+        padding: 5px;
+        display: inline-block;
+        width: 29%;
+    }
+    
+    .sr_textareaBox {
+        padding: 5px;
+        width: 99%;
+    }
+    
+    .sr_checkbox {
+        width: 40px;
+    }
+    /*--------- Station_record_history_app css ---------*/
+    
+    .sr_h_inputTitle {
+        height: 60px;
+        line-height: 60px;
+        width: 200px;
+        display: inline-block;
+        text-align: right;
+        vertical-align: top;
+    }
+    
+    .sr_h_inputBox {
+        padding: 5px;
+        display: inline-block;
+        width: 70%;
+        vertical-align: top;
+    }
+    
+    .sr_h_inputBox input {
+        margin: 0px !important;
+        width: 100%;
+    }
+    
+    .sr_h_DTBox {
+        display: inline-block;
+        padding: 5px 0px;
+        width: 90%;
+    }
+    
+    .input-group-append {
+        height: 50px;
+    }
+    
+    .sr_h_listBox {
+        padding-bottom: 5px;
+    }
+    
+    .sr_h_table th {
+        font-weight: bold;
+        text-align: center;
+        background-color: #003e77;
+    }
+    
+    .pageBtnBox {
+        text-align: left;
+        width: 100%;
+        display: inline-block;
+        padding: 10px;
+    }
+    
+    .pageBtnBox input[type="radio"]+label {
+        width: auto;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        height: auto;
+        font-weight: normal;
+        font-size: 1rem;
+        letter-spacing: 0px;
+        padding: 0px 5px;
+        margin: 2px;
+    }
+    
+    .pageConBox {
+        text-align: left;
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .stationPageCon {
+        display: none;
+    }
+    
+    .sr_h_pageBox {
+        width: 100%;
+        display: none;
+    }
+    
+    .sr_h_pageTable {
+        font-size: 1rem;
+    }
+    
+    .sr_h_pageTable tr:nth-child(even) {
+        background-color: #fdddb4cc;
+        opacity: 1;
+    }
+    
+    .sr_h_pageTable tr:nth-child(odd) {
+        background-color: #ffe0b888;
+        opacity: 1;
+    }
+    
+    .sr_h_pageTable th {
+        background-color: #d69034;
+        color: #fff;
+        opacity: 1;
+    }
+    /*--------- dashboard_app css ---------*/
+    
+    .dashboard_app_th {
+        background-color: rgba(168, 168, 168, 0.226) !important;
+        color: rgb(255, 255, 255);
+        text-align: center;
+    }
+    
+    .dashboard_app_select {
+        display: inline-block;
+        min-width: 250px;
+        padding: 10px;
+    }
+    
+    .color_img {
+        max-width: 35px;
+        max-height: 35px;
+        display: inline-block;
+    }
+    
+    .img_pointer {
+        cursor: pointer;
+    }
+    
+    .color_img {
+        max-width: 60px;
+        max-height: 60px;
+        display: inline-block;
+    }
+    /*--------- quality_check css ---------*/
+    
+    .qualityBox {
+        background-color: rgba(255, 255, 255, 0.1);
+        text-align: center;
+        padding: 5px 0px;
+        margin-bottom: 10px;
+    }
+    
+    .radio {
+        width: 30px;
+        height: 30px;
+        display: inline;
+        vertical-align: middle;
+    }

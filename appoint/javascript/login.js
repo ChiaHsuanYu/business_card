@@ -26,6 +26,9 @@ function login() {
             location.href = baseUrl + "users/index/";
         });
     } else {
-        document.getElementById("alertMsg").innerHTML = result['msg'];
+        modal_show("msgModal");
+        document.getElementById("modal_label").innerHTML = "系統訊息";
+        document.getElementById("model_body").innerHTML = string_replace(result['msg']);
+        document.getElementById('password').value = "";
     }
 }

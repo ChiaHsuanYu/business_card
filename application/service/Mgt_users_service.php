@@ -36,13 +36,20 @@ class Mgt_users_service extends MY_Service
         $data['id'] = $this->session->mgt_user_info['id'];
         $r = $this->mgt_users_model->check_user_by_password($data);
         if($r){
+            if($data['password_old'] == $data['password_new']){
+                $result = array(
+                    "status" => 0,
+                    "msg"=> "不可與最近一次登入密碼重複"
+                );    
+                return $result;
+            }
             // 更新使用者新密碼
             $this->common_service->logger("user_id:".$data['id']);
             $data['password'] = $data['password_new'];
             $r = $this->mgt_users_model->update_password_by_id($data);
             $result = array(
                 "status" => 1,
-                "msg"=> "修改成功"
+                "msg"=> "重設密碼成功"
             );  
         }else{
             $result = array(

@@ -3,7 +3,7 @@
     <div class="contentsTitle blue">管理員密碼修改</div>
     <div class="ceContent width_80pc margin_auto">
         <div class="textCenter">
-            <div>
+            <div class="margin_top_10px">
                 <div class="label width_120px line_h_40px">
                     <div class="requiredTag">*</div><label>舊密碼：</label>
                 </div>
@@ -43,7 +43,12 @@
             check_password: check_password,
         };
         var result = call_api('mgt_users_api/update_password', data_obj);
-        console.log(result);
-        document.getElementById("alertMsg").innerHTML = result['msg'];
+        modal_show("msgModal");
+        document.getElementById("model_body").innerHTML = string_replace(result['msg']);
+        if(result['status']){
+            document.getElementById("modal_label").innerHTML = "系統訊息";
+        }else{
+            document.getElementById("modal_label").innerHTML = "格式錯誤";
+        }
     }
 </script>
