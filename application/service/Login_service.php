@@ -281,13 +281,13 @@ class Login_service extends MY_Service
     
     public function line_login($code){
         // 取得 access_token
-        $url = line_access_token_api;
+        $url = LINE_ACCESS_TOKEN_API;
         $postData = array(
             "grant_type" => 'authorization_code',
             "code" => $code,
-            "redirect_uri" => line_login_redirect_url,
-            "client_id" => line_app_id,
-            "client_secret" => line_app_secret
+            "redirect_uri" => LINE_LOGIN_REDIRECT_URL,
+            "client_id" => LINE_APP_ID,
+            "client_secret" => LINE_APP_SECRET
         );
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_POST, true);
@@ -305,7 +305,7 @@ class Login_service extends MY_Service
            
             // 存取token並取得使用者資訊
             $this->session->set_userdata('line_access_token', $output['access_token']); 
-            $url = line_profile_api;
+            $url = LINE_PROFILE_API;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

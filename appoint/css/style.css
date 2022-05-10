@@ -2,10 +2,10 @@
 
 .loginBody {
     /* background-color: #81818156; */
-    background: -moz-radial-gradient(circle, rgb(255, 255, 255), #b2d2e4);
-    background: -webkit-radial-gradient(circle, rgb(255, 255, 255), #b2d2e4);
-    background: -o-radial-gradient(circle, rgb(255, 255, 255), #b2d2e4);
-    background: radial-gradient(circle, rgb(255, 255, 255), #e7e7e7);
+    background: -moz-radial-gradient(circle, rgb(255, 255, 255), #f3f3f3);
+    background: -webkit-radial-gradient(circle, rgb(255, 255, 255), #f3f3f3);
+    background: -o-radial-gradient(circle, rgb(255, 255, 255), #f3f3f3);
+    background: radial-gradient(circle, rgb(255, 255, 255), #f3f3f3);
     /* box-shadow :10px 0 0px 0px #d4d3d3; */
     width: 100%;
     min-height: 100%;
@@ -30,26 +30,26 @@
     text-align: center;
     font-weight: bold;
     font-size: 1.4rem;
-    padding: 100px 0px 30px 0px;
+    padding: 120px 0px 30px 0px;
     color: rgb(22, 22, 22);
 }
 
 .little_title{
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: bold;
     background: -moz-radial-gradient(circle, #f7f7f7, #d6d6d6);
     background: -webkit-radial-gradient(circle, #f7f7f7, #d6d6d6);
     background: -o-radial-gradient(circle, #f7f7f7, #d6d6d6);
     background: radial-gradient(circle, #314b92, #525fac);
-    margin-bottom: 18px;
+    margin-bottom: 20px;
     color: #dddddd;
 }
 
 .loginBox {
-    width: 320px;
+    width: 420px;
     margin: 0px auto;
     background: #FFFFFF;
-    box-shadow: 2px 2px 7px 2px rgb(155, 155, 155);
+    box-shadow: 1px 1px 6px 1px rgb(155, 155, 155);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -69,8 +69,8 @@
     border-radius: 10px;
     padding: 4px;
     margin: 8px;
-    width: 200px;
-    height: 30px;
+    width: 220px;
+    height: 36px;
 }
 
 /* sidebar & content */

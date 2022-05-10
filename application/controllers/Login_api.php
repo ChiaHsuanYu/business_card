@@ -135,47 +135,6 @@ class Login_api extends BaseAPIController
         $this->response($result,200); // REST_Controller::HTTP_OK
     }
 
-    // google登入驗證
-    public function google_login_post(){   
-        $google_access_token = $this->security->xss_clean($this->input->post("google_access_token"));
-        $this->form_validation->set_rules('google_access_token', 'google_access_token', 'required');
-
-        //判斷規則是否成立
-        if ($this->form_validation->run() === FALSE) {
-            $result = array(
-                "status" => 0,
-                "msg" => $this->form_validation->error_string()
-            ); 
-            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
-        }else{
-            $result = $this->login_service->get_google_login_data($google_access_token);
-            if($result['status']){
-                // 限制設備裝置登入數量
-                $device = $this->get_device_type();
-                $this->common_service->restrict_user_device($result['data'][0]->id,$device);
-                //更新Token, createDT, updateDT
-                $new_Token = $this->renewToken_front($result['data'][0]->id,$result['data'][0]->google_uid);
-                $result = $this->common_service->checkToken_front($new_Token['Token']);//重新取得使用者資訊
-                //驗證成功，紀錄帳號資料到SESSION
-                $this->session->user_info = (array)$result['data'][0];
-                // 整理資料-依照順序取得公司資訊 by companyId,userId
-                $userInfo = $this->login_service->get_company($result['data'][0]);
-                // 檢查基本是否為空
-                $isBasicInfoEmpty = true;
-                if(!empty($result['data'][0]->personal_superID)){
-                    $isBasicInfoEmpty = false;
-                }
-                $result = array(
-                    "status" => 1,
-                    "msg" => '驗證成功',
-                    "isBasicInfoEmpty" => $isBasicInfoEmpty,
-                    "data" => $userInfo,
-                ); 
-            }
-            $this->response($result,200); // REST_Controller::HTTP_OK     
-        }
-    } 
-
     // 第三方登入驗證
     public function Social_login_post(){   
         $social_type = $this->security->xss_clean($this->input->post("social_type"));

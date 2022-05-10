@@ -2,7 +2,8 @@
 
 require APPPATH . 'controllers/BaseAPIController.php';
 defined('BASEPATH') OR exit('No direct script access allowed');
- 
+use JeroenDesloovere\VCard\VCard;
+
 class Users_api extends BaseAPIController 
 {
     //連接指定的model檔案 
@@ -102,8 +103,6 @@ class Users_api extends BaseAPIController
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
-            // $data['personal_avatar_path'] = $_FILES['personal_avatar']["tmp_name"];
-            // $data['company_logo_path'] = $_FILES['company_logo']["tmp_name"];
             $data['personal_avatar_path'] = null;
             $data['company_logo_path'] = null;
             $config_status = null;
@@ -165,7 +164,6 @@ class Users_api extends BaseAPIController
                     $data['company_logo_path']=$result['upload_data']['orig_name'];
                 }
             }
-            // $this->response($data,200); // REST_Controller::HTTP_OK     
             $this->response( $this->users_service->edit_personal_acc($data),200); // REST_Controller::HTTP_OK     
         }
     }
@@ -309,4 +307,46 @@ class Users_api extends BaseAPIController
             $this->response($this->users_service->update_superId_by_id($data),200); // REST_Controller::HTTP_OK     
         }
     }
+
+    // 匯出Vcf檔
+    public function test_post(){   
+        // define vcard
+        $vcard = new VCard();
+        // define variables
+        $lastname = 'Desloovere';
+        $firstname = 'Jeroen';
+        $additional = '';
+        $prefix = '';
+        $suffix = '';
+        // add personal data
+        $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
+
+        // add work data
+        $vcard->addCompany('Siesqo');
+        $vcard->addJobtitle('Web Developer');
+        $vcard->addRole('Data Protection Officer');
+        $vcard->addEmail('info@jeroendesloovere.be');
+        $vcard->addPhoneNumber(1234121212, 'PREF;WORK');
+        $vcard->addPhoneNumber(123456789, 'WORK');
+        $vcard->addAddress(null, null, 'street', 'worktown', null, 'workpostcode', 'Belgium');
+        $vcard->addLabel('street, worktown, workpostcode Belgium');
+        $vcard->addURL('http://www.jeroendesloovere.be');
+        $vcard->addPhoto(SOCIAL_ICON_PATH . 'Facebook.svg');
+
+        $superId = '123';
+        $file_name = $superId.'-business-card';
+        $no = 0;
+        while(file_exists(VCARD_PATH.$file_name.'.vcf')){
+            $no++;
+            $file_name = $superId.'-business-card-'.$no;
+        }
+        $vcard->setFilename($file_name);
+        // return vcard as a string
+        // return $vcard->getOutput();
+        // return vcard as a download
+        $vcard->setSavePath(VCARD_PATH);
+        $vcard->save();        
+        
+        $this->response( $vcard->save(),200); // REST_Controller::HTTP_NOT_FOUND
+    } 
 }

@@ -16,7 +16,8 @@
         "firebase/php-jwt": "^6.1",
         "google/apiclient":"^2.7",
         "facebook/graph-sdk": "~5.0",
-        "giggsey/libphonenumber-for-php": "8.12.47.1"
+        "giggsey/libphonenumber-for-php": "8.12.47.1",
+        "jeroendesloovere/vcard": "^1.7"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x"

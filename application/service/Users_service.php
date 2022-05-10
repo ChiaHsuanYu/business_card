@@ -181,6 +181,7 @@ class Users_service extends MY_Service
         return $result;
     }
 
+    // 編輯個人檔案
     public function update_acc_by_id($data){
         $data->company_order = array();
         $data->id = $this->session->user_info['id'];

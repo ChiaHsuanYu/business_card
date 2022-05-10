@@ -30,7 +30,6 @@ class SuperID_api extends BaseAPIController
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
-            // $this->response( $_SERVER['HTTP_ORIGIN'],200); // REST_Controller::HTTP_OK     
             $this->response( $this->users_service->get_user_by_superId($data),200); // REST_Controller::HTTP_OK     
         }
     }

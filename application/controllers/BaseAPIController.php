@@ -4,7 +4,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use chriskacerguis\RestServer\RestController;
 
 require APPPATH . 'libraries/CreatorJwt.php';
-
 class BaseAPIController extends RestController {
 
     function __construct()
@@ -15,7 +14,7 @@ class BaseAPIController extends RestController {
         $this->load->service("Common_service");
         $this->objOfJwt = new CreatorJwt();
         if (isset($_SERVER['HTTP_ORIGIN'])) {
-            // header("Access-Control-Allow-Origin: {https://192.168.88.124}");
+            // header("Access-Control-Allow-Origin: {https://192.168.88.138}");
             header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Max-Age: 86400');    // cache for 1 day

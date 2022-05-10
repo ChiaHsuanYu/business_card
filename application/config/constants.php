@@ -99,17 +99,18 @@ define('AVATAR_PATH', 'appoint/images/avatar/');                        //個人
 define('DEL_AVATAR_PATH', 'appoint/images/del_avatar/');                //未使用到的個人頭像圖片路徑
 define('LOGO_PATH', 'appoint/images/logo/');                            //公司LOGO圖片路徑
 define('DEL_LOGO_PATH', 'appoint/images/del_logo/');                    //未使用到的公司LOGO圖片路徑
+define('VCARD_PATH', 'appoint/vCard/');                                 //vCard路徑
 
 /* 第三方登入 */
 define('TOKEN_URL', 'https://192.168.88.138:8080/SocialLoginToken');                                   // 前端取得token頁面並執行登入頁面
 define('GOOGLE_CLIENTID', '850954696376-rvhmmuktms09hb9d0v08bss1gskq8j3i.apps.googleusercontent.com'); // define google clientId
 define('GOOGLE_CLIENTSECRET', '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');                                  // define google Secret Key
 
-define('line_app_id', '1657106852');                                                     // define line appId
-define('line_app_secret', '7b2ed300faa203ef91bf8321d14cd7be');                           // define line appId
-define('line_login_redirect_url', 'https://shine.sub.sakawa.com.tw/bc_test_line.html');  // define line redirectURL
-define('line_access_token_api', 'https://api.line.me/oauth2/v2.1/token');                // define line get access_token API
-define('line_profile_api', 'https://api.line.me/v2/profile');                            // define line get profile API
+define('LINE_APP_ID', '1657106852');                                                     // define line appId
+define('LINE_APP_SECRET', '7b2ed300faa203ef91bf8321d14cd7be');                           // define line appId
+define('LINE_LOGIN_REDIRECT_URL', 'https://shine.sub.sakawa.com.tw/bc_test_line.html');  // define line redirectURL
+define('LINE_ACCESS_TOKEN_API', 'https://api.line.me/oauth2/v2.1/token');                // define line get access_token API
+define('LINE_PROFILE_API', 'https://api.line.me/v2/profile');                            // define line get profile API
 
 /* 後台URI */
 define('LOGIN_PAGE', 'mgt_login/index');                                //define login page
