@@ -21,7 +21,7 @@ class Avatar_model extends CI_Model
             foreach ($query->result() as $row) {
                 $obj = new Avatar_model();
                 $obj->id = $row->Id;
-                $obj->imageURL = base_url().AVATAR_PATH.$row->ImageURL;
+                $obj->imageURL = '/'.AVATAR_PATH.$row->ImageURL;
                 $obj->name = $row->Name;
                 array_push($result, $obj);
             }

@@ -56,6 +56,7 @@ function subject_noData() {
 
 // 列表-依序列出所有主題
 function subject_data(subject, data_obj) {
+    var baseUrl = document.getElementById('base_url').value;
     var data_obj = JSON.stringify(data_obj);
     var hideobj = document.getElementById("allPageCountBox");
     var count = json_count(subject); // 群組筆數
@@ -74,7 +75,7 @@ function subject_data(subject, data_obj) {
         for (var i = 0; i < count; i++) {
             no++;
             var subject_data = JSON.stringify(subject[i]);
-            var img = "<img class='img img_pointer' title='另開圖片視窗' src='" + subject[i]['imageURL'] + "' onclick='openImg(" + '"' + subject[i]['imageURL'] + '"' + ")'>";
+            var img = "<img class='img img_pointer' title='另開圖片視窗' src='" + baseUrl + subject[i]['imageURL'] + "' onclick='openImg(" + '"' + subject[i]['imageURL'] + '"' + ")'>";
             var file_btn = '<a href="'+subject[i]['subjectFile']+'" class="inline_block margin_0 fault_a" download="subject.css">點選下載</a>';
             var releas_btn = "<button class='button width_80px inline_block' onclick='confirm_release_subject(" + subject_data + ")'>發布</button>";
             var del_btn = "<button class='button width_80px inline_block' onclick='confirm_del_subject(" + subject_data + ")'>刪除</button>";

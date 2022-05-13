@@ -25,8 +25,8 @@ class Subject_model extends CI_Model
             foreach ($query->result() as $row) {
                 $obj = new Subject_model();
                 $obj->id = $row->Id;
-                $obj->imageURL = base_url().SUBJECT_IMAGE_PATH.$row->ImageURL;
-                $obj->subjectFile = base_url().SUBJECT_CSS_PATH.$row->SubjectFile;
+                $obj->imageURL = '/'.SUBJECT_IMAGE_PATH.$row->ImageURL;
+                $obj->subjectFile = '/'.SUBJECT_CSS_PATH.$row->SubjectFile;
                 $obj->name = $row->Name;
                 $obj->isReleased = $row->isReleased;
                 $obj->releaseTime = $row->ReleaseTime;

@@ -60,7 +60,7 @@ class Company_model extends CI_Model
                     $obj->company_address = explode(',',$row->Address);
                 }
                 if($row->Logo){
-                    $obj->company_logo = base_url().LOGO_PATH.$row->Logo;
+                    $obj->company_logo = '/'.LOGO_PATH.$row->Logo;
                 }
                 array_push($result, $obj);
             }

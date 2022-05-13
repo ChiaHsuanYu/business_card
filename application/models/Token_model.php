@@ -74,8 +74,8 @@ class Token_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
-                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
-                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_imageURL = '/'.SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = '/'.SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
                 $obj->isDeleted = $row->isDeleted;
                 $obj->identity = $row->Identity;
@@ -97,7 +97,7 @@ class Token_model extends CI_Model
                 if($row->Avatar){
                     $obj->personal_avatar = $row->Avatar;
                     if(strpos($obj->personal_avatar, "http") === false){
-                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                        $obj->personal_avatar = '/'.AVATAR_PATH.$row->Avatar;
                     };
                 }
                 array_push($result, $obj);
@@ -127,8 +127,8 @@ class Token_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
-                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
-                $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->subject_imageURL = '/'.SUBJECT_IMAGE_PATH.$row->subject_imageURL;
+                $obj->subject_file = '/'.SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
                 // $obj->SMSNumber = $row->SMSNumber;
                 // $obj->SMSTime = $row->SMSTime;
@@ -152,7 +152,7 @@ class Token_model extends CI_Model
                 if($row->Avatar){
                     $obj->personal_avatar = $row->Avatar;
                     if(strpos($obj->personal_avatar, "http") === false){
-                        $obj->personal_avatar = base_url().AVATAR_PATH.$row->Avatar;
+                        $obj->personal_avatar = '/'.AVATAR_PATH.$row->Avatar;
                     };
                 }
                 array_push($result, $obj);
