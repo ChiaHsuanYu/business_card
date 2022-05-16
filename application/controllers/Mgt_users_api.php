@@ -11,8 +11,8 @@ class Mgt_users_api extends BaseAPIController
         parent::__construct();
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
-        $this->load->service("mgt_users_service");
-        $this->load->service('common_service');
+        $this->load->service("Mgt_users_service");
+        $this->load->service('Common_service');
         $this->load->library('session');
 
         // 登入驗證

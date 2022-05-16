@@ -9,7 +9,7 @@ class Subject_api extends BaseAPIController
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("subject_service");
+        $this->load->service("Subject_service");
         $this->load->library('session');
 
         // 登入驗證

@@ -4,9 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use chriskacerguis\RestServer\RestController;
 
 require APPPATH . 'libraries/CreatorJwt.php';
-class BaseAPIController extends RestController {
-
-    function __construct()
+class BaseAPIController extends RestController{
+    public function __construct()
     {
         // Construct the parent class
         parent::__construct();
@@ -105,9 +104,15 @@ class BaseAPIController extends RestController {
     public function checkAA(){
         $bearer = array("Bearer ", "bearer ", "BEARER ");     
         $received_Token = "";
+        $headers = $this->input->request_headers();
+        $headers = array_change_key_case($headers, CASE_LOWER);
         $headers = $this->input->request_headers('Authorization');
         if (array_key_exists('Authorization', $headers) && $headers['Authorization'] != '') {
             $received_Token = str_replace($bearer, "", $headers['Authorization']); //取得Token
+        }
+        $headers = $this->input->request_headers('authorization');
+        if (array_key_exists('authorization', $headers) && $headers['authorization'] != '') {
+            $received_Token = str_replace($bearer, "", $headers['authorization']); //取得Token
         }
         //檢查token是否合法(存在於database)；
         $r = $this->common_service->checkToken($received_Token);
@@ -125,13 +130,13 @@ class BaseAPIController extends RestController {
                 $r = $this->common_service->checkToken($new_Token['token']);    //重新取得使用者資訊                
             } elseif ($u_not_expired !== TRUE) {                                    //使用者idle時間已超過限制，token過期，登出user
                 $this->deleteToken($received_Token);
-                return array("status" => 2, "msg" => "token 不合法或逾時");
+                return array("status" => 2, "msg" => "token 不合法或逾時","authorization"=> $headers);
             } else {                                                              //正常，更新Token的T_UpdateDT
                 $this->common_service->renewTokenUpdateDT($received_Token);
             }
             return array("status" => 1, "data" => $r['data'][0]);
         } else {  //token 不合法或逾時，導到登入頁面
-            return array("status" => 0, "msg" => "token 不合法或逾時");
+            return array("status" => 0, "msg" => "token 不合法或逾時","authorization"=> $headers);
         }
     }
 
@@ -153,7 +158,7 @@ class BaseAPIController extends RestController {
 
         //檢查token是否合法(存在於database)；
         if(empty($received_Token) || $received_Token == 'null'){
-            return array("status" => 0, "msg" => "token 不合法或逾時");
+            return array("status" => 0, "msg" => "token 不合法或逾時","headers"=> $headers,"authorization"=> $authorization);
         }
         $r = $this->common_service->checkToken_front($received_Token);
         if ($r['status']) {
@@ -170,13 +175,13 @@ class BaseAPIController extends RestController {
                 $r = $this->common_service->checkToken_front($new_Token['token']);    //重新取得使用者資訊                
             } elseif ($u_not_expired !== TRUE) {                                    //使用者idle時間已超過限制，token過期，登出user
                 $this->deleteToken_front($received_Token);
-                return array("status" => 0, "msg" => "token 不合法或逾時");
+                return array("status" => 0, "msg" => "token 不合法或逾時","authorization"=> $headers);
             } else {                                                              //正常，更新Token的T_UpdateDT
                 $this->common_service->renewTokenUpdateDT_front($received_Token);
             }
             return array("status" => 1, "data" => $r['data'][0]);
         } else {  //token 不合法或逾時，導到登入頁面
-            return array("status" => 0, "msg" => "token 不合法或逾時");
+            return array("status" => 0, "msg" => "token 不合法或逾時","authorization"=> $headers);
         }
     }
 

@@ -9,7 +9,7 @@ class Country_code_api extends BaseAPIController
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("country_code_service");
+        $this->load->service("Country_code_service");
         $this->load->library('session');
     }
 

@@ -4,9 +4,9 @@ class Login_service extends MY_Service
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("register_service");
-        $this->load->service("common_service");
-        $this->load->service("sms_service");
+        $this->load->service("Register_service");
+        $this->load->service("Common_service");
+        $this->load->service("SMS_service");
         $this->load->model('users_model');
         $this->load->model('social_model');
         $this->load->model('sms_log_model');
@@ -165,7 +165,7 @@ class Login_service extends MY_Service
         $google_client = new Google_Client();
         $google_client->setClientId(GOOGLE_CLIENTID); //Define your ClientID
         $google_client->setClientSecret(GOOGLE_CLIENTSECRET); //Define your Client Secret Key
-        $google_client->setRedirectUri('https://shine.sub.sakawa.com.tw/bc_test.html'); //Define your Redirect Uri
+        $google_client->setRedirectUri('https://shine.sub.sakawa.com.tw/business_card/google_login/login'); //Define your Redirect Uri
         $google_client->addScope('email');
         $google_client->addScope('profile');
         $token = $google_client->fetchAccessTokenWithAuthCode($code);
@@ -174,6 +174,7 @@ class Login_service extends MY_Service
             $google_client->setAccessToken($token['access_token']);
             $this->session->set_userdata('access_token', $token['access_token']);
             $google_service = new Google_Service_Oauth2($google_client);
+            // $google_service = new Google\Service\Oauth2($google_client);
             $data = $google_service->userinfo->get();
             if ($check_result = $this->users_model->check_user_by_google_uid($data['id'])) {
                 if($check_result[0]->isDeleted == '1'){

@@ -11,8 +11,8 @@ class SuperID_api extends BaseAPIController
         parent::__construct();
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
-        $this->load->service("users_service");
-        $this->load->service('common_service');
+        $this->load->service("Users_service");
+        $this->load->service('Common_service');
         $this->load->library('session');
 
     }

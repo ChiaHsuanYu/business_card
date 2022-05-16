@@ -11,9 +11,9 @@ class Login_api extends BaseAPIController
         parent::__construct();
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
-        $this->load->service("login_service");
         $this->load->library('session');
         $this->load->library('facebook'); 
+        $this->load->service("Login_service");
     }
 
     // 檢查是否已有登入紀錄

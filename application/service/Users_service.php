@@ -8,7 +8,7 @@ class Users_service extends MY_Service
         $this->load->model('company_model');
         $this->load->model('social_model');
         $this->load->model('avatar_model');
-        $this->load->service('common_service');
+        $this->load->service('Common_service');
         $this->load->library('session');
     }
    
@@ -61,8 +61,8 @@ class Users_service extends MY_Service
         }
         if(isset($data['personal_orig_img'])){
             if($data['personal_orig_img']){
-                // $personal_avatar_path = explode(base_url().AVATAR_PATH,$data['personal_orig_img']);
-                $personal_avatar_path = explode(AVATAR_PATH,$data['personal_orig_img']);
+                $personal_avatar_path = explode(base_url().AVATAR_PATH,$data['personal_orig_img']);
+                // $personal_avatar_path = explode(AVATAR_PATH,$data['personal_orig_img']);
                 if(count($personal_avatar_path)>1){
                     $data['personal_avatar_path'] = $personal_avatar_path[1];
                 }else{
@@ -226,10 +226,10 @@ class Users_service extends MY_Service
                 }
                 if(isset($company_data->company_orig_logo)){
                     if($company_data->company_orig_logo){
-                        // $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
-                        // $company_data->company_logo_path = $company_logo_path[1];
-                        $company_logo_path = explode( LOGO_PATH,$company_data->company_orig_logo);
+                        $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
                         $company_data->company_logo_path = $company_logo_path[1];
+                        // $company_logo_path = explode( LOGO_PATH,$company_data->company_orig_logo);
+                        // $company_data->company_logo_path = $company_logo_path[1];
                     }
                 }
                 // 移動LOGO圖片
@@ -279,8 +279,8 @@ class Users_service extends MY_Service
         }
         if(isset($data->personal_orig_img)){
             if($data->personal_orig_img){
-                // $personal_avatar_path = explode(base_url().AVATAR_PATH,$data->personal_orig_img);
-                $personal_avatar_path = explode(AVATAR_PATH,$data->personal_orig_img);
+                $personal_avatar_path = explode(base_url().AVATAR_PATH,$data->personal_orig_img);
+                // $personal_avatar_path = explode(AVATAR_PATH,$data->personal_orig_img);
                 if(count($personal_avatar_path)>1){
                     $data->personal_avatar_path = $personal_avatar_path[1];
                 }else{
@@ -312,9 +312,9 @@ class Users_service extends MY_Service
         $r = $this->users_model->get_user_by_id($id);
         if(count($r)){
             if($r[0]->personal_avatar){
-                // $old_file_path = explode(base_url(), $r[0]->personal_avatar);
-                // $old_file_name = explode(AVATAR_PATH, $old_file_path[1]);
-                $old_file_name = explode(AVATAR_PATH, $r[0]->personal_avatar);
+                $old_file_path = explode(base_url(), $r[0]->personal_avatar);
+                $old_file_name = explode(AVATAR_PATH, $old_file_path[1]);
+                // $old_file_name = explode(AVATAR_PATH, $r[0]->personal_avatar);
                 if(count($old_file_name)>1){
                     if(file_exists(AVATAR_PATH.$old_file_name[1])){
                         if(!file_exists(SYSTEM_AVATAR_PATH.$old_file_name[1])){
@@ -333,10 +333,10 @@ class Users_service extends MY_Service
     public function logo_rename($companyId,$userId){
         $r = $this->company_model->get_company_by_userId($companyId,$userId);
         if(count($r)){
-            // $old_file_path = explode(base_url(), $r[0]->company_logo);
-            // if(count($old_file_path)>1){
-            //     $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
-                $old_file_name = explode(LOGO_PATH, $r[0]->company_logo);
+            $old_file_path = explode(base_url(), $r[0]->company_logo);
+            if(count($old_file_path)>1){
+                $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
+                // $old_file_name = explode(LOGO_PATH, $r[0]->company_logo);
                 if(count($old_file_name)>1){
                     if(file_exists(LOGO_PATH.$old_file_name[1])){
                         rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);

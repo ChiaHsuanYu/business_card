@@ -9,7 +9,7 @@ Class Line_login extends CI_Controller{
         $this->load->helper('url'); 
         $this->load->helper('html');
         $this->load->helper('form');
-        $this->load->service("login_service");
+        $this->load->service("Login_service");
     }
     public function login(){
         // 清除session

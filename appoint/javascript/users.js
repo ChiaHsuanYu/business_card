@@ -183,7 +183,7 @@ function users_data(seachText, data_obj) {
                 nickname = users[i]['personal_nickname'];
             }
             if(users[i]['personal_avatar']){
-                users[i]['personal_avatar'] = baseUrl + users[i]['personal_avatar'];
+                // users[i]['personal_avatar'] = baseUrl + users[i]['personal_avatar'];
                 avatar = "<img class='img img_pointer' title='另開圖片視窗' src='" + users[i]['personal_avatar'] + "' onclick='openImg(" + '"' + users[i]['personal_avatar'] + '"' + ")'>";
             }
             if(users[i]['personal_phone']){
@@ -213,7 +213,7 @@ function users_data(seachText, data_obj) {
                     if(k>0){
                         social += "<br>";
                     }
-                    users[i]['personal_social'][k]['iconURL'] = baseUrl + users[i]['personal_social'][k]['iconURL'];
+                    // users[i]['personal_social'][k]['iconURL'] = baseUrl + users[i]['personal_social'][k]['iconURL'];
                     social += "<img class='img img_pointer' title='另開圖片視窗' src='" + users[i]['personal_social'][k]['iconURL'] + "' onclick='openImg(" + '"' + users[i]['personal_social'][k]['iconURL'] + '"' + ")'> ";
                     social += "<a href='"+users[i]['personal_social'][k]['socialURL']+"'>"+users[i]['personal_social'][k]['socialTitle']+"</a>";
                 }
@@ -282,7 +282,7 @@ function users_data(seachText, data_obj) {
                     social = '-',
                     modifiedTime = companyInfo[k]['createTime'];
                 if (companyInfo[k]['company_logo']) {
-                    companyInfo[k]['company_logo'] =  baseUrl + companyInfo[k]['company_logo'];
+                    // companyInfo[k]['company_logo'] =  baseUrl + companyInfo[k]['company_logo'];
                     logo_img = "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_logo'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_logo'] + '"' + ")'>";
                 }
                 if(companyInfo[k]['company_industryName']){
@@ -330,7 +330,7 @@ function users_data(seachText, data_obj) {
                         if(m>0){
                             social += "<br>";
                         }
-                        companyInfo[k]['company_social'][m]['iconURL'] = baseUrl + companyInfo[k]['company_social'][m]['iconURL'];
+                        // companyInfo[k]['company_social'][m]['iconURL'] = baseUrl + companyInfo[k]['company_social'][m]['iconURL'];
                         social += "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_social'][m]['iconURL'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_social'][m]['iconURL'] + '"' + ")'> ";
                         social += "<a href='"+companyInfo[k]['company_social'][m]['socialURL']+"'>"+companyInfo[k]['company_social'][m]['socialTitle']+"</a>";
                     }

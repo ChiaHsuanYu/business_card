@@ -9,7 +9,7 @@ class Industry_category_api extends BaseAPIController
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("industry_service");
+        $this->load->service("Industry_service");
         $this->load->library('session');
 
         // 登入驗證

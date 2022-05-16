@@ -8,7 +8,7 @@ class Mgt_users_service extends MY_Service
         $this->load->model('users_model');
         $this->load->model('social_model');
         $this->load->model('industry_model');
-        $this->load->service('common_service');
+        $this->load->service('Common_service');
         $this->load->library('session');
     }
 

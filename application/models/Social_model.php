@@ -21,7 +21,7 @@ class Social_model extends CI_Model
             foreach ($query->result() as $row) {
                 $obj = new Social_model();
                 $obj->id = $row->Id;
-                $obj->iconURL = '/'.SOCIAL_ICON_PATH.$row->Icon;
+                $obj->iconURL = base_url().SOCIAL_ICON_PATH.$row->Icon;
                 $obj->name = $row->Name;
                 array_push($result, $obj);
             }
@@ -38,7 +38,7 @@ class Social_model extends CI_Model
             foreach ($query->result() as $row) {
                 $obj = new Social_model();
                 $obj->id = $row->Id;
-                $obj->iconURL = '/'.SOCIAL_ICON_PATH.$row->Icon;
+                $obj->iconURL = base_url().SOCIAL_ICON_PATH.$row->Icon;
                 $obj->name = $row->Name;
                 array_push($result, $obj);
             }

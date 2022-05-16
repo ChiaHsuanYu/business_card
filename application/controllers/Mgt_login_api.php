@@ -10,7 +10,7 @@ class Mgt_login_api extends BaseAPIController
         parent::__construct();
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
-        $this->load->service("mgt_login_service");
+        $this->load->service("Mgt_login_service");
         $this->load->library('session');
     }
 

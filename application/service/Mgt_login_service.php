@@ -4,7 +4,7 @@ class Mgt_login_service extends MY_Service
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("common_service");
+        $this->load->service("Common_service");
         $this->load->model('mgt_users_model');
         $this->load->model('mgt_login_model');
     }

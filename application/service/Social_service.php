@@ -5,7 +5,7 @@ class Social_service extends MY_Service
     {
         parent::__construct();
         $this->load->model('social_model');
-        $this->load->service('common_service');
+        $this->load->service('Common_service');
         $this->load->library('session');
     }
    

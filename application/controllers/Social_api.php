@@ -9,7 +9,7 @@ class Social_api extends BaseAPIController
     public function __construct()
     {
         parent::__construct();
-        $this->load->service("social_service");
+        $this->load->service("Social_service");
         $this->load->library('session');
 
         // 登入驗證
