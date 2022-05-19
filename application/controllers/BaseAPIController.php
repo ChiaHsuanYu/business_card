@@ -12,6 +12,7 @@ class BaseAPIController extends RestController{
         $this->load->library(array("form_validation"));
         $this->load->service("Common_service");
         $this->objOfJwt = new CreatorJwt();
+        header("X-Frame-Options: DENY");
         if (isset($_SERVER['HTTP_ORIGIN'])) {
             // header("Access-Control-Allow-Origin: {https://192.168.88.138}");
             header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -28,7 +29,7 @@ class BaseAPIController extends RestController{
                 header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
             exit(0);
         }
-        header('Content-Type: application/x-www-form-urlencoded');
+        // header('Content-Type: application/x-www-form-urlencoded');
         // header('Content-Type: multipart/form-data');
         // header('Content-Type: application/json');
     }
