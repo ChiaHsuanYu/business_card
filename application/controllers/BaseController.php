@@ -11,6 +11,7 @@ class BaseController extends CI_Controller
         $this->load->service("Common_service");
         $this->load->library('session');
         $this->objOfJwt = new CreatorJwt();
+        header("X-Frame-Options: DENY");
     }
 
     public function GenToken($user_id, $user_account)

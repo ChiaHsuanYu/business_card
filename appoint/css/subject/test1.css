@@ -1,129 +1,397 @@
-.content {
+* {
+  /* remember to define focus styles! */
+  /* tables still need 'cellspacing="0"' in the markup */
+}
+
+* html, * body, * div, * span, * applet, * object, * iframe,
+* h1, * h2, * h3, * h4, * h5, * h6, * p, * blockquote, * pre,
+* a, * abbr, * acronym, * address, * big, * cite, * code,
+* del, * dfn, * em, * font, * img, * ins, * kbd, * q, * s, * samp,
+* small, * strike, * strong, * sub, * sup, * tt, * var,
+* dl, * dt, * dd, * ol, * ul, * li,
+* fieldset, * form, * label, * legend,
+* table, * caption, * tbody, * tfoot, * thead, * tr, * th, * td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+}
+
+* :focus {
+  outline: 0;
+}
+
+* body {
+  line-height: 1;
+  color: black;
+  background: white;
+}
+
+* ol, * ul {
+  list-style: none;
+}
+
+* table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+* caption, * th, * td {
+  text-align: left;
+  font-weight: normal;
+}
+
+* blockquote:before, * blockquote:after,
+* q:before, * q:after {
+  content: "";
+}
+
+* blockquote, * q {
+  quotes: "" "";
+}
+
+html, body {
+  height: 100%;
+}
+
+:root {
+  --cardBackgroundColor: black;
+  --defaultFontColor: white;
+  --selectFontColor: greenyellow;
+  --borderColor: rgb(253, 184, 36);
+  --borderWidth: 3px;
+  --titleNameFontSize: 16px;
+  --subTitleNameFontSize: 14px;
+  --defaultFontSize: 12px;
+  --logoSize: 50px;
+  --avatarSize: 100px;
+  --contentWidth: 250px;
+}
+
+.ShowCard {
+  color: var(--defaultFontColor);
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.content .personal-content {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #b3a9a9;
-  position: relative;
-}
-.content .personal-content .personal-avatar {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -80%);
-  width: 100px;
-  height: 100px;
-  border-radius: 50px;
-}
-.content .personal-content .personal-name {
-  text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  padding-top: 30px;
-  padding-bottom: 10px;
-}
-.content .personal-content .personal-phone {
-  font-size: 20px;
-}
-.content .personal-content .personal-email {
-  font-size: 18px;
-}
-.content .personal-content .personal-social {
-  padding: 5px 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.content .personal-content .personal-social .social-name {
-  padding-right: 10px;
-}
-.content .personal-content .personal-social .social-icon {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-}
-.content .company-content {
-  position: relative;
-  padding-top: 20px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   padding-bottom: 20px;
-  width: 100%;
-  background-color: #c2d1c2;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+.ShowCard .personal_content {
+  margin-top: 150px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
-.content .company-content .company-name {
-  margin-top: 10px;
+
+.ShowCard .personal_content .personal_info {
+  width: var(--contentWidth);
+  background-color: var(--cardBackgroundColor);
+  padding: 20px;
+  padding-top: 50px;
   position: relative;
-  font-size: 36px;
-  font-weight: 700;
-}
-.content .company-content .company-name .company-logo {
-  position: absolute;
-  top: 50%;
-  left: -50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
+  border: var(--borderWidth) solid var(--borderColor);
   border-radius: 30px;
 }
-.content .company-content .company-position {
-  font-size: 18px;
-}
-.content .company-content .company-aboutus {
-  padding-top: 10px;
-  font-size: 20px;
-}
-.content .company-content .company-phone {
-  padding-top: 10px;
-  font-size: 20px;
-}
-.content .company-content .company-email {
-  font-size: 18px;
-}
-.content .company-content .company-address {
-  padding-top: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.content .company-content .company-address .address-icon {
-  cursor: pointer;
-  margin-left: 5px;
-  width: 40px;
-  height: 40px;
-  background: url('http://192.168.88.138/business_card/appoint/images/map.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-.content .company-content .company-social {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.content .company-content .company-social .social-icon {
-  margin: 0 10px;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-}
-.copyright {
-  color: black;
-  font-weight: 700;
+
+.ShowCard .personal_content .personal_info .personal_avatar {
+  width: var(--avatarSize);
+  height: var(--avatarSize);
   position: absolute;
-  bottom: 0;
-  left: 0;
+  top: -5%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position-x: center !important;
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area .personal_name_nickname {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area .personal_name_nickname .personal_name {
+  font-size: var(--titleNameFontSize);
+  margin-right: 10px;
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area .personal_name_nickname .personal_nickname {
+  font-size: var(--subTitleNameFontSize);
+  color: var(--selectFontColor);
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area .personal_company_name_title {
+  margin: 10px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area .personal_company_name_title .personal_company_title {
+  font-size: var(--subTitleNameFontSize);
+  color: var(--selectFontColor);
+}
+
+.ShowCard .personal_content .personal_info .personal_title_area .personal_company_name_title .personal_company_name {
+  margin-top: 5px;
+  font-size: var(--subTitleNameFontSize);
+}
+
+.ShowCard .personal_content .personal_info .personal_info_breakline {
+  width: 100%;
+  height: 30px;
+}
+
+.ShowCard .personal_content .personal_info .personal_info_breakline h2 {
+  font-size: 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--selectFontColor);
+  position: relative;
+}
+
+.ShowCard .personal_content .personal_info .personal_info_breakline h2 span {
+  color: var(--selectFontColor);
+  background-color: black;
+  position: relative;
+  top: 7px;
+  padding: 0 10px;
+}
+
+.ShowCard .personal_content .personal_info .personal_info_area {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .personal_content .personal_info .personal_info_area .personal_info_card {
+  padding: 8px 0;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-size: var(--defaultFontSize);
+}
+
+.ShowCard .personal_content .personal_info .personal_info_area .personal_info_card .personal_info_card_title {
+  color: var(--selectFontColor);
+}
+
+.ShowCard .personal_content .personal_info .personal_info_area .personal_info_card .personal_info_card_value .personal_info_normal div {
+  padding-bottom: 3px;
+}
+
+.ShowCard .personal_content .personal_info .personal_info_area .personal_info_card .personal_info_card_value .personal_info_social {
+  height: 26px;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.ShowCard .personal_content .personal_info .personal_info_area .personal_info_card .personal_info_card_value .personal_info_social .social_icon {
+  margin: 0 5px;
+  width: 20px;
+  height: 20px;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position-x: center !important;
+}
+
+.ShowCard .company_content {
+  margin-top: 60px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .company_content .company_info {
+  width: var(--contentWidth);
+  background-color: var(--cardBackgroundColor);
+  padding: 20px;
+  padding-top: 40px;
+  position: relative;
+  border: var(--borderWidth) solid var(--borderColor);
+  border-radius: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .company_content .company_info .company_logo {
+  width: var(--logoSize);
+  height: var(--logoSize);
+  border-radius: calc(var(--logoSize) / 2);
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position-x: center !important;
+  position: absolute;
+  top: -2%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+.ShowCard .company_content .company_info .company_title_area .company_name_about {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ShowCard .company_content .company_info .company_title_area .company_name_about .company_name {
+  font-size: var(--titleNameFontSize);
+  color: greenyellow;
+}
+
+.ShowCard .company_content .company_info .company_title_area .company_name_about .company_about {
+  font-size: var(--subTitleNameFontSize);
+  padding-top: 15px;
+  text-align: center;
+}
+
+.ShowCard .company_content .company_info .company_info_area {
+  padding-top: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+}
+
+.ShowCard .company_content .company_info .company_info_area .company_info_card {
+  padding: 8px 0;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-size: var(--defaultFontSize);
+}
+
+.ShowCard .company_content .company_info .company_info_area .company_info_card .company_info_card_title {
+  color: var(--selectFontColor);
+}
+
+.ShowCard .company_content .company_info .company_info_area .company_info_card .company_info_card_value .company_info_normal div {
+  padding-bottom: 3px;
+}
+
+.ShowCard .company_content .company_info .company_info_area .company_info_card .company_info_card_value .company_info_social {
+  height: 26px;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.ShowCard .company_content .company_info .company_info_area .company_info_card .company_info_card_value .company_info_social .social_icon {
+  margin: 0 5px;
+  width: 20px;
+  height: 20px;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position-x: center !important;
 }

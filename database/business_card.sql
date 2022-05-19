@@ -56,7 +56,7 @@ INSERT INTO `avatar` (`Id`, `ImageURL`, `Name`, `CreateTime`) VALUES
 CREATE TABLE `company` (
   `Id` int(11) NOT NULL COMMENT 'ID',
   `UserId` int(11) NOT NULL COMMENT '使用者id(FK:Users->Id)',
-  `Order` text COLLATE utf8_unicode_ci NOT NULL DEFAULT 'company_name,company_logo,company_industryId,company_position,company_aboutus,company_phone,company_address,company_email,company_gui,company_social' COMMENT '欄位順序(以逗號分隔)',
+  `Order` varchar(535) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'company_name,company_logo,company_industryId,company_position,company_aboutus,company_phone,company_address,company_email,company_gui,company_social' COMMENT '欄位順序(以逗號分隔)',
   `Company` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '公司名稱',
   `Address` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '公司地址(以逗號分隔)',
   `Gui` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '統編',
@@ -278,7 +278,7 @@ CREATE TABLE `token` (
   `UserId` int(11) NOT NULL COMMENT '使用者ID',
   `Host` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '裝置host',
   `Device` tinyint(1) NOT NULL COMMENT '裝置類型(0:電腦,1:行動裝置)',
-  `Token` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Token',
+  `Token` varchar(535) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Token',
   `TokenCreateTime` datetime NOT NULL COMMENT 'Token建立時間',
   `TokenUpdateTime` datetime NOT NULL COMMENT 'Token更新時間'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -308,7 +308,7 @@ CREATE TABLE `users` (
   `Phone` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '電話(以逗號分隔)',
   `Email` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Email(以逗號分隔)',
   `Social` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '社群資料(包含socialCategory社群分類、socialTitle標題、socialURL網址連結)',
-  `Order` text COLLATE utf8_unicode_ci DEFAULT 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social' COMMENT '欄位順序(以逗號分隔)',
+  `Order` varchar(535) COLLATE utf8_unicode_ci DEFAULT 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social' COMMENT '欄位順序(以逗號分隔)',
   `CompanyOrder` text COLLATE utf8_unicode_ci NOT NULL COMMENT '公司資訊順序(以ID紀錄，逗號分隔)',
   `Avatar` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '個人頭像(ImgUUIDName圖片檔名)',
   `SubjectId` int(11) NOT NULL DEFAULT 1 COMMENT '主題ID(FK:subject->Id)',

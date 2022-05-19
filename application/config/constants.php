@@ -100,11 +100,13 @@ define('DEL_AVATAR_PATH', 'appoint/images/del_avatar/');                //未使
 define('LOGO_PATH', 'appoint/images/logo/');                            //公司LOGO圖片路徑
 define('DEL_LOGO_PATH', 'appoint/images/del_logo/');                    //未使用到的公司LOGO圖片路徑
 define('VCARD_PATH', 'appoint/vCard/');                                 //vCard路徑
+define('SHOWCARD_URL', 'https://shine.sub.sakawa.com.tw/dist/ShowCard/');  //前台個人名片顯示 URL
 
 /* 第三方登入 */
 define('TOKEN_URL', 'https://shine.sub.sakawa.com.tw/dist/SocialLoginToken');                                   // 前端取得token頁面並執行登入頁面
 define('GOOGLE_CLIENTID', '850954696376-rvhmmuktms09hb9d0v08bss1gskq8j3i.apps.googleusercontent.com'); // define google clientId
 define('GOOGLE_CLIENTSECRET', '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');                                  // define google Secret Key
+define('GOOGLE_REDIRECT_URI', 'https://shine.sub.sakawa.com.tw/business_card/google_login/login');                                  // define google Secret Key
 
 define('LINE_APP_ID', '1657106852');                                                     // define line appId
 define('LINE_APP_SECRET', '7b2ed300faa203ef91bf8321d14cd7be');                           // define line appId

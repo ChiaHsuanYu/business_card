@@ -165,7 +165,7 @@ class Login_service extends MY_Service
         $google_client = new Google_Client();
         $google_client->setClientId(GOOGLE_CLIENTID); //Define your ClientID
         $google_client->setClientSecret(GOOGLE_CLIENTSECRET); //Define your Client Secret Key
-        $google_client->setRedirectUri('https://shine.sub.sakawa.com.tw/business_card/google_login/login'); //Define your Redirect Uri
+        $google_client->setRedirectUri(GOOGLE_REDIRECT_URI); //Define your Redirect Uri
         $google_client->addScope('email');
         $google_client->addScope('profile');
         $token = $google_client->fetchAccessTokenWithAuthCode($code);
@@ -300,7 +300,6 @@ class Login_service extends MY_Service
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $output = curl_exec($ch);
         curl_close($ch);
-        print_r($output);
         $output = json_decode($output, true);
         if(isset($output['access_token'])){
            
@@ -315,7 +314,6 @@ class Login_service extends MY_Service
             ));
             $profile = curl_exec($ch);
             curl_close($ch);
-            print_r($profile);
             $profile = json_decode($profile, true);
             
             $line_uid = !empty($profile['userId'])?$profile['userId']:'';

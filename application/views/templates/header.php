@@ -23,13 +23,9 @@
     echo link_tag('appoint/css/style.css?run=' . $run);
     //網頁icon
     echo link_tag('appoint/images/webicon.png', 'icon', 'image/x-icon');
-    ?>
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"> -->
-    
+    ?>    
     <!-- 引入js 套件 -->
-    <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/icon.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-1.12.4.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-3.6.0.min.js"></script>
     <script src="<?php echo base_url(); ?>appoint/javascript/vendor/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="<?php echo base_url(); ?>appoint/javascript/vendor/sidebars.js"></script>
 
@@ -37,7 +33,10 @@
     <script src="<?php echo base_url(); ?>appoint/javascript/vendor/tempusdominus-bootstrap-4/moment.min.js"></script>
     <script src="<?php echo base_url(); ?>appoint/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="<?php echo base_url(); ?>appoint/bootstrap4/js/bootstrap.min.js"></script>
-
+    <?php
+    echo link_tag('appoint/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css');
+    echo link_tag('appoint/fontawesome-free-5.15.4-web/css/all.css');
+    ?>
     <title>電子名片後台系統</title>
 </head>
 <body id="container">

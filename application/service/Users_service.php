@@ -235,7 +235,7 @@ class Users_service extends MY_Service
                 // 移動LOGO圖片
                 if(empty($company_data->company_logo_path)){
                     if($company_data->id){
-                        $this->logo_rename($company_data->id,$data->id);
+                        // $this->logo_rename($company_data->id,$data->id);
                     }
                 }
                 if($company_data->id){
@@ -250,7 +250,7 @@ class Users_service extends MY_Service
             }else{
                 // 移動LOGO圖片
                 if($company_data->del_id){
-                    $this->logo_rename($company_data->del_id,$data->id);
+                    // $this->logo_rename($company_data->del_id,$data->id);
                 }
                 $this->company_model->del_company_by_id($company_data->del_id); // 刪除公司資訊 by id
             }
@@ -342,7 +342,7 @@ class Users_service extends MY_Service
                         rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);
                     }
                 }
-            // }
+            }
             return true;
         }else{
             return false;

@@ -49,8 +49,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
+$route['users/(:any)'] = 'users/index';                  //用戶管理
+$route['password/edit'] = 'password/edit';           //管理員密碼修改
+$route['mgt_subject/add'] = 'mgt_subject/add';           //主題新增上傳
+$route['mgt_subject/(:any)'] = 'mgt_subject/index';      //主題維護
+$route['line_login/login'] = 'line_login/login';         //第三方登入-Line
+$route['google_login/login'] = 'google_login/login';     //第三方登入-Google
+$route['facebook_login/login'] = 'facebook_login/login'; //第三方登入-Facebook
 
-// $route['api/(:any)'] = 'api/$1';
+$route['mgt_login/logout'] = 'mgt_login/logout';         //登出
+$route['(:any)'] = 'mgt_login/index';                    //登入
 
 $route['default_controller'] = 'mgt_login/index';
 $route['404_override'] = '';

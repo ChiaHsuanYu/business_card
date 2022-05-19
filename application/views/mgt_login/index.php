@@ -20,9 +20,8 @@
         ?>
 
         <!-- 引入js 套件 -->
-        <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-3.1.1.min.js"></script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-1.12.4.js" crossorigin="anonymous"></script>
-
+        <script type="text/javascript" src="<?php echo base_url(); ?>appoint/javascript/vendor/jquery-3.6.0.min.js"></script>
+        
         <!-- tempusdominus-bootstrap-4 套件 -->
         <script src="<?php echo base_url(); ?>appoint/bootstrap4/js/bootstrap.min.js"></script>
 

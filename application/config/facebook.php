@@ -20,10 +20,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['facebook_app_id']                = '3175810076071778';
 $config['facebook_app_secret']            = '5e3e86eae1c10c7398228db3ae57bcbf';
-// $config['facebook_login_redirect_url']    = 'user_authentication/';
-// $config['facebook_logout_redirect_url']   = 'user_authentication/logout';
 $config['facebook_login_redirect_url']    = 'https://shine.sub.sakawa.com.tw/business_card/facebook_login/login';
-$config['facebook_logout_redirect_url']   = 'http://192.168.88.154/business_card_test/Facebook_login/logout';
+// $config['facebook_logout_redirect_url']   = 'http://192.168.88.154/business_card_test/Facebook_login/logout';
 
 $config['facebook_login_type']            = 'web';
 $config['facebook_permissions']           = array('email');
