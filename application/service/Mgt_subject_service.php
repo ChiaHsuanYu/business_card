@@ -9,6 +9,23 @@ class Mgt_subject_service extends MY_Service
         $this->load->library('session');
     }
 
+    // 取得主題 by subjectId
+    public function get_subject($data){
+        $r = $this->subject_model->get_subject($data);
+        if($r){
+            $result = array(
+                "status" => 1,
+                "data"=> $r
+            );  
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無主題"
+            );    
+        }
+        return $result;
+    }
+
     // 新增主題
     public function add_subject($data){
         $this->common_service->logger("add_subject");
@@ -22,6 +39,24 @@ class Mgt_subject_service extends MY_Service
             $result = array(
                 "status" => 0,
                 "msg"=> "新增失敗"
+            );    
+        }
+        return $result;
+    }
+
+    // 修改主題
+    public function edit_subject($data){
+        $this->common_service->logger("edit_subject");
+        $r = $this->subject_model->update_subject_by_id($data);
+        if($r){
+            $result = array(
+                "status" => 1,
+                "msg"=> "修改成功"
+            );  
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "修改失敗"
             );    
         }
         return $result;

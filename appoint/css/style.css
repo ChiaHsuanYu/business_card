@@ -160,3 +160,10 @@ footer {
         padding-left: 0 !important;
     }
 }
+
+.subject_img{
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: 20px;
+    display: inline-block;
+}

@@ -571,18 +571,23 @@ class Users_model extends CI_Model
 
         // 取得使用者資訊
         $all_sql = array(
-            "select" => "SELECT users.* FROM users LEFT JOIN company ON users.Id = company.UserId WHERE ",
+            "select" => "SELECT users.* FROM users ",
+            "left_join_company" => " LEFT JOIN company ON users.Id = company.UserId ",
+            "where" => " WHERE ",
             "where_account" => " users.Account LIKE ? AND ",
             "where_superID" => " users.superID LIKE ? AND ",
             "where_company" => " company.Company LIKE ? AND ",
             "where_industryId" => " company.IndustryId = ? AND ",
-            "where_company" => " company.Company LIKE ? AND ",
             "where_dataTime" => " (`users`.CreateTime BETWEEN ? AND ?) AND ",
             "isDelete" => " users.Id != '' GROUP BY users.Id ORDER BY users.CreateTime DESC ",
             "LIMIT" => " LIMIT ?,? ",
         );
         $sql = $all_sql['select'];
         $sql_array = array();
+        if(!empty($data['company']) || !empty($data['industryId']) || !empty($data['company'])){
+            $sql = $sql . $all_sql['left_join_company'];
+        }
+        $sql = $sql. $all_sql['where'];
         if ($data['account']) {  // 帳號有值
             $sql = $sql . $all_sql['where_account'];
             array_push($sql_array, '%'.$data['account'].'%');

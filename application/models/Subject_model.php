@@ -13,6 +13,28 @@ class Subject_model extends CI_Model
         $this->load->helper('url');
     }
 
+    // 取得主題資料 by id
+    public function get_subject($data){
+        $sql = "SELECT * FROM `subject` WHERE Id = ? AND 	isDeleted = '0'";
+        $query = $this->db->query($sql, array($data['id']));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Subject_model();
+                $obj->id = $row->Id;
+                $obj->imageURL = base_url().SUBJECT_IMAGE_PATH.$row->ImageURL;
+                $obj->subjectFile = base_url().SUBJECT_CSS_PATH.$row->SubjectFile;
+                $obj->subjectFileName = $row->SubjectFile;
+                $obj->name = $row->Name;
+                $obj->isReleased = $row->isReleased;
+                $obj->releaseTime = $row->ReleaseTime;
+                $obj->createTime = $row->CreateTime;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
     // 取得主題清單
     public function query_all($identity = null){
         $sql = "SELECT * FROM `subject` WHERE isDeleted = '0'";
@@ -42,6 +64,13 @@ class Subject_model extends CI_Model
         $sql = "INSERT INTO `subject` (ImageURL, `SubjectFile`, `Name`) VALUES (?, ?, ?)";
         $query = $this->db->query($sql,array($data['image_path'],$data['css_path'],$data['name']));
         return $this->db->insert_id();
+    }
+
+    // 修改主題 by id
+    public function update_subject_by_id($data){
+        $sql = "UPDATE `subject` SET `ImageURL` = ?,SubjectFile = ?,`Name` = ? WHERE Id = ?;";
+        $query = $this->db->query($sql, array($data['image_path'],$data['css_path'],$data['name'],$data['id']));
+        return $query;
     }
 
     // 發布主題 by id

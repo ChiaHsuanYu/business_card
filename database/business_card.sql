@@ -145,20 +145,6 @@ INSERT INTO `industry` (`Id`, `Name`, `CreateTime`) VALUES
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `mgt_login`
---
-
-CREATE TABLE `mgt_login` (
-  `Id` int(11) NOT NULL COMMENT 'ID',
-  `MgtUserId` int(11) NOT NULL COMMENT '管理帳號ID',
-  `Host` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '裝置host',
-  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
-  `LastTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最新登入時間'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- 資料表結構 `mgt_users`
 --
 
@@ -365,17 +351,6 @@ ALTER TABLE `industry`
   ADD KEY `Id` (`Id`);
 
 --
--- 資料表索引 `mgt_login`
---
-ALTER TABLE `mgt_login`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `UserId` (`MgtUserId`),
-  ADD KEY `Id` (`Id`),
-  ADD KEY `Host` (`Host`),
-  ADD KEY `CreateTime` (`CreateTime`),
-  ADD KEY `LastTime` (`LastTime`);
-
---
 -- 資料表索引 `mgt_users`
 --
 ALTER TABLE `mgt_users`
@@ -479,12 +454,6 @@ ALTER TABLE `country_code`
 --
 ALTER TABLE `industry`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=19;
-
---
--- 使用資料表自動遞增(AUTO_INCREMENT) `mgt_login`
---
-ALTER TABLE `mgt_login`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `mgt_users`

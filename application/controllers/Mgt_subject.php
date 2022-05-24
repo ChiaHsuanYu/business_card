@@ -40,4 +40,15 @@ class Mgt_subject extends BaseController {
         $this->load->view('mgt_subject/index',$data);
         $this->load->view('templates/footer');
     }
+
+    public function edit($id){
+        $data = array(
+            'id' => $id,
+            'title' => '主題修改'
+        );
+        $this->load->view('templates/header',$data);
+        $this->load->view('mgt_subject/model');
+        $this->load->view('mgt_subject/edit',$data);
+        $this->load->view('templates/footer');
+    }
 }

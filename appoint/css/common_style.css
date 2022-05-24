@@ -373,6 +373,11 @@ a{
 .width_80px {
     width: 80px;
 }
+
+.width_80pc {
+    width: 80%;
+}
+
 .width_120px {
     width: 120px !important;
 }

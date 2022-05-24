@@ -78,6 +78,7 @@ function subject_data(subject, data_obj) {
             var img = "<img class='img img_pointer' title='另開圖片視窗' src='" + subject[i]['imageURL'] + "' onclick='openImg(" + '"' + subject[i]['imageURL'] + '"' + ")'>";
             var file_btn = '<a href="'+subject[i]['subjectFile']+'" class="inline_block margin_0 fault_a" download="subject.css">點選下載</a>';
             var releas_btn = "<button class='button width_80px inline_block' onclick='confirm_release_subject(" + subject_data + ")'>發布</button>";
+            var edit_btn = "<button class='button width_80px inline_block' onclick='location_edit(" + subject[i]['id'] + ")'>修改</button>";
             var del_btn = "<button class='button width_80px inline_block' onclick='confirm_del_subject(" + subject_data + ")'>刪除</button>";
 
             tab += "<tr align='center' class='contentsTr'>";
@@ -90,7 +91,7 @@ function subject_data(subject, data_obj) {
                 tab += "<p class='inline_block red'>否</p>";
             }
             tab += "</td>";
-            tab += "<td>" + subject[i]['createTime'] + "</td><td>"+releas_btn+del_btn+"</td>";
+            tab += "<td>" + subject[i]['createTime'] + "</td><td>"+releas_btn+edit_btn+del_btn+"</td>";
             tab += "</tr>";
         }
         hideobj.style.display = "inline-block"; //隱藏筆數頁數層 
@@ -145,5 +146,98 @@ function subject_function() {
     if (result['status']) {
         // 重新呼叫列表
         subject_list();
+    }
+}
+
+// 跳轉至修改主題頁面
+function location_edit(id){
+    var baseUrl = document.getElementById('base_url').value;
+    location.href = baseUrl + "mgt_subject/edit/"+id;
+}
+
+// 取得主題資料
+function get_subject(){
+    document.getElementById("alertMsg").innerHTML = "";
+    var id = document.getElementById("edit_id").value;
+    var data_obj = {
+        id: id
+    };
+    var result = call_api("mgt_subject_api/get_subject/",data_obj);
+    if(result['status']){
+        var data = result['data'];
+        document.getElementById("name").value = data[0]['name'];
+        var tab="";
+        if(data[0]['imageURL']){
+            tab += "<input type='hidden' id='edit_img' value='" + data[0]['imageURL'] + "'>";
+            tab += "<img class='subject_img' title='另開圖片視窗' src='" + data[0]['imageURL'] + "' onclick='openImg(" + '"' + data[0]['imageURL'] + '"' + ")'> <input type='button' class='width_80px' onclick='del_img("+ '"' + data[0]['imageURL'] + '"' +")' value='刪除圖片'>";    
+        }else{
+            tab += '<input type="file" class="width_220px height_30px" id="subject" data-target="subject" accept="*/*" multiple="multiple">';
+        }
+        document.getElementById("img_data_Box").innerHTML = tab;
+        tab="";
+        if(data[0]['subjectFileName']){
+            tab += "<input type='hidden' id='edit_file' value='" + data[0]['subjectFile'] + "'>";
+            tab += "<div class='inline_block'>"+data[0]['subjectFileName']+"</div> <input type='button' class='width_80px' onclick='del_file("+ '"' + data[0]['subjectFile'] + '"' +")' value='刪除檔案'>";
+        }else{
+            tab += '<input type="file" class="width_220px height_30px" id="subjectFile" data-target="subjectFile" accept="*/*" multiple="multiple">';
+        }
+        document.getElementById("file_data_Box").innerHTML = tab;
+    }else{
+        document.getElementById("alertMsg").innerHTML = "格式錯誤";
+    }
+}
+
+// 刪除圖片
+function del_img(imageURL) {
+    var tab = '';
+    tab += "<input type='hidden' id='edit_img' value='" + imageURL + "'>";
+    tab += '<input type="file" class="width_220px height_30px" id="subject" data-target="subject" accept="*/*" multiple="multiple">';
+    document.getElementById("img_data_Box").innerHTML = tab;
+}
+
+// 刪除檔案
+function del_file(subjectFile) {
+    var tab = '';
+    tab += "<input type='hidden' id='edit_file' value='" + subjectFile + "'>";
+    tab += '<input type="file" class="width_220px height_30px" id="subjectFile" data-target="subjectFile" accept="*/*" multiple="multiple">';
+    document.getElementById("file_data_Box").innerHTML = tab;
+}
+
+// 修改主題
+function edit_subject(){
+    var baseUrl = document.getElementById('base_url').value;
+    var id = document.getElementById('edit_id').value;
+    var name = document.getElementById('name').value;
+    var edit_imageURL = document.getElementById('edit_img').value;
+    var edit_subjectFile = document.getElementById('edit_file').value;
+    var subject = document.getElementById('subject');
+    var subjectFile = document.getElementById('subjectFile');
+    if(subject){
+        imageURL = $('#subject').prop('files')[0]; //取得上傳檔案屬性
+    }else{
+        imageURL = "";
+    }
+    if(subjectFile){
+        subjectFile = $('#subjectFile').prop('files')[0]; //取得上傳檔案屬性
+    }else{
+        subjectFile = "";
+    }
+    var data = new FormData();
+    data.append('id', id);
+    data.append('name', name);
+    data.append('edit_imageURL', edit_imageURL);
+    data.append('edit_subjectFile', edit_subjectFile);
+    data.append('imageURL', imageURL);
+    data.append('subjectFile', subjectFile);
+    var result = call_api_upload("mgt_subject_api/edit_subject/",data);
+    modal_show("msgModal");
+    document.getElementById("model_body").innerHTML = string_replace(result['msg']);
+    if(result['status']){
+        document.getElementById("modal_label").innerHTML = "系統訊息";
+        sleep(1000).then(() => {
+            location.href = baseUrl + "mgt_subject/index/";
+        });
+    }else{
+        document.getElementById("modal_label").innerHTML = "格式錯誤";
     }
 }
