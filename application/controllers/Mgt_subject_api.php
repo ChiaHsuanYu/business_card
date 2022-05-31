@@ -25,6 +25,10 @@ class Mgt_subject_api extends BaseAPIController
         }
     }
 
+    public function query_template_post(){
+        $this->response($this->mgt_subject_service->query_template(),200); // REST_Controller::HTTP_OK
+    }
+
     public function get_subject_post(){
         $data = array(
             "id" => $this->security->xss_clean($this->input->post("id")),
@@ -44,10 +48,12 @@ class Mgt_subject_api extends BaseAPIController
     // 新增主題
     public function add_subject_post(){   
         $data = array(
+            "templateId" => $this->security->xss_clean($this->input->post("templateId")),
             "imageURL" => $this->security->xss_clean($this->input->post("imageURL")),
             "subjectFile" => $this->security->xss_clean($this->input->post("subjectFile")),
             "name" => $this->security->xss_clean($this->input->post("name"))
         );
+        $this->form_validation->set_rules("templateId", "lang:「模板名稱」","trim|required");
         $this->form_validation->set_rules("name", "lang:「主題名稱」","trim|required");
         if ($this->form_validation->run() === FALSE) {
             $result = array(
@@ -137,12 +143,14 @@ class Mgt_subject_api extends BaseAPIController
     public function edit_subject_post(){   
         $data = array(
             "id" => $this->security->xss_clean($this->input->post("id")),
+            "templateId" => $this->security->xss_clean($this->input->post("templateId")),
             "edit_imageURL" => $this->security->xss_clean($this->input->post("edit_imageURL")),
             "edit_subjectFile" => $this->security->xss_clean($this->input->post("edit_subjectFile")),
             "imageURL" => $this->security->xss_clean($this->input->post("imageURL")),
             "subjectFile" => $this->security->xss_clean($this->input->post("subjectFile")),
             "name" => $this->security->xss_clean($this->input->post("name"))
         );
+        $this->form_validation->set_rules("templateId", "lang:「模板名稱」","trim|required");
         $this->form_validation->set_rules("name", "lang:「主題名稱」","trim|required");
         if ($this->form_validation->run() === FALSE) {
             $result = array(

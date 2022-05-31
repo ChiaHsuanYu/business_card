@@ -62,28 +62,39 @@
             </div>
             </li>
             <li class="mb-1">
-            <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#mgt_subject-collapse" aria-expanded="false">
-                主題管理
-            </button>
-            <div class="collapse" id="mgt_subject-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li><a href="<?php echo base_url("mgt_subject/add"); ?>" class="link-dark rounded">主題新增上傳</a></li>
-                <li><a href="<?php echo base_url("mgt_subject/index"); ?>" class="link-dark rounded">主題維護</a></li>
-                </ul>
-            </div>
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#mgt_subject-collapse" aria-expanded="false">
+                    主題管理
+                </button>
+                <div class="collapse" id="mgt_subject-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="<?php echo base_url("mgt_subject/add"); ?>" class="link-dark rounded">主題新增上傳</a></li>
+                    <li><a href="<?php echo base_url("mgt_subject/index"); ?>" class="link-dark rounded">主題維護</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#mgt_template-collapse" aria-expanded="false">
+                    模板元件管理
+                </button>
+                <div class="collapse" id="mgt_template-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="<?php echo base_url("mgt_template/add"); ?>" class="link-dark rounded">模板元件新增</a></li>
+                    <li><a href="<?php echo base_url("mgt_template/index"); ?>" class="link-dark rounded">模板維護</a></li>
+                    </ul>
+                </div>
             </li>
             
             <li class="border-top my-3"></li>
             <li class="mb-1">
-            <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#password-collapse" aria-expanded="false">
-            系統設定
-            </button>
-            <div class="collapse" id="password-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a onclick="modal_show('confirmPasswordModal');" class="link-dark rounded">管理員密碼修改</a></li>
-                    <li><a onclick="modal_show('confirmLogoutModal');" class="link-dark rounded cursor_pointer">登出</a></li>
-                </ul>
-            </div>
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#password-collapse" aria-expanded="false">
+                系統設定
+                </button>
+                <div class="collapse" id="password-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a onclick="modal_show('confirmPasswordModal');" class="link-dark rounded">管理員密碼修改</a></li>
+                        <li><a onclick="modal_show('confirmLogoutModal');" class="link-dark rounded cursor_pointer">登出</a></li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>

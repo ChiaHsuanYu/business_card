@@ -15,6 +15,14 @@
             </div>
             <div>
                 <div class="label width_120px line_h_40px">
+                    <div class="requiredTag">*</div><label>主題模板：</label>
+                </div>
+                <div class="labelInput padding_top_5">
+                    <select class="width_220px" id="templateSelect" autocomplete="off" required></select>
+                </div>
+            </div>
+            <div>
+                <div class="label width_120px line_h_40px">
                     <div class="requiredTag">*</div><label>主題縮圖：</label>
                 </div>
                 <div class="labelInput">
@@ -47,5 +55,6 @@
 <script type="text/javascript" src='<?php echo base_url(); ?>appoint/javascript/common_function.js'></script>
 <script type="text/javascript" src='<?php echo base_url();?>appoint/javascript/subject.js'></script>
 <script>
+    get_template();
     get_subject();
 </script>

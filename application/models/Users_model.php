@@ -65,8 +65,8 @@ class Users_model extends CI_Model
     }
 
     public function get_user_by_acc($account){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Account=?";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.Account=?";
         $query = $this->db->query($sql, array($account));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -84,8 +84,10 @@ class Users_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_template = $row->Template;
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
+                $obj->Template = $row->Template;
                 $obj->subject_name = $row->subjectName;
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
@@ -140,8 +142,8 @@ class Users_model extends CI_Model
 
     // 帳號驗證
     public function check_verify_by_id($data){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Id=? AND VerifyCode=? AND users.isDeleted = 0";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.Id=? AND VerifyCode=? AND users.isDeleted = 0";
         $query = $this->db->query($sql, array($data['userId'],$data['vaild']));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -159,6 +161,7 @@ class Users_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_template = $row->Template;
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
@@ -221,8 +224,8 @@ class Users_model extends CI_Model
 
     // google登入驗證
     public function get_user_by_google_access_token($access_token){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Google_access_token=? AND users.isDeleted = 0";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.Google_access_token=? AND users.isDeleted = 0";
         $query = $this->db->query($sql, array($access_token));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -246,6 +249,7 @@ class Users_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_template = $row->Template;
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
@@ -308,8 +312,8 @@ class Users_model extends CI_Model
 
     // facebook登入驗證
     public function get_user_by_facebook_access_token($access_token){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Facebook_access_token=? AND users.isDeleted = 0";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.Facebook_access_token=? AND users.isDeleted = 0";
         $query = $this->db->query($sql, array($access_token));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -333,6 +337,7 @@ class Users_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_template = $row->Template;
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
@@ -396,8 +401,8 @@ class Users_model extends CI_Model
 
     // line登入驗證
     public function get_user_by_line_access_token($access_token){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Line_access_token=? AND users.isDeleted = 0";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.Line_access_token=? AND users.isDeleted = 0";
         $query = $this->db->query($sql, array($access_token));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -421,6 +426,7 @@ class Users_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_template = $row->Template;
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
@@ -467,8 +473,8 @@ class Users_model extends CI_Model
 
     // 取得使用者資料 by superId
     public function get_user_by_superId($data){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.SuperID=? AND users.isDeleted = 0";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.SuperID=? AND users.isDeleted = 0";
         $query = $this->db->query($sql, array($data['superId']));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -485,7 +491,8 @@ class Users_model extends CI_Model
                 $obj->personal_email = $row->Email;
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
-                $obj->personal_subjectId = $row->SubjectId;
+                $obj->subject_template = $row->Template;
+                $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;

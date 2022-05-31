@@ -49,8 +49,9 @@ class Token_model extends CI_Model
 
     // 查詢使用者token是否存在
     public function get_user_by_token($token){
-        $sql = "SELECT users.*,token.UserId,token.Host,token.Token,token.TokenCreateTime,token.TokenUpdateTime,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName 
-                FROM users LEFT JOIN `token` ON token.UserId = `users`.Id LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE token.token = ? AND users.isDeleted = ?";
+        $sql = "SELECT users.*,token.UserId,token.Host,token.Token,token.TokenCreateTime,token.TokenUpdateTime,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template 
+                FROM users LEFT JOIN `token` ON token.UserId = `users`.Id LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId 
+                WHERE token.token = ? AND users.isDeleted = ?";
         $query = $this->db->query($sql, array($token, 0));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -77,6 +78,7 @@ class Token_model extends CI_Model
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
+                $obj->subject_template = $row->Template;
                 $obj->isDeleted = $row->isDeleted;
                 $obj->identity = $row->Identity;
                 $obj->token = $row->Token;
@@ -108,8 +110,8 @@ class Token_model extends CI_Model
 
     // 查詢使用者Id
     public function get_user_by_id($id){
-        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName FROM users 
-                LEFT JOIN `subject` ON users.subjectId = `subject`.Id WHERE users.Id = ? AND users.isDeleted = ?";
+        $sql = "SELECT users.*,`subject`.ImageURL as subject_imageURL,`subject`.SubjectFile as subject_file,`subject`.Name as subjectName,`template`.Template FROM users 
+                LEFT JOIN `subject` ON users.subjectId = `subject`.Id LEFT JOIN `template` ON template.Id = `subject`.TemplateId WHERE users.Id = ? AND users.isDeleted = ?";
         $query = $this->db->query($sql, array($id, 0));
         $result = array();
         if ($query->num_rows() > 0) {
@@ -130,6 +132,7 @@ class Token_model extends CI_Model
                 $obj->subject_imageURL = base_url().SUBJECT_IMAGE_PATH.$row->subject_imageURL;
                 $obj->subject_file = base_url().SUBJECT_CSS_PATH.$row->subject_file;
                 $obj->subject_name = $row->subjectName;
+                $obj->subject_template = $row->Template;
                 // $obj->SMSNumber = $row->SMSNumber;
                 // $obj->SMSTime = $row->SMSTime;
                 // $obj->isDeleted = $row->isDeleted;

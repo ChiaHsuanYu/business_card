@@ -27,7 +27,7 @@ function search_list() {
     users_list(1, 10);
 }
 
-function cancel_search(){
+function cancel_search() {
     document.getElementById('account').value = "";
     document.getElementById('superID').value = "";
     document.getElementById('company').value = "";
@@ -117,18 +117,18 @@ function users_data(seachText, data_obj) {
             var company_id = "company_" + users[i]['id'];
             var company_id_phone = "company_phone_" + users[i]['id'];
             var account = users[i]['account'];
-            if(!users[i]['account']){
+            if (!users[i]['account']) {
                 account = users[i]['personal_email'];
-                if(users[i]['google_uid']){
+                if (users[i]['google_uid']) {
                     login_type = 'Google';
                     account = users[i]['google_uid'];
-                }else if(users[i]['facebook_uid']){
+                } else if (users[i]['facebook_uid']) {
                     login_type = 'Facebook';
                     account = users[i]['facebook_uid'];
-                }else if(users[i]['line_uid']){
+                } else if (users[i]['line_uid']) {
                     login_type = 'Line';
                     account = users[i]['line_uid'];
-                }else{ login_type = ''; }
+                } else { login_type = ''; }
             }
             if (users[i]['personal_superID']) {
                 superID = users[i]['personal_superID'];
@@ -137,14 +137,14 @@ function users_data(seachText, data_obj) {
                 name = users[i]['personal_name'];
             }
             var user_data = {
-                id:users[i]['id'],
-                account:account
+                id: users[i]['id'],
+                account: account
             };
-            if(users[i]['isDeleted'] == '1'){
+            if (users[i]['isDeleted'] == '1') {
                 user_data['isDeleted'] = '0';
                 user_data = JSON.stringify(user_data);
                 var del_btn = "<button class='red_button width_80px' onclick='confirm_isDeleted(" + user_data + ")'>解凍帳號</button> ";
-            }else{
+            } else {
                 user_data['isDeleted'] = '1';
                 user_data = JSON.stringify(user_data);
                 var del_btn = "<button class='button width_80px' onclick='confirm_isDeleted(" + user_data + ")'>凍結帳號</button> ";
@@ -156,7 +156,7 @@ function users_data(seachText, data_obj) {
             tab += "<td>";
             tab += "<div class='fault_a' onclick='show_user(" + '"' + user_detail_id + '"' + ")'>查看會員資料</div>";
             tab += "</td>";
-            tab += "<td>"+del_btn+"</td>";
+            tab += "<td>" + del_btn + "</td>";
             tab += "</tr>";
 
             // <!-- 手機板 -->
@@ -167,8 +167,8 @@ function users_data(seachText, data_obj) {
             tab_phone += "<div class='content_phone'>帳號： " + account + "</div>";
             tab_phone += "<div class='content_phone'>SUPER ID： " + superID + "</div>";
             tab_phone += "<div class='content_phone'>註冊時間： " + users[i]['createTime'] + "</div>";
-            tab_phone += "<div class='content_phone'>會員資料： <p class='inline_block margin_0 fault_a' onclick='show_user(" + '"' + user_detail_id_phone + '"' + ")'>查看會員資料</p></div>";            
-            tab_phone += "<div class='content_phone'>功能： "+del_btn+"</div>";
+            tab_phone += "<div class='content_phone'>會員資料： <p class='inline_block margin_0 fault_a' onclick='show_user(" + '"' + user_detail_id_phone + '"' + ")'>查看會員資料</p></div>";
+            tab_phone += "<div class='content_phone'>功能： " + del_btn + "</div>";
             tab_phone += "</div>";
 
             var nickname = "-",
@@ -179,46 +179,47 @@ function users_data(seachText, data_obj) {
                 companyInfo_btn = "-",
                 companyInfo_btn_phone = "-",
                 modifiedTime = "-";
-            if(users[i]['personal_nickname']){
+            if (users[i]['personal_nickname']) {
                 nickname = users[i]['personal_nickname'];
             }
-            if(users[i]['personal_avatar']){
+            if (users[i]['personal_avatar']) {
                 // users[i]['personal_avatar'] = baseUrl + users[i]['personal_avatar'];
                 avatar = "<img class='img img_pointer' title='另開圖片視窗' src='" + users[i]['personal_avatar'] + "' onclick='openImg(" + '"' + users[i]['personal_avatar'] + '"' + ")'>";
             }
-            if(users[i]['personal_phone']){
+            if (users[i]['personal_phone']) {
                 phone = "";
-                for(var k=0;k<users[i]['personal_phone'].length;k++){
-                    if(k>0){
+                for (var k = 0; k < users[i]['personal_phone'].length; k++) {
+                    if (k > 0) {
                         phone += "<br>";
                     }
                     phone += users[i]['personal_phone'][k];
                 }
             }
-            if(users[i]['personal_email']){
+            if (users[i]['personal_email']) {
                 email = "";
-                for(var k=0;k<users[i]['personal_email'].length;k++){
-                    if(k>0){
+                for (var k = 0; k < users[i]['personal_email'].length; k++) {
+                    if (k > 0) {
                         email += "<br>";
                     }
                     email += users[i]['personal_email'][k];
                 }
             }
-            if(users[i]['modifiedTime']){
+
+            if (users[i]['modifiedTime']) {
                 modifiedTime = users[i]['modifiedTime'];
             }
-            if(users[i]['personal_social']){
+            if (users[i]['personal_social']) {
                 social = "";
-                for(var k=0;k<users[i]['personal_social'].length;k++){
-                    if(k>0){
+                for (var k = 0; k < users[i]['personal_social'].length; k++) {
+                    if (k > 0) {
                         social += "<br>";
                     }
                     // users[i]['personal_social'][k]['iconURL'] = baseUrl + users[i]['personal_social'][k]['iconURL'];
                     social += "<img class='img img_pointer' title='另開圖片視窗' src='" + users[i]['personal_social'][k]['iconURL'] + "' onclick='openImg(" + '"' + users[i]['personal_social'][k]['iconURL'] + '"' + ")'> ";
-                    social += "<a href='"+users[i]['personal_social'][k]['socialURL']+"'>"+users[i]['personal_social'][k]['socialTitle']+"</a>";
+                    social += "<a href='" + users[i]['personal_social'][k]['socialURL'] + "'>" + users[i]['personal_social'][k]['socialTitle'] + "</a>";
                 }
             }
-            if(users[i]['companyInfo'].length){
+            if (users[i]['companyInfo'].length) {
                 companyInfo_btn = "<p class='inline_block margin_0 fault_a' onclick='look_slideToggle(" + '"' + company_id + '"' + ")'>檢視</p>";
                 companyInfo_btn_phone = "<p class='inline_block margin_0 fault_a' onclick='look_slideToggle(" + '"' + company_id_phone + '"' + ")'>檢視</p>";
             }
@@ -231,14 +232,14 @@ function users_data(seachText, data_obj) {
             tab += "</tr>";
 
             tab += "<tr class='light_orange " + user_detail_id + "' hidden='true'>";
-            tab += "<td>"+avatar+"</td>";
-            tab += "<td>"+nickname+"</td>";
-            tab += "<td colspan='2'>"+phone+"</td>";
-            tab += "<td colspan='2'>"+email+"</td>";;
-            tab += "<td colspan='2'>"+social+"</td>";;
+            tab += "<td>" + avatar + "</td>";
+            tab += "<td>" + nickname + "</td>";
+            tab += "<td colspan='2'>" + phone + "</td>";
+            tab += "<td colspan='2'>" + email + "</td>";;
+            tab += "<td colspan='2'>" + social + "</td>";;
             tab += "</td>";
-            tab += "<td>"+companyInfo_btn+"</td>";
-            tab += "<td colspan='2'>"+modifiedTime+"</td>";
+            tab += "<td>" + companyInfo_btn + "</td>";
+            tab += "<td colspan='2'>" + modifiedTime + "</td>";
             tab += "</tr>";
 
             // 手機板
@@ -248,7 +249,7 @@ function users_data(seachText, data_obj) {
             tab_phone += "<div>連絡電話： " + phone + "</div>";
             tab_phone += "<div>信箱： " + email + "</div>";
             tab_phone += "<div>個人社群： " + social + "</div>";
-            tab_phone += "<div>公司資訊："+companyInfo_btn_phone+"</div>";
+            tab_phone += "<div>公司資訊：" + companyInfo_btn_phone + "</div>";
             tab_phone += "<div>最後一次更新時間： " + modifiedTime + "</div>";
             tab_phone += "</div>";
             tab += "</div>";
@@ -285,63 +286,63 @@ function users_data(seachText, data_obj) {
                     // companyInfo[k]['company_logo'] =  baseUrl + companyInfo[k]['company_logo'];
                     logo_img = "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_logo'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_logo'] + '"' + ")'>";
                 }
-                if(companyInfo[k]['company_industryName']){
+                if (companyInfo[k]['company_industryName']) {
                     industry = companyInfo[k]['company_industryName'];
                 }
-                if(companyInfo[k]['company_position']){
+                if (companyInfo[k]['company_position']) {
                     position = companyInfo[k]['company_position'];
                 }
-                if(companyInfo[k]['company_aboutus']){
+                if (companyInfo[k]['company_aboutus']) {
                     aboutus = companyInfo[k]['company_aboutus'];
                 }
-                if(companyInfo[k]['company_gui']){
+                if (companyInfo[k]['company_gui']) {
                     gui = companyInfo[k]['company_gui'];
                 }
-                if(companyInfo[k]['company_phone']){
+                if (companyInfo[k]['company_phone']) {
                     phone = "";
-                    for(var m=0;m<companyInfo[k]['company_phone'].length;m++){
-                        if(m>0){
+                    for (var m = 0; m < companyInfo[k]['company_phone'].length; m++) {
+                        if (m > 0) {
                             phone += "<br>";
                         }
                         phone += companyInfo[k]['company_phone'][m];
                     }
                 }
-                if(companyInfo[k]['company_address']){
+                if (companyInfo[k]['company_address']) {
                     address = "";
-                    for(var m=0;m<companyInfo[k]['company_address'].length;m++){
-                        if(m>0){
+                    for (var m = 0; m < companyInfo[k]['company_address'].length; m++) {
+                        if (m > 0) {
                             address += "<br>";
                         }
                         address += companyInfo[k]['company_address'][m];
                     }
                 }
-                if(companyInfo[k]['company_email']){
+                if (companyInfo[k]['company_email']) {
                     email = "";
-                    for(var m = 0 ; m < companyInfo[k]['company_email'].length ; m++){
-                        if(m>0){
+                    for (var m = 0; m < companyInfo[k]['company_email'].length; m++) {
+                        if (m > 0) {
                             email += "<br>";
                         }
                         email += companyInfo[k]['company_email'][m];
                     }
                 }
-                if(companyInfo[k]['company_social']){
+                if (companyInfo[k]['company_social']) {
                     social = "";
-                    for(var m=0;m<companyInfo[k]['company_social'].length;m++){
-                        if(m>0){
+                    for (var m = 0; m < companyInfo[k]['company_social'].length; m++) {
+                        if (m > 0) {
                             social += "<br>";
                         }
                         // companyInfo[k]['company_social'][m]['iconURL'] = baseUrl + companyInfo[k]['company_social'][m]['iconURL'];
                         social += "<img class='img img_pointer' title='另開圖片視窗' src='" + companyInfo[k]['company_social'][m]['iconURL'] + "' onclick='openImg(" + '"' + companyInfo[k]['company_social'][m]['iconURL'] + '"' + ")'> ";
-                        social += "<a href='"+companyInfo[k]['company_social'][m]['socialURL']+"'>"+companyInfo[k]['company_social'][m]['socialTitle']+"</a>";
+                        social += "<a href='" + companyInfo[k]['company_social'][m]['socialURL'] + "'>" + companyInfo[k]['company_social'][m]['socialTitle'] + "</a>";
                     }
                 }
-                if(companyInfo[k]['modifiedTime']){
+                if (companyInfo[k]['modifiedTime']) {
                     modifiedTime = companyInfo[k]['modifiedTime'];
                 }
                 tab += "<tr align='center' class='contentsTr light_grey " + company_id + " " + user_detail_id + "' hidden='true'>";
                 tab += "<td>" + companyInfo[k]['company_name'] + "</td>";
-                tab += "<td>" + logo_img + "</td><td>" +industry + "</td><td>" + position + "</td><td>" + aboutus + "</td><td>" + phone + "</td>";
-                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td>" + social + "</td><td>"+modifiedTime+"</td>";
+                tab += "<td>" + logo_img + "</td><td>" + industry + "</td><td>" + position + "</td><td>" + aboutus + "</td><td>" + phone + "</td>";
+                tab += "<td>" + address + "</td><td>" + email + "</td><td>" + gui + "</td><td>" + social + "</td><td>" + modifiedTime + "</td>";
                 tab += "</tr>";
                 // 手機板
                 tab_phone += "<div class=' " + div_class + company_id_phone + " " + user_detail_id_phone + "' width='100%' cellpadding='0' cellspacing='0' hidden='true'>";
@@ -387,12 +388,12 @@ function users_data(seachText, data_obj) {
     document.getElementById('total_count').innerHTML = '資料總筆數：' + seachText['total_count'];
 }
 
-function show_user(divId){
-    var box = document.querySelectorAll('.'+divId);
-    for(var i=0;i<box.length;i++){
-        if(box[i].hidden){
+function show_user(divId) {
+    var box = document.querySelectorAll('.' + divId);
+    for (var i = 0; i < box.length; i++) {
+        if (box[i].hidden) {
             box[i].hidden = false;
-        }else{
+        } else {
             box[i].hidden = true;
         }
     }
@@ -418,18 +419,18 @@ function industry_select_option() {
 // 確認是否更改帳號狀態
 function confirm_isDeleted(user_data) {
     var action = "解凍";
-    if(user_data['isDeleted'] == '1'){
+    if (user_data['isDeleted'] == '1') {
         action = "凍結";
     }
     modal_show("confirmModal");
     document.getElementById("confirm_modal_label").innerHTML = "系統訊息";
-    document.getElementById("confirm_model_body").innerHTML = "是否確定"+action+"帳號「" + user_data['account'] + "」?";
+    document.getElementById("confirm_model_body").innerHTML = "是否確定" + action + "帳號「" + user_data['account'] + "」?";
     document.getElementById("confirm_userId").value = user_data['id'];
     document.getElementById("confirm_isDeleted").value = user_data['isDeleted'];
 }
 
 // 更改帳號狀態
-function update_isDeleted(){
+function update_isDeleted() {
     modal_hide("confirmModal");
     var page = document.getElementById('list_page').value;
     var page_count = document.getElementById('list_page_count').value;
@@ -445,6 +446,6 @@ function update_isDeleted(){
     document.getElementById("model_body").innerHTML = string_replace(result['msg']);
     if (result['status']) {
         // 重新呼叫帳號列表
-        users_list(page,page_count);
+        users_list(page, page_count);
     }
 }

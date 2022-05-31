@@ -54,6 +54,10 @@ $route['password/edit'] = 'password/edit';           //管理員密碼修改
 $route['mgt_subject/add'] = 'mgt_subject/add';           //主題新增上傳
 $route['mgt_subject/edit'] = 'mgt_subject/edit';         //主題修改
 $route['mgt_subject/(:any)'] = 'mgt_subject/index';      //主題維護
+$route['mgt_template/add'] = 'mgt_template/add';         //模板元件新增
+$route['mgt_template/edit'] = 'mgt_template/edit';       //模板元件修改
+$route['mgt_template/(:any)'] = 'mgt_template/index';    //模板維護
+
 $route['line_login/login'] = 'line_login/login';         //第三方登入-Line
 $route['google_login/login'] = 'google_login/login';     //第三方登入-Google
 $route['facebook_login/login'] = 'facebook_login/login'; //第三方登入-Facebook

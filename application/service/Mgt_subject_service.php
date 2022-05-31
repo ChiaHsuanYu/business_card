@@ -5,8 +5,26 @@ class Mgt_subject_service extends MY_Service
     {
         parent::__construct();
         $this->load->model('subject_model');
+        $this->load->model('template_model');
         $this->load->service('Common_service');
         $this->load->library('session');
+    }
+
+    // 取得主題元件清單
+    public function query_template(){
+        $r = $this->template_model->query_all();
+        if($r){
+            $result = array(
+                "status" => 1,
+                "data"=> $r
+            );  
+        }else{
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無元件"
+            );    
+        }
+        return $result;
     }
 
     // 取得主題 by subjectId

@@ -12,7 +12,7 @@
     /* font-family: 微軟正黑體, Arial, Helvetica, sans-serif; */
 }
 
-.webtitle{
+.webtitle {
     font-size: 1.5rem;
     font-weight: bold;
     background-color: #ffffff;
@@ -34,7 +34,7 @@
     color: rgb(22, 22, 22);
 }
 
-.little_title{
+.little_title {
     font-size: 1.6rem;
     font-weight: bold;
     background: -moz-radial-gradient(circle, #f7f7f7, #d6d6d6);
@@ -72,6 +72,7 @@
     width: 220px;
     height: 36px;
 }
+
 
 /* sidebar & content */
 
@@ -161,7 +162,7 @@ footer {
     }
 }
 
-.subject_img{
+.subject_img {
     max-width: 40px;
     max-height: 40px;
     border-radius: 20px;
