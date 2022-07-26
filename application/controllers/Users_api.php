@@ -308,45 +308,20 @@ class Users_api extends BaseAPIController
         }
     }
 
-    // 匯出Vcf檔
-    public function test_post(){   
-        // define vcard
-        $vcard = new VCard();
-        // define variables
-        $lastname = 'Desloovere';
-        $firstname = 'Jeroen';
-        $additional = '';
-        $prefix = '';
-        $suffix = '';
-        // add personal data
-        $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
-
-        // add work data
-        $vcard->addCompany('Siesqo');
-        $vcard->addJobtitle('Web Developer');
-        $vcard->addRole('Data Protection Officer');
-        $vcard->addEmail('info@jeroendesloovere.be');
-        $vcard->addPhoneNumber(1234121212, 'PREF;WORK');
-        $vcard->addPhoneNumber(123456789, 'WORK');
-        $vcard->addAddress(null, null, 'street', 'worktown', null, 'workpostcode', 'Belgium');
-        $vcard->addLabel('street, worktown, workpostcode Belgium');
-        $vcard->addURL('http://www.jeroendesloovere.be');
-        $vcard->addPhoto(SOCIAL_ICON_PATH . 'Facebook.svg');
-
-        $superId = '123';
-        $file_name = $superId.'-business-card';
-        $no = 0;
-        while(file_exists(VCARD_PATH.$file_name.'.vcf')){
-            $no++;
-            $file_name = $superId.'-business-card-'.$no;
+    //更改隱私設定 by userId
+    public function update_isPublic_by_userId_post(){
+        $data = array(
+            "isPublic" => $this->security->xss_clean($this->input->post("isPublic")),
+        );
+        $this->form_validation->set_rules('isPublic', 'lang:「是否公開」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->users_service->update_isPublic_by_userId($data),200); // REST_Controller::HTTP_OK     
         }
-        $vcard->setFilename($file_name);
-        // return vcard as a string
-        // return $vcard->getOutput();
-        // return vcard as a download
-        $vcard->setSavePath(VCARD_PATH);
-        $vcard->save();        
-        
-        $this->response( $vcard->save(),200); // REST_Controller::HTTP_NOT_FOUND
-    } 
+    }
 }

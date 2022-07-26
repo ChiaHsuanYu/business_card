@@ -28,7 +28,6 @@ class SMS_service extends MY_Service
         $user_acc = "";
         // $user_acc = "89881560";
         $user_pwd = "qwe55664";
-
         //static encoding number
         $ENCODING_BIG5 = 1;
         $ENCODING_UCS2 = 3;

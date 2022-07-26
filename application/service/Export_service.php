@@ -48,7 +48,6 @@ class Export_service extends MY_Service
         $personal_social = $user_data[0]->personal_social;
         $company_phone = $company_data[0]->company_phone;
         $company_social = $company_data[0]->company_social;
-        
         $company_email = $company_data[0]->company_email;
         $avatar_path = explode(base_url(), $personal_avatar);
         

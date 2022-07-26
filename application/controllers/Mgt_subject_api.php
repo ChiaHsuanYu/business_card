@@ -53,7 +53,7 @@ class Mgt_subject_api extends BaseAPIController
             "subjectFile" => $this->security->xss_clean($this->input->post("subjectFile")),
             "name" => $this->security->xss_clean($this->input->post("name"))
         );
-        $this->form_validation->set_rules("templateId", "lang:「模板名稱」","trim|required");
+        $this->form_validation->set_rules("templateId", "lang:「主題模板」","trim|required");
         $this->form_validation->set_rules("name", "lang:「主題名稱」","trim|required");
         if ($this->form_validation->run() === FALSE) {
             $result = array(
@@ -150,7 +150,7 @@ class Mgt_subject_api extends BaseAPIController
             "subjectFile" => $this->security->xss_clean($this->input->post("subjectFile")),
             "name" => $this->security->xss_clean($this->input->post("name"))
         );
-        $this->form_validation->set_rules("templateId", "lang:「模板名稱」","trim|required");
+        $this->form_validation->set_rules("templateId", "lang:「主題模板」","trim|required");
         $this->form_validation->set_rules("name", "lang:「主題名稱」","trim|required");
         if ($this->form_validation->run() === FALSE) {
             $result = array(

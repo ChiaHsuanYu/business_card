@@ -8,6 +8,7 @@ class Mgt_users_service extends MY_Service
         $this->load->model('users_model');
         $this->load->model('social_model');
         $this->load->model('industry_model');
+        $this->load->service('Users_service');
         $this->load->service('Common_service');
         $this->load->library('session');
     }
@@ -35,28 +36,28 @@ class Mgt_users_service extends MY_Service
         // 檢查使用者舊密碼
         $data['id'] = $this->session->mgt_user_info['id'];
         $r = $this->mgt_users_model->check_user_by_password($data);
-        if($r){
-            if($data['password_old'] == $data['password_new']){
-                $result = array(
-                    "status" => 0,
-                    "msg"=> "不可與最近一次登入密碼重複"
-                );    
-                return $result;
-            }
-            // 更新使用者新密碼
-            $this->common_service->logger("user_id:".$data['id']);
-            $data['password'] = $data['password_new'];
-            $r = $this->mgt_users_model->update_password_by_id($data);
-            $result = array(
-                "status" => 1,
-                "msg"=> "重設密碼成功"
-            );  
-        }else{
+        if(!$r){
             $result = array(
                 "status" => 0,
                 "msg"=> "舊密碼不存在，請重新輸入"
             );    
+            return $result;
         }
+        if($data['password_old'] == $data['password_new']){
+            $result = array(
+                "status" => 0,
+                "msg"=> "不可與最近一次登入密碼重複"
+            );    
+            return $result;
+        }
+        // 更新使用者新密碼
+        $this->common_service->logger("user_id:".$data['id']);
+        $data['password'] = $data['password_new'];
+        $r = $this->mgt_users_model->update_password_by_id($data);
+        $result = array(
+            "status" => 1,
+            "msg"=> "重設密碼成功"
+        );  
         return $result;
     }
 
@@ -82,52 +83,25 @@ class Mgt_users_service extends MY_Service
     public function query_users($data){
         $this->common_service->logger("query_users");
         $r = $this->users_model->query_users($data);
-        if($r['total_count']){
-            for($m=0;$m<count($r['users']);$m++){
-                //整理資料-依照順序取得公司資訊 by companyId,userId
-                $user_data = $r['users'][$m];
-                $user_data->companyInfo = array();
-                if($user_data->companyOrder){
-                    for($i=0;$i<count($user_data->companyOrder);$i++){
-                        $companyId = $user_data->companyOrder[$i];
-                        $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
-                        if(count($company_data)){
-                            if($company_data[0]->company_social){
-                                for($j=0;$j<count($company_data[0]->company_social);$j++){
-                                    $socialId = $company_data[0]->company_social[$j]->socialId;
-                                    $social_data = $this->social_model->get_social_by_id($socialId);
-                                    if(count($social_data)){
-                                        $company_data[0]->company_social[$j]->iconURL = $social_data[0]->iconURL;
-                                        $company_data[0]->company_social[$j]->socialName = $social_data[0]->name;
-                                    }
-                                }
-                            }
-                            array_push($user_data->companyInfo,$company_data[0]);
-                        }
-                    }
-                }
-                if($user_data->personal_social){
-                    for($i=0;$i<count($user_data->personal_social);$i++){
-                        $socialId = $user_data->personal_social[$i]->socialId;
-                        $social_data = $this->social_model->get_social_by_id($socialId);
-                        if(count($social_data)){
-                            $user_data->personal_social[$i]->iconURL = $social_data[0]->iconURL;
-                            $user_data->personal_social[$i]->socialName = $social_data[0]->name;
-                        }
-                    }
-                }
-                $r['users'][$m] = $user_data;
-            }
-            $result = array(
-                "status" => 1,
-                "data"=> $r
-            );  
-        }else{
+        if(!$r['total_count']){
             $result = array(
                 "status" => 0,
                 "msg"=> "查無資料"
             );    
+            return $result;
         }
+        for($m=0;$m<count($r['users']);$m++){
+            $user_data = $r['users'][$m];
+            // 整理資料-依照順序取得公司資訊 by companyId,userId
+            $user_data = $this->users_service->sort_companyInfo($user_data);
+            // 整理資料-取得社群資訊
+            $user_data->personal_social = $this->users_service->get_social_data($user_data->personal_social);
+            $r['users'][$m] = $user_data;
+        }
+        $result = array(
+            "status" => 1,
+            "data"=> $r
+        );  
         return $result;
     }
 }

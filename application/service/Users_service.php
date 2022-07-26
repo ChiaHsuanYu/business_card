@@ -21,12 +21,12 @@ class Users_service extends MY_Service
                 "status" => 1,
                 "msg"=> "驗證成功"
             );  
-        }else{
-            $result = array(
-                "status" => 0,
-                "msg"=> "驗證失敗"
-            );    
+            return $result;
         }
+        $result = array(
+            "status" => 0,
+            "msg"=> "驗證失敗"
+        );    
         return $result;
     }
 
@@ -39,37 +39,21 @@ class Users_service extends MY_Service
                 "status" => 1,
                 "msg"=> "SUPER ID可使用"
             );  
-        }else{
-            $result = array(
-                "status" => 0,
-                "msg"=> "SUPER ID已存在，請重新輸入"
-            );    
+            return $result;
         }
-        return $result;
+        $result = array(
+            "status" => 0,
+            "msg"=> "SUPER ID已存在，請重新輸入"
+        );   
+        return $result; 
     }
     
     // 修改基本資料
     public function edit_personal_acc($data){
         // 檢查是否需要取得系統預設頭像資料
-        if(empty($data['personal_avatar_path'])){
-            if($data['personal_avatar_id']){
-                $avatar_data = $this->avatar_model->get_avatar_by_id($data['personal_avatar_id']);
-                if(count($avatar_data)){
-                    $data['personal_avatar_path'] = $avatar_data[0]->imageURL;
-                }
-            }
-        }
-        if(isset($data['personal_orig_img'])){
-            if($data['personal_orig_img']){
-                $personal_avatar_path = explode(base_url().AVATAR_PATH,$data['personal_orig_img']);
-                // $personal_avatar_path = explode(AVATAR_PATH,$data['personal_orig_img']);
-                if(count($personal_avatar_path)>1){
-                    $data['personal_avatar_path'] = $personal_avatar_path[1];
-                }else{
-                    $data['personal_avatar_path'] = $personal_avatar_path[0];
-                }
-            }
-        }
+        $data['personal_avatar_path'] = $this->check_avatar_data($data['personal_avatar_path'],$data['personal_avatar_id']);
+        // 檢查是否已有上傳過圖片
+        $data['personal_avatar_path'] = $this->check_orig_img($data['personal_avatar_path'],$data['personal_orig_img']);
         // 新增公司資訊
         $data['id'] = $this->session->user_info['id'];
         $companyId = $this->company_model->add_company($data);
@@ -93,19 +77,44 @@ class Users_service extends MY_Service
         // 更新個人資訊
         $data['companyOrder'] = $companyId;
         $userId = $this->users_model->update_personal_by_id($data);
-        if($userId){
-            $result = array(
-                "status" => 1,
-                "msg"=> "修改成功"
-            );  
-        }else{
+        if(!$userId){
             $result = array(
                 "status" => 0,
                 "msg"=> "修改失敗",
                 "data"=>$data
             );
+            return $result;
         }
+        $result = array(
+            "status" => 1,
+            "msg"=> "修改成功"
+        );  
         return $result;
+    }
+
+    // 檢查是否需要取得系統預設頭像資料
+    public function check_avatar_data($personal_avatar_path,$personal_avatar_id){
+        if(empty($personal_avatar_path) && !empty($personal_avatar_id)){
+            $avatar_data = $this->avatar_model->get_avatar_by_id($personal_avatar_id);
+            if(count($avatar_data)){
+                $personal_avatar_path = $avatar_data[0]->imageURL;
+            }
+        }
+        return $personal_avatar_path;
+    }
+
+    // 檢查是否已有上傳過圖片
+    public function check_orig_img($personal_avatar_path,$personal_orig_img){
+        if(isset($personal_orig_img) && !empty($personal_orig_img)){
+            $avatar_path = explode(base_url().AVATAR_PATH,$personal_orig_img);
+            // $avatar_path = explode(AVATAR_PATH,$personal_orig_img);
+            if(count($avatar_path)>1){
+                $personal_avatar_path = $avatar_path[1];
+            }else{
+                $personal_avatar_path = $avatar_path[0];
+            }
+        }
+        return $personal_avatar_path;
     }
 
     // 修改密碼
@@ -113,185 +122,140 @@ class Users_service extends MY_Service
         // 檢查使用者舊密碼
         $data['id'] = $this->session->user_info['id'];
         $r = $this->users_model->check_user_by_password($data);
-        if($r){
-            // 更新使用者新密碼
-            $data['password'] = $data['password_new'];
-            $r = $this->users_model->update_password_by_id($data);
-            $result = array(
-                "status" => 1,
-                "msg"=> "修改成功"
-            );  
-        }else{
+        if(!$r){
             $result = array(
                 "status" => 0,
                 "msg"=> "舊密碼不存在，請重新輸入"
             );    
+            return $result;
         }
+        // 更新使用者新密碼
+        $data['password'] = $data['password_new'];
+        $r = $this->users_model->update_password_by_id($data);
+        $result = array(
+            "status" => 1,
+            "msg"=> "修改成功"
+        );  
         return $result;
     }
 
     // 取得使用者資料 by superId
     public function get_user_by_superId($data){
         $r = $this->users_model->get_user_by_superId($data);
-        if($r){
-            //整理資料-依照順序取得公司資訊 by companyId,userId
-            $user_data = $r[0];
-            $user_data->companyInfo = array();
-            if($user_data->companyOrder){
-                for($i=0;$i<count($user_data->companyOrder);$i++){
-                    $companyId = $user_data->companyOrder[$i];
-                    $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
-                    if(count($company_data)){
-                        if($company_data[0]->company_social){
-                            for($j=0;$j<count($company_data[0]->company_social);$j++){
-                                $socialId = $company_data[0]->company_social[$j]->socialId;
-                                $social_data = $this->social_model->get_social_by_id($socialId);
-                                if(count($social_data)){
-                                    $company_data[0]->company_social[$j]->iconURL = $social_data[0]->iconURL;
-                                    $company_data[0]->company_social[$j]->socialName = $social_data[0]->name;
-                                }
-                            }
-                        }
-                        array_push($user_data->companyInfo,$company_data[0]);
-                    }
-                }
-            }
-            if($user_data->personal_social){
-                for($i=0;$i<count($user_data->personal_social);$i++){
-                    $socialId = $user_data->personal_social[$i]->socialId;
-                    $social_data = $this->social_model->get_social_by_id($socialId);
-                    if(count($social_data)){
-                        $user_data->personal_social[$i]->iconURL = $social_data[0]->iconURL;
-                        $user_data->personal_social[$i]->socialName = $social_data[0]->name;
-                    }
-                }
-            }
-            $userInfo =  array(
-                'userInfo'=>$user_data
-            );
-            $result = array(
-                "status" => 1,
-                "data"=> $userInfo
-            );  
-        }else{
+        if(!$r){
             $result = array(
                 "status" => 0,
                 "msg"=> "查無資料"
             );    
+            return $result;
         }
+        $user_data = $r[0];
+        // 檢查用戶關係
+        $result = $this->check_user_relation($data,$user_data);
+        if($result['status'] != 1){
+            return $result;
+        }
+        // 整理資料-依照順序取得公司資訊 by companyId,userId
+        $user_data = $this->sort_companyInfo($user_data);
+        // 整理資料-取得社群資訊
+        $user_data->personal_social = $this->get_social_data($user_data->personal_social);
+        $userInfo =  array(
+            'userInfo'=>$user_data
+        );
+        $result = array(
+            "status" => 1,
+            "data"=> $userInfo
+        );  
         return $result;
+    }
+
+    // 檢查用戶關係
+    public function check_user_relation($data,$user_data){
+        if(!$user_data->isPublic){
+            // 檢查是否有登入紀錄
+            $result = array(
+                "status" => 2,
+                "msg"=> "用戶帳號不公開"
+            );   
+            if(!isset($this->session->user_info['id'])){
+                return $result;
+            }
+            $data['userId'] = $this->session->user_info['id'];
+            $data['collect_userId'] = $user_data->id;
+            // 檢查是否已有收藏紀錄
+            $collect_data = $this->user_collect_model->check_user_collect($data);
+            if(count($collect_data) < 1){
+                return $result;
+            }
+            // 檢查是否尚未接受要求
+            if($collect_data[0]->isCollected == 2){
+                $result = array(
+                    "status" => 3,
+                    "data"=> "已送出收藏請求"
+                );    
+                return $result;
+            }
+        }
+        $result['status'] = 1; 
+        return $result;
+    }
+
+    // 取得使用者資料-依照順序取得公司資訊 by companyId,userId
+    public function sort_companyInfo($user_data){
+        $user_data->companyInfo = array();
+        if($user_data->companyOrder){
+            for($i=0;$i<count($user_data->companyOrder);$i++){
+                $companyId = $user_data->companyOrder[$i];
+                $company_data = $this->company_model->get_company_by_userId($companyId,$user_data->id);
+                if(count($company_data)){
+                    // 整理資料-取得社群資訊 by socialId
+                    $company_data[0]->company_social = $this->get_social_data($company_data[0]->company_social);
+                    array_push($user_data->companyInfo,$company_data[0]);
+                }
+            }
+        }
+        return $user_data;
+    }
+
+    // 取得使用者資料-取得社群資訊 by socialId
+    public function get_social_data($social_data){
+        if($social_data){
+            for($i=0;$i<count($social_data);$i++){
+                $socialId = $social_data[$i]->socialId;
+                $social_data = $this->social_model->get_social_by_id($socialId);
+                if(count($social_data)){
+                    $social_data[$i]->iconURL = $social_data[0]->iconURL;
+                    $social_data[$i]->socialName = $social_data[0]->name;
+                }
+            }
+        }
+        return $social_data;
     }
 
     // 編輯個人檔案
     public function update_acc_by_id($data){
         $data->company_order = array();
         $data->id = $this->session->user_info['id'];
-        $companyInfo = $data->companyInfo;
-        
         // 檢查是否需要取得系統預設頭像資料
-        if(empty($data->personal_avatar_path)){
-            if($data->personal_avatar_id){
-                $avatar_data = $this->avatar_model->get_avatar_by_id($data->personal_avatar_id);
-                if(count($avatar_data)){
-                    $data->personal_avatar_path = $avatar_data[0]->imageURL;
-                    $this->avatar_rename($data->id);  
-
-                }
-            }
+        $data->personal_avatar_path = $this->check_avatar_data($data->personal_avatar_path,$data->personal_avatar_id);
+        if($data->personal_avatar_path){
+            $this->avatar_rename($data->id);  
         }
-        for($i=0;$i<count($companyInfo);$i++){
-            // 新增公司資訊 for 編輯個人檔案
-            $company_data = $companyInfo[$i];
-            if(empty($company_data->del_id)){
-                $company_data->order = implode(",",$company_data->order);
-                if($companyInfo[$i]->company_address){
-                    $company_data->company_address = implode(",",$companyInfo[$i]->company_address);
-                }else{
-                    $company_data->company_address = null;
-                }
-                if($companyInfo[$i]->company_phone){
-                    $company_data->company_phone = implode(",",$companyInfo[$i]->company_phone);
-                }else{
-                    $company_data->company_phone = null;
-                }
-                if($companyInfo[$i]->company_email){
-                    $company_data->company_email = implode(",",$companyInfo[$i]->company_email);
-                }else{
-                    $company_data->company_email = null;
-                }
-                if($companyInfo[$i]->company_social){
-                    $company_data->company_social = json_encode($companyInfo[$i]->company_social);
-                }else{
-                    $company_data->company_social = null;
-                }
-                if(isset($company_data->company_orig_logo)){
-                    if($company_data->company_orig_logo){
-                        $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
-                        $company_data->company_logo_path = $company_logo_path[1];
-                        // $company_logo_path = explode( LOGO_PATH,$company_data->company_orig_logo);
-                        // $company_data->company_logo_path = $company_logo_path[1];
-                    }
-                }
-                // 移動LOGO圖片
-                if(empty($company_data->company_logo_path)){
-                    if($company_data->id){
-                        $this->logo_rename($company_data->id,$data->id);
-                    }
-                }
-                if($company_data->id){
-                    $companyId = $company_data->id;
-                    $this->company_model->update_company_for_id($company_data);
-                }else{
-                    $companyId = $this->company_model->add_company_for_acc($data->id, $company_data);
-                }
-                if($companyId){
-                    array_push($data->company_order,$companyId);
-                }
-            }else{
-                // 移動LOGO圖片
-                if($company_data->del_id){
-                    $this->logo_rename($company_data->del_id,$data->id);
-                }
-                $this->company_model->del_company_by_id($company_data->del_id); // 刪除公司資訊 by id
-            }
-        }
+        // 更新公司資訊
+        $data = $this->update_companyInfo($data);
         // 更新使用者資訊
-        $data->order = implode(",",$data->order);
-        if($data->company_order){
-            $data->company_order = implode(",",$data->company_order);
-        }else{
-            $data->company_order = null;
-        }
-        if($data->personal_phone){
-            $data->personal_phone = implode(",",$data->personal_phone);
-        }else{
-            $data->personal_phone = null;
-        }
-        if($data->personal_email){
-            $data->personal_email = implode(",",$data->personal_email);
-        }else{
-            $data->personal_email = null;
-        }
-        if($data->personal_social){
-            $data->personal_social = json_encode($data->personal_social);
-        }else{
-            $data->personal_social = null;
-        }
-        if(isset($data->personal_orig_img)){
-            if($data->personal_orig_img){
-                $personal_avatar_path = explode(base_url().AVATAR_PATH,$data->personal_orig_img);
-                // $personal_avatar_path = explode(AVATAR_PATH,$data->personal_orig_img);
-                if(count($personal_avatar_path)>1){
-                    $data->personal_avatar_path = $personal_avatar_path[1];
-                }else{
-                    $data->personal_avatar_path = $personal_avatar_path[0];
-                }
-            }
-        }
+        $data->order = $this->common_service->str_implode(",",$data->order);
+        $data->company_order = $this->common_service->str_implode(",",$data->company_order);
+        $data->personal_phone = $this->common_service->str_implode(",",$data->personal_phone);
+        $data->personal_email = $this->common_service->str_implode(",",$data->personal_email);
+        $data->personal_social = $this->common_service->str_json_encode($data->personal_social);
+        // 檢查是否已有上傳過圖片
+        $data->personal_avatar_path = $this->check_orig_img($data->personal_avatar_path,$data->personal_orig_img);
         // 移動頭像檔案
         if(empty($data->personal_avatar_path)){
             $this->avatar_rename($data->id);  
         }
+        // 更新個人檔案
         $r = $this->users_model->update_acc_by_id($data);
         if($r){
             $result = array(
@@ -307,71 +271,109 @@ class Users_service extends MY_Service
         return $result;
     }
 
+    // 編輯個人檔案-更新公司資訊
+    public function update_companyInfo($data){
+        $companyInfo = $data->companyInfo;
+        for($i=0;$i<count($companyInfo);$i++){
+            // 新增公司資訊 for 編輯個人檔案
+            $company_data = $companyInfo[$i];
+            if(!empty($company_data->del_id)){
+                // 移動LOGO圖片
+                if($company_data->del_id){
+                    $this->logo_rename($company_data->del_id,$data->id);
+                }
+                $this->company_model->del_company_by_id($company_data->del_id); // 刪除公司資訊 by id
+            }else{
+                // 陣列轉換字串
+                $company_data->order = $this->common_service->str_implode(",",$company_data->order);
+                $company_data->company_address = $this->common_service->str_implode(",",$company_data->company_address);
+                $company_data->company_phone = $this->common_service->str_implode(",",$company_data->company_phone);
+                $company_data->company_email = $this->common_service->str_implode(",",$company_data->company_email);
+                $company_data->company_social = $this->common_service->str_json_encode($company_data->company_social);
+                // 檢查是否已有上傳過圖片
+                if(isset($company_data->company_orig_logo) && !empty($company_data->company_orig_logo)){
+                    $company_logo_path = explode( base_url().LOGO_PATH,$company_data->company_orig_logo);
+                    $company_data->company_logo_path = $company_logo_path[1];
+                }
+                // 移動LOGO圖片
+                if(empty($company_data->company_logo_path) && !empty($company_data->id)){
+                    if($company_data->id){
+                        $this->logo_rename($company_data->id,$data->id);
+                    }
+                }
+                // 新增or更新公司資訊
+                if($company_data->id){
+                    $companyId = $company_data->id;
+                    $this->company_model->update_company_for_id($company_data);
+                }else{
+                    $companyId = $this->company_model->add_company_for_acc($data->id, $company_data);
+                }
+                // 記錄公司順序
+                if($companyId){
+                    array_push($data->company_order,$companyId);
+                }
+            }
+        }
+        return $data;
+    }
+    
     // 移動頭像檔案
     public function avatar_rename($id){
         $r = $this->users_model->get_user_by_id($id);
-        if(count($r)){
-            if($r[0]->personal_avatar){
-                $old_file_path = explode(base_url(), $r[0]->personal_avatar);
-                $old_file_name = explode(AVATAR_PATH, $old_file_path[1]);
-                // $old_file_name = explode(AVATAR_PATH, $r[0]->personal_avatar);
-                if(count($old_file_name)>1){
-                    if(file_exists(AVATAR_PATH.$old_file_name[1])){
-                        if(!file_exists(SYSTEM_AVATAR_PATH.$old_file_name[1])){
-                            $path = DEL_AVATAR_PATH;
-                        if (!is_dir($path)) {
-                            mkdir($path, 0755);
-                        }
-                            rename(AVATAR_PATH.$old_file_name[1],DEL_AVATAR_PATH.$old_file_name[1]);
-                        }
-                    }
-                }
-            }
-            return true;
-        }else{
+        if(!count($r)){
             return false;
         }
+        if($r[0]->personal_avatar){
+            $old_file_path = explode(base_url(), $r[0]->personal_avatar);
+            $old_file_name = explode(AVATAR_PATH, $old_file_path[1]);
+            // $old_file_name = explode(AVATAR_PATH, $r[0]->personal_avatar);
+            if(count($old_file_name)>1 && file_exists(AVATAR_PATH.$old_file_name[1]) && !file_exists(SYSTEM_AVATAR_PATH.$old_file_name[1])){
+                $path = DEL_AVATAR_PATH;
+                if (!is_dir($path)) {
+                    mkdir($path, 0755);
+                }
+                rename(AVATAR_PATH.$old_file_name[1],DEL_AVATAR_PATH.$old_file_name[1]);
+            }
+        }
+        return true;
     }
 
     // 移動LOGO檔案
     public function logo_rename($companyId,$userId){
         $r = $this->company_model->get_company_by_userId($companyId,$userId);
-        if(count($r)){
-            $old_file_path = explode(base_url(), $r[0]->company_logo);
-            if(count($old_file_path)>1){
-                $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
-                // $old_file_name = explode(LOGO_PATH, $r[0]->company_logo);
-                if(count($old_file_name)>1){
-                    if(file_exists(LOGO_PATH.$old_file_name[1])){
-                        $path = DEL_LOGO_PATH;
-                        if (!is_dir($path)) {
-                            mkdir($path, 0755);
-                        }
-                        rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);
-                    }
-                }
-            }
-            return true;
-        }else{
+        if(!count($r)){
             return false;
         }
+        $old_file_path = explode(base_url(), $r[0]->company_logo);
+        if(count($old_file_path)>1){
+            $old_file_name = explode(LOGO_PATH, $old_file_path[1]);
+            // $old_file_name = explode(LOGO_PATH, $r[0]->company_logo);
+            if(count($old_file_name)>1 && file_exists(LOGO_PATH.$old_file_name[1])){
+                $path = DEL_LOGO_PATH;
+                if (!is_dir($path)) {
+                    mkdir($path, 0755);
+                }
+                rename(LOGO_PATH.$old_file_name[1],DEL_LOGO_PATH.$old_file_name[1]);
+            }
+        }
+        return true;
     }
 
     // 更改使用者主題 by userId
     public function update_subjectId_by_id($data){
         $data['id'] = $this->session->user_info['id'];
         $r = $this->users_model->update_subjectId_by_id($data);
-        if($r){
-            $result = array(
-                "status" => 1,
-                "msg"=> "修改成功"
-            );  
-        }else{
+        if(!$r){
             $result = array(
                 "status" => 0,
                 "msg"=> "修改失敗"
             );    
+            return $result;
         }
+        $result = array(
+            "status" => 1,
+            "msg"=> "修改成功"
+        );  
         return $result;
     }
 
@@ -387,17 +389,35 @@ class Users_service extends MY_Service
             return $result;
         }
         $r = $this->users_model->update_superId_by_id($data);
-        if($r){
+        if(!$r){
             $result = array(
                 "status" => 1,
                 "msg"=> "修改成功"
             );  
-        }else{
+            return $result;
+        }
+        $result = array(
+            "status" => 0,
+            "msg"=> "修改失敗"
+        );    
+        return $result;
+    }
+
+    // 更改隱私設定 by userId
+    public function update_isPublic_by_userId($data){
+        $data['id'] = $this->session->user_info['id'];
+        $r = $this->users_model->update_isPublic_by_id($data);
+        if(!$r){
             $result = array(
                 "status" => 0,
                 "msg"=> "修改失敗"
-            );    
+            );   
+            return $result;
         }
+        $result = array(
+            "status" => 1,
+            "msg"=> "修改成功"
+        );  
         return $result;
     }
 }

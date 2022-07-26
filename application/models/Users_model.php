@@ -38,6 +38,8 @@ class Users_model extends CI_Model
                 $obj->personal_nickname = $row->Nickname;
                 $obj->personal_email = $row->Email;
                 $obj->personal_phone = $row->Phone;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 $obj->personal_social = json_decode($row->Social);
                 // strpos($mystring, "program.")
                 if($row->Order){
@@ -91,6 +93,8 @@ class Users_model extends CI_Model
                 $obj->subject_name = $row->subjectName;
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 $obj->isDeleted = $row->isDeleted;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
@@ -167,6 +171,8 @@ class Users_model extends CI_Model
                 $obj->subject_name = $row->subjectName;
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 $obj->isDeleted = $row->isDeleted;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
@@ -256,6 +262,8 @@ class Users_model extends CI_Model
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
                 $obj->isDeleted = $row->isDeleted;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
                 }
@@ -343,6 +351,8 @@ class Users_model extends CI_Model
                 $obj->subject_name = $row->subjectName;
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 $obj->isDeleted = $row->isDeleted;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
@@ -432,6 +442,8 @@ class Users_model extends CI_Model
                 $obj->subject_name = $row->subjectName;
                 $obj->SMSNumber = $row->SMSNumber;
                 $obj->SMSTime = $row->SMSTime;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 $obj->isDeleted = $row->isDeleted;
                 if($row->Order){
                     $obj->order = explode(',',$row->Order);
@@ -483,6 +495,7 @@ class Users_model extends CI_Model
                 $obj->id = $row->Id;
                 $obj->account = $row->Account;
                 $obj->order = $row->Order;
+                $obj->isPublic = $row->isPublic;
                 $obj->companyOrder = $row->CompanyOrder;
                 $obj->personal_superID = $row->SuperID;
                 $obj->personal_name = $row->Name;
@@ -570,6 +583,13 @@ class Users_model extends CI_Model
         return $query;
     }
 
+    // 更改隱私設定 by id
+    public function update_isPublic_by_id($data){
+        $sql = "UPDATE users SET `isPublic` = ?, ModifiedTime = ? WHERE Id = ?;";
+        $query = $this->db->query($sql, array($data['isPublic'],date('Y-m-d H:i:s'),$data['id']));
+        return $query;
+    }
+
     // 使用者名片查詢
     public function query_users($data){
         $data['page_count'] = (int)$data['page_count']; //字串轉數字
@@ -649,6 +669,8 @@ class Users_model extends CI_Model
                 $obj->personal_phone = $row->Phone;
                 $obj->personal_social = json_decode($row->Social);
                 $obj->isDeleted = $row->isDeleted;
+                $obj->isOpenAI = $row->isOpenAI;
+                $obj->isPublic = $row->isPublic;
                 $obj->createTime = $row->CreateTime;
                 $obj->modifiedTime = $row->ModifiedTime;
                 if($row->Order){

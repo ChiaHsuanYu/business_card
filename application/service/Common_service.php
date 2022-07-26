@@ -13,8 +13,7 @@ class Common_service extends MY_Service
     }
 
     // 檢查日期時間區間
-    public function check_date_long($startDT, $endDT, $time_long)
-    {
+    public function check_date_long($startDT, $endDT, $time_long){
         $startDT_unix =  strtotime($startDT);
         $endDT_unix =  strtotime($endDT);
         // 判斷結束時間是否大於開始時間
@@ -117,7 +116,6 @@ class Common_service extends MY_Service
     }
 
     public function renewTokenById_front($user_id, $token, $host, $device){
-        
         $r = $this->token_model->check_host_by_userId($user_id,$host,$device);
         if($r){
             $r = $this->token_model->update_Token_by_id($r[0]->id, $token);
@@ -384,5 +382,23 @@ class Common_service extends MY_Service
             $host= $_SERVER['REMOTE_ADDR'];
         }
         return $host;
+    }
+
+    // 陣列轉字串
+    public function str_implode($separator,$array){
+        $str = null;
+        if($array){
+            $str = implode($separator,$array);
+        }
+        return $str;
+    }
+
+    // 陣列轉JSON
+    public function str_json_encode($str){
+        $str_json_encode = null;
+        if($str){
+            $str_json_encode = json_encode($str);
+        }
+        return $str_json_encode;
     }
 }

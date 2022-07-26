@@ -227,6 +227,7 @@ function edit_subject() {
     var baseUrl = document.getElementById('base_url').value;
     var id = document.getElementById('edit_id').value;
     var name = document.getElementById('name').value;
+    var templateId = document.getElementById('templateSelect').value;
     var edit_imageURL = document.getElementById('edit_img').value;
     var edit_subjectFile = document.getElementById('edit_file').value;
     var subject = document.getElementById('subject');
@@ -244,6 +245,7 @@ function edit_subject() {
     var data = new FormData();
     data.append('id', id);
     data.append('name', name);
+    data.append('templateId', templateId);
     data.append('edit_imageURL', edit_imageURL);
     data.append('edit_subjectFile', edit_subjectFile);
     data.append('imageURL', imageURL);
