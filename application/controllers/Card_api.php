@@ -42,12 +42,14 @@ class Card_api extends BaseAPIController
         }
     }
 
-    //更改隱私設定 by userId
-    public function update_isPublic_by_userId_post(){
+    //更新名片收藏狀態 by id
+    public function update_isCollected_by_id_post(){
         $data = array(
-            "isPublic" => $this->security->xss_clean($this->input->post("isPublic")),
+            "collectId" => $this->security->xss_clean($this->input->post("collectId")),
+            "isCollected" => $this->security->xss_clean($this->input->post("isCollected")),
         );
-        $this->form_validation->set_rules('isPublic', 'lang:「是否公開」', 'required');
+        $this->form_validation->set_rules('collectId', 'lang:「收藏紀錄ID」', 'required');
+        $this->form_validation->set_rules('isCollected', 'lang:「收藏狀態」', 'required');
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
@@ -55,7 +57,54 @@ class Card_api extends BaseAPIController
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
         }else{
-            $this->response($this->users_service->update_isPublic_by_userId($data),200); // REST_Controller::HTTP_OK     
+            $this->response($this->card_service->update_isCollected_by_id($data),200); // REST_Controller::HTTP_OK     
         }
+    }
+
+    //取得收藏要求清單
+    public function get_collect_by_userId_post(){
+        $this->response($this->card_service->get_collect_by_userId(),200); // REST_Controller::HTTP_OK     
+    }
+    
+    //查詢使用者ID
+    public function query_users_id_post(){
+        $data = array(
+            "areaId" => $this->security->xss_clean($this->input->post("areaId")),
+            "industryId" => $this->security->xss_clean($this->input->post("industryId")),
+        );
+        $this->response($this->card_service->query_users_id($data),200); // REST_Controller::HTTP_OK     
+    }
+
+    //取得隨機名片列表
+    public function query_user_post(){
+        $data = array(
+            "start_index" => $this->security->xss_clean($this->input->post("start_index")),
+            "length" => $this->security->xss_clean($this->input->post("length")),
+        );
+        $this->form_validation->set_rules('start_index', 'lang:「開始位置」', 'required');
+        $this->form_validation->set_rules('length', 'lang:「數量」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->card_service->query_user($data),200); // REST_Controller::HTTP_OK     
+        }
+    }
+
+    //取得收藏名片列表
+    public function query_user_collect_post(){
+        $data = array(
+            "areaId" => $this->security->xss_clean($this->input->post("areaId")),
+            "industryId" => $this->security->xss_clean($this->input->post("industryId")),
+        );
+        $this->response($this->card_service->query_user_collect($data),200); // REST_Controller::HTTP_OK     
+    }
+
+    //取得被收藏的使用者清單(查看被哪些人收藏的功能)
+    public function get_user_for_collected_post(){
+        $this->response($this->card_service->get_user_for_collected(),200); // REST_Controller::HTTP_OK     
     }
 }

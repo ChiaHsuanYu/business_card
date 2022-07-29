@@ -89,6 +89,8 @@ define('TOKENEXPIRED', 28800);                                          //define
 define('SMS_NUM', 3);                                                   //簡訊當日發送限制次數
 define('SMSEXPIRED', 60);                                               //簡訊發送間隔時間
 define('LOGIN_DEVICE_NUM', 1);                                          //登入設備類型限制數量
+define('TIME_TO_LIVE', 2592000);                                        //cache存活時間
+define('NOTIFY_TIME_TO_LIVE', 60);                                      //notify cache存活時間
 
 /* 前台URI */
 define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑

@@ -105,22 +105,22 @@ class BaseController extends CI_Controller
         return $this->common_service->removeToken_front($token);
     }
     
-    public function checkAA_front(){
-        $bearer = array("Bearer ", "bearer ", "BEARER ");     
-        $received_Token = "";
-        $headers = $this->input->request_headers();
-        $headers = array_change_key_case($headers, CASE_LOWER);
-        $authorization = "";
-        if(array_key_exists('authorization', $headers)){
-            $authorization = $headers['authorization'];
+    public function checkAA_front($received_Token = ''){
+        if(!$received_Token){
+            $bearer = array("Bearer ", "bearer ", "BEARER ");     
+            $headers = $this->input->request_headers();
+            $headers = array_change_key_case($headers, CASE_LOWER);
+            $authorization = "";
+            if(array_key_exists('authorization', $headers)){
+                $authorization = $headers['authorization'];
+            }
+            if(array_key_exists('Authorization', $headers)){
+                $authorization = $headers['Authorization'];
+            }
+            if ($authorization != '') {
+                $received_Token = str_replace($bearer, "", $authorization); //取得Token
+            }
         }
-        if(array_key_exists('Authorization', $headers)){
-            $authorization = $headers['Authorization'];
-        }
-        if ($authorization != '') {
-            $received_Token = str_replace($bearer, "", $authorization); //取得Token
-        }
-
         //檢查token是否合法(存在於database)；
         if(empty($received_Token) || $received_Token == 'null'){
             return array("status" => 0, "msg" => "token 不合法或逾時");

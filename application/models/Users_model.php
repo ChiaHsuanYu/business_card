@@ -696,4 +696,41 @@ class Users_model extends CI_Model
         }
         return $result;
     }
+
+    // 取得所有使用者ID
+    public function get_users($userId = null){
+        $sql = "SELECT Id as id FROM users WHERE isDeleted = 0";
+        $sql_array = array();
+        if($userId){
+            $sql .= " AND Id != ?";
+            array_push($sql_array, $userId);
+        }
+        $query = $this->db->query($sql, $sql_array);
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
+
+    public function get_random_users($data){
+        $sql = "SELECT users.* FROM users WHERE users.Id != ? AND users.isDeleted = 0 ORDER BY rand()";
+        $query = $this->db->query($sql, array($data['userId']));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Users_model();
+                $obj->id = $row->Id;
+                $obj->companyOrder = $row->CompanyOrder;
+                if($row->CompanyOrder){
+                    $obj->companyOrder = explode(',',$row->CompanyOrder);
+                }
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
 }

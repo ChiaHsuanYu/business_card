@@ -150,4 +150,25 @@ class Company_model extends CI_Model
         $query = $this->db->query($sql, array('1',date('Y-m-d H:i:s'),$id));
         return $query;
     }
+
+    // 取得符合條件的公司資訊
+    public function check_company_for_random($id,$data){
+        $all_sql = array(
+            "select" => "SELECT Id FROM company WHERE Id = ? AND isDeleted = 0",
+            "where_industryId" => " AND IndustryId = ? ",
+            "where_address" => " AND `Address` LIKE ? ",
+        );
+        $sql = $all_sql['select'];
+        $sql_array = array($id);
+        if(!empty($data['industryId'])){
+            $sql .= $all_sql['where_industryId'];
+            array_push($sql_array,$data['industryId']);
+        }
+        if(!empty($data['area_name'])){
+            $sql .= $all_sql['where_address'];
+            array_push($sql_array,'%'.$data['area_name'].'%');
+        }
+        $query = $this->db->query($sql, $sql_array);
+        return $query->num_rows();
+    }
 }

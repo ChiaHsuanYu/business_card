@@ -14,6 +14,7 @@ class Login_api extends BaseAPIController
         $this->load->library('session');
         $this->load->library('facebook'); 
         $this->load->service("Login_service");
+        $this->load->driver('cache');
     }
 
     // 檢查是否已有登入紀錄

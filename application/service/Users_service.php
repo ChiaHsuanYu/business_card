@@ -8,8 +8,11 @@ class Users_service extends MY_Service
         $this->load->model('company_model');
         $this->load->model('social_model');
         $this->load->model('avatar_model');
+        $this->load->model('sys_msg_model');
+        $this->load->model('user_collect_model');
         $this->load->service('Common_service');
         $this->load->library('session');
+        $this->load->driver('cache');
     }
    
     // 帳號驗證
@@ -417,6 +420,86 @@ class Users_service extends MY_Service
         $result = array(
             "status" => 1,
             "msg"=> "修改成功"
+        );  
+        return $result;
+    }
+
+    // 取得系統通知訊息 by userId
+    public function get_sys_msg_by_userId(){
+        $userId = $this->session->user_info['id'];
+        $sys_msgs = $this->sys_msg_model->get_sys_msg_by_userId($userId);
+        if(!$sys_msgs){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );    
+            return $result;
+        }
+        // 取得使用者已讀狀態
+        foreach($sys_msgs as $key => $value){
+            $value->isReaded = '1';
+            $cache_status = $this->cache->redis->get($value->id.'_'.$userId);
+            if($cache_status === '0'){
+                $value->isReaded = '0';
+            }
+            $sys_msgs[$key] = $value;
+        }
+        $result = array(
+            "status" => 1,
+            "data"=> $sys_msgs
+        );  
+        return $result;
+    }
+
+    // 取得未讀通知總數 by userId
+    public function get_msg_count_by_userId(){
+        // 取得當前使用者ID及所有系統訊息
+        $userId = $this->session->user_info['id'];
+        $sys_msgs = $this->sys_msg_model->get_sys_msg_by_userId($userId);
+        if(!$sys_msgs){
+            $result = array(
+                "status" => 0,
+                "msg_count" => 0
+            );   
+            return $result;
+        }
+        // 判斷cache key是否存在+已讀狀態是否為0
+        $msg_count = 0;
+        foreach($sys_msgs as $key => $value){
+            $cache_status = $this->cache->redis->get($value->id.'_'.$userId);
+            if($cache_status === '0'){
+                $msg_count++;
+            }
+        }
+        $result = array(
+            "status" => 1,
+            "msg_count"=> $msg_count
+        );  
+        return $result;
+    }
+    // 修改系統訊息已讀狀態 by userId
+    public function update_sys_msg_isReaded_by_id($data){
+        $userId = $this->session->user_info['id'];
+        $all_msgId = explode(',',$data['msgId']);
+        foreach($all_msgId as $key => $value){
+            $this->cache->delete($value.'_'.$userId);
+        }
+        $result = array(
+            "status" => 1,
+            "msg"=> '修改成功'
+        );  
+        return $result;
+    }
+
+    // 修改收藏要求已讀狀態
+    public function update_collect_isReaded_by_id($data){
+        $all_collectId = explode(',',$data['collectId']);
+        foreach($all_collectId as $key => $value){
+            $this->user_collect_model->update_collect_isReaded_by_id($value);
+        }
+        $result = array(
+            "status" => 1,
+            "msg"=> '修改成功'
         );  
         return $result;
     }

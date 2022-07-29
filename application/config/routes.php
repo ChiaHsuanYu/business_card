@@ -49,8 +49,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
+$route['sys_msg/(:any)'] = 'sys_msg/index/$1';              //系統通知訊息
 $route['users/(:any)'] = 'users/index';                  //用戶管理
-$route['password/edit'] = 'password/edit';           //管理員密碼修改
+$route['password/edit'] = 'password/edit';               //管理員密碼修改
 $route['mgt_subject/add'] = 'mgt_subject/add';           //主題新增上傳
 $route['mgt_subject/edit'] = 'mgt_subject/edit';         //主題修改
 $route['mgt_subject/(:any)'] = 'mgt_subject/index';      //主題維護

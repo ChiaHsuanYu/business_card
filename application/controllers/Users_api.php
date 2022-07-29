@@ -324,4 +324,47 @@ class Users_api extends BaseAPIController
             $this->response($this->users_service->update_isPublic_by_userId($data),200); // REST_Controller::HTTP_OK     
         }
     }
+    //取得系統通知訊息(by userId)
+    public function get_sys_msg_by_userId_post(){
+        $this->response($this->users_service->get_sys_msg_by_userId(),200); // REST_Controller::HTTP_OK     
+    }
+
+    //取得未讀通知總數 by userId
+    public function get_msg_count_by_userId_post(){
+        $this->response($this->users_service->get_msg_count_by_userId(),200); // REST_Controller::HTTP_OK     
+    }
+
+    //修改系統訊息已讀狀態 by userId
+    public function update_sys_msg_isReaded_by_id_post(){
+        $data = array(
+            "msgId" => $this->security->xss_clean($this->input->post("msgId")),
+        );
+        $this->form_validation->set_rules('msgId', 'lang:「已讀的系統訊息ID」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->users_service->update_sys_msg_isReaded_by_id($data),200); // REST_Controller::HTTP_OK     
+        }
+    }
+
+    //修改收藏要求已讀狀態
+    public function update_collect_isReaded_by_id_post(){
+        $data = array(
+            "collectId" => $this->security->xss_clean($this->input->post("collectId")),
+        );
+        $this->form_validation->set_rules('collectId', 'lang:「已讀的收藏要求ID」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->users_service->update_collect_isReaded_by_id($data),200); // REST_Controller::HTTP_OK     
+        }
+    }
 }

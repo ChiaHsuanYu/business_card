@@ -27,7 +27,7 @@ class Login_service extends MY_Service
                 'id'=> $r[0]->id
             );
             // 檢查當日簡訊發送次數及間隔時間
-            $result = $this->check_smsnumber($$r[0]->SMSNumber,$r[0]->SMSTime);
+            $result = $this->check_smsnumber($r[0]->SMSNumber,$r[0]->SMSTime);
             if(!$result['status']){
                 return $result;
             }
