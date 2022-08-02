@@ -9,6 +9,7 @@ class Card_service extends MY_Service
         $this->load->model('sys_msg_model');
         $this->load->model('user_msg_state_model');
         $this->load->model('county_model');
+        $this->load->model('scan_record_model');
         $this->load->service('Common_service');
         $this->load->library('session');
         $this->load->driver('cache');
@@ -268,6 +269,7 @@ class Card_service extends MY_Service
         foreach($all_users as $key => $value){
             // 依序取得公司職位名稱
             $personal_data = new Card_service();
+            $personal_data->collectId = $value->collectId;
             $personal_data->userId = $value->id;
             $personal_data->name = $value->personal_name;
             $personal_data->superID = $value->personal_superID;
@@ -357,5 +359,64 @@ class Card_service extends MY_Service
             array_push($all_user_data,$personal_data);
         }
         return $all_user_data;
+    }
+
+    public function add_scan_record($data){
+        $data['userId'] = $this->session->user_info['id'];
+        $check_result = $this->scan_record_model->check_scan_record($data);
+        if(count($check_result)){
+            $data['id'] = $check_result[0]->id;
+            $r = $this->scan_record_model->update_scan_record_by_id($data);
+        }else{
+            $r = $this->scan_record_model->add_scan_record($data);
+        }
+        if(!$r){
+            $result = array(
+                "status" => 0,
+                "msg"=> "瀏覽紀錄更新失敗"
+            );   
+            return $result;
+        }
+        $result = array(
+            "status" => 0,
+            "msg"=> "瀏覽紀錄更新成功"
+        ); 
+        return $result;
+    }
+
+    // 取得瀏覽紀錄列表
+    public function query_scan_record($data){
+        $data['userId'] = $this->session->user_info['id'];
+        $all_users = $this->scan_record_model->get_scan_record($data['userId']);
+        if(!count($all_users)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );   
+            return $result;
+        }
+        // 檢查公司是否符合篩選條件
+        $collect_users_id = $this->check_company($all_users,$data);
+        if(!count($collect_users_id)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );   
+            return $result;
+        }
+        // 取得使用者資訊
+        $all_user_data = $this->get_output_user($collect_users_id,$data);
+        if(!count($all_user_data)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );   
+        }else{
+            $result = array(
+                "status" => 1,
+                "data"=> $all_user_data
+            );   
+        }
+        return $result;
     }
 }

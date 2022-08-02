@@ -118,15 +118,15 @@ class Company_model extends CI_Model
 
     // 新增公司資訊
     public function add_company($data){
-        $sql = "INSERT INTO company (UserId,Company,Position,Logo,CreateTime) VALUES (?, ?, ?, ?, ?)";
-        $query = $this->db->query($sql,array($data['id'],$data['company_name'],$data['company_position'],$data['company_logo_path'],date('Y-m-d H:i:s')));
+        $sql = "INSERT INTO company (UserId,Company,Position,Logo,`Order`,CreateTime) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['id'],$data['company_name'],$data['company_position'],$data['company_logo_path'],COMPANY_ORDER,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 
     // 新增公司資訊 for 編輯個人檔案
     public function add_company_for_acc($userId,$data){
-        $sql = "INSERT INTO company (UserId,`Order`,Company,`Address`,Gui,Phone,IndustryId,Position,Aboutus,Email,Logo,Social,CreateTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $query = $this->db->query($sql,array($userId,$data->order,$data->company_name,$data->company_address,$data->company_gui,$data->company_phone,$data->company_industryId,$data->company_position,$data->company_aboutus,$data->company_email,$data->company_logo_path,$data->company_social,date('Y-m-d H:i:s')));
+        $sql = "INSERT INTO company (UserId,`Order`,Company,`Address`,Gui,Phone,IndustryId,Position,Aboutus,Email,Logo,Social,`Order`,CreateTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($userId,$data->order,$data->company_name,$data->company_address,$data->company_gui,$data->company_phone,$data->company_industryId,$data->company_position,$data->company_aboutus,$data->company_email,$data->company_logo_path,$data->company_social,COMPANY_ORDER,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 

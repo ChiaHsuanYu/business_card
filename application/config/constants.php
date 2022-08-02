@@ -91,6 +91,8 @@ define('SMSEXPIRED', 60);                                               //簡訊
 define('LOGIN_DEVICE_NUM', 1);                                          //登入設備類型限制數量
 define('TIME_TO_LIVE', 2592000);                                        //cache存活時間
 define('NOTIFY_TIME_TO_LIVE', 60);                                      //notify cache存活時間
+define('USER_ORDER', 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social');  //user order預設值
+define('COMPANY_ORDER', 'company_name,company_logo,company_industryId,company_position,company_aboutus,company_phone,company_address,company_email,company_gui,company_social');  //company order預設值
 
 /* 前台URI */
 define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑

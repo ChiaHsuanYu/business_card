@@ -367,4 +367,23 @@ class Users_api extends BaseAPIController
             $this->response($this->users_service->update_collect_isReaded_by_id($data),200); // REST_Controller::HTTP_OK     
         }
     }
+
+    //開啟/關閉AI推薦
+    public function update_isOpenAI_post(){
+        $data = array(
+            "collectId" => $this->security->xss_clean($this->input->post("collectId")),
+        );
+        $this->form_validation->set_rules('collectId', 'lang:「已讀的收藏要求ID」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->users_service->update_isOpenAI($data),200); // REST_Controller::HTTP_OK     
+        }
+    }
+
+    
 }

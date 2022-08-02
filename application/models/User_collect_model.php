@@ -122,13 +122,14 @@ class User_collect_model extends CI_Model
 
     // 取得被收藏的使用者ID
     public function get_user_for_collected($userId){
-        $sql = "SELECT users.* FROM user_collect INNER JOIN `users` ON user_collect.UserId = users.Id 
+        $sql = "SELECT user_collect.Id as collectId,users.* FROM user_collect INNER JOIN `users` ON user_collect.UserId = users.Id 
                 WHERE user_collect.Collect_userId = ? AND user_collect.isCollected = 1 AND users.isDeleted = 0 GROUP BY users.Id ORDER BY user_collect.CreateTime DESC";
         $query = $this->db->query($sql, array($userId));
         $result = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $obj = new User_collect_model();
+                $obj->collectId = $row->collectId;
                 $obj->id = $row->Id;
                 $obj->personal_superID = $row->SuperID;
                 $obj->personal_name = $row->Name;

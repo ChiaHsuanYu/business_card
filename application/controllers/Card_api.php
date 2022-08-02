@@ -107,4 +107,32 @@ class Card_api extends BaseAPIController
     public function get_user_for_collected_post(){
         $this->response($this->card_service->get_user_for_collected(),200); // REST_Controller::HTTP_OK     
     }
+
+    //新增瀏覽紀錄
+    public function add_scan_record_post(){
+        $data = array(
+            "scan_userId" => $this->security->xss_clean($this->input->post("scan_userId")),
+            "scanTime" => $this->security->xss_clean($this->input->post("scanTime")),
+        );
+        $this->form_validation->set_rules('scan_userId', 'lang:「使用者ID」', 'required');
+        $this->form_validation->set_rules('scanTime', 'lang:「瀏覽時間」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->card_service->add_scan_record($data),200); // REST_Controller::HTTP_OK     
+        }
+    }
+
+    //取得瀏覽紀錄
+    public function query_scan_record_post(){
+        $data = array(
+            "areaId" => $this->security->xss_clean($this->input->post("areaId")),
+            "industryId" => $this->security->xss_clean($this->input->post("industryId")),
+        );
+        $this->response($this->card_service->query_scan_record($data),200); // REST_Controller::HTTP_OK     
+    }
 }

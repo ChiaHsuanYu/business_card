@@ -87,6 +87,20 @@ CREATE TABLE `country_code` (
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `county`
+--
+
+CREATE TABLE `county` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `Name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '縣市名稱',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
 --
 -- 傾印資料表的資料 `country_code`
 --
@@ -175,6 +189,23 @@ INSERT INTO `mgt_users` (`Id`, `Account`, `Password`, `Name`, `Phone`, `Email`, 
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `scan_record`
+--
+
+CREATE TABLE `scan_record` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `UserId` int(11) NOT NULL COMMENT '使用者id(FK:Users->Id)',
+  `Scan_userId` int(11) NOT NULL COMMENT '瀏覽的userId',
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
+  `ScanTime` datetime NOT NULL COMMENT '瀏覽時間',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
+  `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `sms_log`
 --
 
@@ -231,6 +262,7 @@ INSERT INTO `social` (`Id`, `Icon`, `Name`, `CreateTime`) VALUES
 
 CREATE TABLE `subject` (
   `Id` int(11) NOT NULL COMMENT 'ID',
+  `TemplateId` int(11) NOT NULL COMMENT '模板元件ID',
   `ImageURL` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '圖片檔名',
   `SubjectFile` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'CSS檔案',
   `Name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '主題名稱',
@@ -246,13 +278,50 @@ CREATE TABLE `subject` (
 -- 傾印資料表的資料 `subject`
 --
 
-INSERT INTO `subject` (`Id`, `ImageURL`, `SubjectFile`, `Name`, `isReleased`, `isDeleted`, `ReleaseTime`, `CreateTime`, `ModifiedTime`, `DeleteTime`) VALUES
-(1, 'test1.png', 'test1.css', '預設主題一', 1, 0, '2022-04-20', '2022-04-15 13:27:10', '2022-04-28 11:04:11', NULL),
-(2, 'test2.jpg', 'test2.css', '預設主題二', 1, 0, '2022-04-20', '2022-04-15 13:27:10', '2022-04-28 11:04:11', NULL),
-(3, 'test3.jpg', 'test3.css', '預設主題三', 1, 0, '2022-04-20', '2022-04-15 13:27:36', '2022-04-28 11:04:11', NULL),
-(4, 'test4.jpg', 'test4.css', '預設主題四', 1, 0, '2022-04-20', '2022-04-18 18:59:42', '2022-04-28 11:04:11', NULL),
-(5, 'test5.jpg', 'test5.css', '預設主題五', 1, 0, '2022-04-20', '2022-04-19 18:50:08', '2022-04-28 11:10:55', '2022-04-28 00:00:00');
+INSERT INTO `subject` (`Id`, `TemplateId`, `ImageURL`, `SubjectFile`, `Name`, `isReleased`, `isDeleted`, `ReleaseTime`, `CreateTime`, `ModifiedTime`, `DeleteTime`) VALUES
+(1, 1, 'test1.png', 'test1.css', '預設主題一', 1, 0, '2022-04-20', '2022-04-15 13:27:10', '2022-04-28 11:04:11', NULL),
+(2, 1, 'test2.jpg', 'test2.css', '預設主題二', 1, 0, '2022-04-20', '2022-04-15 13:27:10', '2022-04-28 11:04:11', NULL),
+(3, 1, 'test3.jpg', 'test3.css', '預設主題三', 1, 0, '2022-04-20', '2022-04-15 13:27:36', '2022-04-28 11:04:11', NULL),
+(4, 1, 'test4.jpg', 'test4.css', '預設主題四', 1, 0, '2022-04-20', '2022-04-18 18:59:42', '2022-04-28 11:04:11', NULL),
+(5, 1, 'test5.jpg', 'test5.css', '預設主題五', 1, 0, '2022-04-20', '2022-04-19 18:50:08', '2022-04-28 11:10:55', '2022-04-28 00:00:00');
 
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `sys_msg`
+--
+
+CREATE TABLE `sys_msg` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `Title` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '系統通知標題',
+  `Msg` text COLLATE utf8_unicode_ci NOT NULL COMMENT '系統通知訊息',
+  `UserId` int(11) DEFAULT NULL COMMENT '指定使用者ID(預設為null)',
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
+  `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `template`
+--
+
+CREATE TABLE `template` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `Template` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '模板名稱',
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
+  `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 傾印資料表的資料 `subject`
+--
+
+INSERT INTO `template` (`Id`, `Template`, `isDeleted`, `CreateTime`) VALUES (1, 'Basic', 0, '2022-04-15 13:27:10');
 -- --------------------------------------------------------
 
 --
@@ -294,12 +363,31 @@ CREATE TABLE `users` (
   `Phone` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '電話(以逗號分隔)',
   `Email` text COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Email(以逗號分隔)',
   `Social` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '社群資料(包含socialCategory社群分類、socialTitle標題、socialURL網址連結)',
-  `Order` varchar(535) COLLATE utf8_unicode_ci DEFAULT 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social' COMMENT '欄位順序(以逗號分隔)',
-  `CompanyOrder` text COLLATE utf8_unicode_ci NOT NULL COMMENT '公司資訊順序(以ID紀錄，逗號分隔)',
+  `Order` text COLLATE utf8_unicode_ci DEFAULT 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social' COMMENT '欄位順序(以逗號分隔)',
+  `CompanyOrder` text COLLATE utf8_unicode_ci NULL COMMENT '公司資訊順序(以ID紀錄，逗號分隔)',
   `Avatar` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '個人頭像(ImgUUIDName圖片檔名)',
   `SubjectId` int(11) NOT NULL DEFAULT 1 COMMENT '主題ID(FK:subject->Id)',
   `Identity` tinyint(1) NOT NULL DEFAULT 0 COMMENT '身分-0:一般用戶,1:系統管理人員',
+  `isOpenAI` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否開啟AI推薦-0:否;1:是',
+  `isPublic` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否公開-0:否;1:是',
   `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
+  `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `user_collect`
+--
+
+CREATE TABLE `user_collect` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `UserId` int(11) NOT NULL COMMENT '使用者id(FK:Users->Id)',
+  `Collect_userId` int(11) NOT NULL COMMENT '收藏的userId',
+  `isCollected` tinyint(1) NOT NULL DEFAULT 1 COMMENT '收藏狀態-0:拒絕,1:接受,2:待確認',
+  `isReaded` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已讀-0:否,1:是',
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
   `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
   `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
@@ -343,6 +431,14 @@ ALTER TABLE `country_code`
   ADD KEY `CreateTime` (`CreateTime`);
 
 --
+-- 資料表索引 `county`
+--
+ALTER TABLE `county`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`);
+
+--
 -- 資料表索引 `industry`
 --
 ALTER TABLE `industry`
@@ -362,6 +458,18 @@ ALTER TABLE `mgt_users`
   ADD KEY `Token` (`Token`),
   ADD KEY `TokenCreateTime` (`TokenCreateTime`),
   ADD KEY `TokenUpdateTime` (`TokenUpdateTime`),
+  ADD KEY `Id` (`Id`);
+
+--
+-- 資料表索引 `scan_record`
+--
+ALTER TABLE `scan_record`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `UserId` (`UserId`),
+  ADD KEY `Scan_userId` (`Scan_userId`),
+  ADD KEY `isDeleted` (`isDeleted`),
+  ADD KEY `ScanTime` (`ScanTime`),
+  ADD KEY `CreateTime` (`CreateTime`),
   ADD KEY `Id` (`Id`);
 
 --
@@ -389,7 +497,29 @@ ALTER TABLE `subject`
   ADD KEY `CreateTime` (`CreateTime`),
   ADD KEY `Id` (`Id`),
   ADD KEY `isReleased` (`isReleased`),
-  ADD KEY `isDeleted` (`isDeleted`);
+  ADD KEY `isDeleted` (`isDeleted`),
+  ADD KEY `TemplateId` (`TemplateId`);
+
+--
+-- 資料表索引 `sys_msg`
+--
+ALTER TABLE `sys_msg`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `Title` (`Title`),
+  ADD KEY `Msg` (`Msg`(1024)),
+  ADD KEY `isDeleted` (`isDeleted`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`),
+  ADD KEY `UserId` (`UserId`);
+
+--
+-- 資料表索引 `template`
+--
+ALTER TABLE `template`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `isDeleted` (`isDeleted`),
+  ADD KEY `Id` (`Id`);
 
 --
 -- 資料表索引 `token`
@@ -425,7 +555,21 @@ ALTER TABLE `users`
   ADD KEY `Facebook_uid` (`Facebook_uid`),
   ADD KEY `Facebook_access_token` (`Facebook_access_token`),
   ADD KEY `Line_uid` (`Line_uid`),
-  ADD KEY `Line_access_token` (`Line_access_token`);
+  ADD KEY `Line_access_token` (`Line_access_token`),
+  ADD KEY `isOpenAI` (`isOpenAI`),
+  ADD KEY `isPublic` (`isPublic`);
+
+--
+-- 資料表索引 `user_collect`
+--
+ALTER TABLE `user_collect`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `UserId` (`UserId`),
+  ADD KEY `Collect_userId` (`Collect_userId`),
+  ADD KEY `isCollected` (`isCollected`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`),
+  ADD KEY `isReaded` (`isReaded`);
 
 --
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
@@ -450,6 +594,12 @@ ALTER TABLE `country_code`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=14;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `county`
+--
+ALTER TABLE `county`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `industry`
 --
 ALTER TABLE `industry`
@@ -460,6 +610,12 @@ ALTER TABLE `industry`
 --
 ALTER TABLE `mgt_users`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `scan_record`
+--
+ALTER TABLE `scan_record`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `sms_log`
@@ -480,6 +636,18 @@ ALTER TABLE `subject`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=6;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `sys_msg`
+--
+ALTER TABLE `sys_msg`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `template`
+--
+ALTER TABLE `template`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `token`
 --
 ALTER TABLE `token`
@@ -489,6 +657,12 @@ ALTER TABLE `token`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `users`
 --
 ALTER TABLE `users`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `user_collect`
+--
+ALTER TABLE `user_collect`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 COMMIT;
 

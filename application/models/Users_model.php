@@ -139,8 +139,8 @@ class Users_model extends CI_Model
 
     // 新增使用者
     public function add_user($account){
-        $sql = "INSERT INTO users (Account, CreateTime) VALUES (?, ?)";
-        $query = $this->db->query($sql,array($account,date('Y-m-d H:i:s')));
+        $sql = "INSERT INTO users (Account, `Order`, CreateTime) VALUES (?, ?, ?)";
+        $query = $this->db->query($sql,array($account,USER_ORDER,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 
@@ -297,8 +297,8 @@ class Users_model extends CI_Model
     
     // 新增google使用者
     public function add_google_user($data){
-        $sql = "INSERT INTO users (Google_uid, Google_access_token, Name, Avatar, Email, CreateTime) VALUES (?, ?, ?, ?, ?, ?)";
-        $query = $this->db->query($sql,array($data['google_uid'],$data['google_access_token'],$data['name'],$data['avatar'],$data['email'],date('Y-m-d H:i:s')));
+        $sql = "INSERT INTO users (Google_uid, Google_access_token, Name, Avatar, Email, `Order`, CreateTime) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['google_uid'],$data['google_access_token'],$data['name'],$data['avatar'],$data['email'],USER_ORDER,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 
@@ -387,8 +387,8 @@ class Users_model extends CI_Model
     
     // 新增facebook使用者
     public function add_facebook_user($data){
-        $sql = "INSERT INTO users (Facebook_uid, Facebook_access_token, Name, Avatar, Email, CreateTime) VALUES (?, ?, ?, ?, ?, ?)";
-        $query = $this->db->query($sql,array($data['facebook_uid'],$data['facebook_access_token'],$data['name'],$data['avatar'],$data['email'],date('Y-m-d H:i:s')));
+        $sql = "INSERT INTO users (Facebook_uid, Facebook_access_token, Name, Avatar, Email, `Order`, CreateTime) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['facebook_uid'],$data['facebook_access_token'],$data['name'],$data['avatar'],$data['email'],USER_ORDER,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 
@@ -478,8 +478,8 @@ class Users_model extends CI_Model
     
     // 新增line使用者
     public function add_line_user($data){
-        $sql = "INSERT INTO users (Line_uid, Line_access_token, Name, Avatar, CreateTime) VALUES (?, ?, ?, ?, ?)";
-        $query = $this->db->query($sql,array($data['line_uid'],$data['line_access_token'],$data['name'],$data['avatar'],date('Y-m-d H:i:s')));
+        $sql = "INSERT INTO users (Line_uid, Line_access_token, Name, Avatar, `Order`, CreateTime) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = $this->db->query($sql,array($data['line_uid'],$data['line_access_token'],$data['name'],$data['avatar'],USER_ORDER,date('Y-m-d H:i:s')));
         return $this->db->insert_id();
     }
 
