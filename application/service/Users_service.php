@@ -10,9 +10,10 @@ class Users_service extends MY_Service
         $this->load->model('avatar_model');
         $this->load->model('sys_msg_model');
         $this->load->model('user_collect_model');
+        $this->load->service('Gps_service');
         $this->load->service('Common_service');
         $this->load->library('session');
-        $this->load->driver('cache');
+        $this->load->driver('cache', array('adapter' => 'redis','backup' => 'file'));
     }
    
     // 帳號驗證
@@ -178,7 +179,7 @@ class Users_service extends MY_Service
             // 檢查是否有登入紀錄
             $result = array(
                 "status" => 2,
-                "msg"=> "用戶帳號不公開"
+                "msg"=> "用戶帳號不公開",
             );   
             if(!isset($this->session->user_info['id'])){
                 return $result;
@@ -394,15 +395,15 @@ class Users_service extends MY_Service
         $r = $this->users_model->update_superId_by_id($data);
         if(!$r){
             $result = array(
-                "status" => 1,
-                "msg"=> "修改成功"
-            );  
+                "status" => 0,
+                "msg"=> "修改失敗"
+            );    
             return $result;
         }
         $result = array(
-            "status" => 0,
-            "msg"=> "修改失敗"
-        );    
+            "status" => 1,
+            "msg"=> "修改成功"
+        );  
         return $result;
     }
 
@@ -419,7 +420,8 @@ class Users_service extends MY_Service
         }
         $result = array(
             "status" => 1,
-            "msg"=> "修改成功"
+            "msg"=> "修改成功",
+            "data" => $data
         );  
         return $result;
     }
@@ -501,6 +503,43 @@ class Users_service extends MY_Service
             "status" => 1,
             "msg"=> '修改成功'
         );  
+        return $result;
+    }
+
+    // 更改AI推薦設定
+    public function update_isOpenAI($data){
+        $data['userId'] = $this->session->user_info['id'];
+        $r = $this->users_model->update_isOpenAI($data);
+        if(!$r){
+            $result = array(
+                "status" => 0,
+                "msg"=> '修改失敗'
+            );  
+            return $result;
+        }
+        $result = array(
+            "status" => 1,
+            "msg"=> '修改成功'
+        );  
+        return $result;
+    }
+
+    // 更新裝置GPS定位
+    public function update_gps($data){
+        $userId = $this->session->user_info['id'];
+        if(isset($this->input->request_headers()['x-forwarded-for'])){
+            $host = $this->input->request_headers()['x-forwarded-for'];
+        }else if(isset($this->input->request_headers()['Host'])){
+            $host = $this->input->request_headers()['Host'];
+        }else{
+            $host = '';
+        }
+        $data['userId'] = $userId;
+        $data['host'] = $host;
+        $this->cache->redis->save($userId .'_gps',$data,TIME_TO_LIVE); //記錄gps定位緩存
+        // 與其他使用者位置比對
+        $result = $this->gps_service->check_gps($userId);
+        $result['user'] = $data;
         return $result;
     }
 }

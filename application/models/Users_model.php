@@ -717,8 +717,10 @@ class Users_model extends CI_Model
     }
 
     public function get_random_users($data){
-        $sql = "SELECT users.* FROM users WHERE users.Id != ? AND users.isDeleted = 0 ORDER BY rand()";
-        $query = $this->db->query($sql, array($data['userId']));
+        $sql = "SELECT users.* FROM users WHERE users.Id != ? AND users.isDeleted = 0 
+                AND users.Id NOT IN(SELECT Collect_userId as Id FROM `user_collect` WHERE UserId = ? AND (isCollected = 1 OR isCollected = 2) ) 
+                ORDER BY rand()";
+        $query = $this->db->query($sql, array($data['userId'],$data['userId']));
         $result = array();
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -732,5 +734,23 @@ class Users_model extends CI_Model
             }
         }
         return $result;
+    }
+
+    // 更改AI推薦設定 by id
+    public function update_isOpenAI($data){
+        $sql = "UPDATE users SET `isOpenAI` = ?, ModifiedTime = ? WHERE Id = ?;";
+        $query = $this->db->query($sql, array($data['isOpenAI'],date('Y-m-d H:i:s'),$data['userId']));
+        return $query;
+    }
+
+    public function get_other_users_for_gps($userId,$max_time){
+        $sql = "SELECT users.Id as id FROM users WHERE users.isOpenAI = 1 AND users.Id != ? 
+                AND users.Id NOT IN(SELECT Collect_userId as Id FROM `user_collect` WHERE UserId = ?) 
+                AND users.Id NOT IN(SELECT Contact_userId as Id FROM `cancel_contact_total` WHERE UserId = ?) 
+                AND users.Id NOT IN(SELECT UserId as Id FROM `cancel_contact_total` WHERE Contact_userId = ?) 
+                AND users.Id NOT IN(SELECT UserId as Id FROM `contact_time_total` WHERE Contact_userId = ? AND `Date` = ? AND `Contact_time` >= ?)
+                AND users.Id NOT IN(SELECT Contact_userId as Id FROM `contact_time_total` WHERE `UserId` = ? AND `Date` = ? AND `Contact_time` >= ?)";
+        $query = $this->db->query($sql, array($userId,$userId,$userId,$userId,$userId,date('Y-m-d'),$max_time,$userId,date('Y-m-d'),$max_time));
+        return $query->result();
     }
 }

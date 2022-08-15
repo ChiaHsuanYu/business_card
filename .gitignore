@@ -17,3 +17,4 @@ application/logs/*
 /vendor/
 /appoint/images/
 /appoint/vCard/
+/system/sessions/

@@ -368,12 +368,12 @@ class Users_api extends BaseAPIController
         }
     }
 
-    //開啟/關閉AI推薦
+    //更改AI推薦設定
     public function update_isOpenAI_post(){
         $data = array(
-            "collectId" => $this->security->xss_clean($this->input->post("collectId")),
+            "isOpenAI" => $this->security->xss_clean($this->input->post("isOpenAI")),
         );
-        $this->form_validation->set_rules('collectId', 'lang:「已讀的收藏要求ID」', 'required');
+        $this->form_validation->set_rules('isOpenAI', 'lang:「是否開啟AI推薦」', 'required');
         if ($this->form_validation->run() === FALSE) {
             $result = array(
                 "status" => 0,
@@ -385,5 +385,22 @@ class Users_api extends BaseAPIController
         }
     }
 
-    
+    //更新裝置GPS定位&比對其他使用者距離
+    public function update_gps_post(){
+        $data = array(
+            "lat" => $this->security->xss_clean($this->input->post("lat")),
+            "lng" => $this->security->xss_clean($this->input->post("lng")),
+        );
+        $this->form_validation->set_rules('lat', 'lang:「經度」', 'required');
+        $this->form_validation->set_rules('lng', 'lang:「緯度」', 'required');
+        if ($this->form_validation->run() === FALSE) {
+            $result = array(
+                "status" => 0,
+                "message" => $this->form_validation->error_string()
+            ); 
+            $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
+        }else{
+            $this->response($this->users_service->update_gps($data),200); // REST_Controller::HTTP_OK     
+        }
+    }
 }

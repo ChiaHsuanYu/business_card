@@ -70,6 +70,8 @@ class BaseAPIController extends RestController{
     {
         if(isset($this->input->request_headers()['x-forwarded-for'])){
             $host = $this->input->request_headers()['x-forwarded-for'];
+        }else if(isset($this->input->request_headers()['Host'])){
+            $host = $this->input->request_headers()['Host'];
         }else{
             $host = "";
         }

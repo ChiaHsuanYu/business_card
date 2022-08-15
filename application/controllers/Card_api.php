@@ -135,4 +135,13 @@ class Card_api extends BaseAPIController
         );
         $this->response($this->card_service->query_scan_record($data),200); // REST_Controller::HTTP_OK     
     }
+
+    //取得AI推薦列表
+    public function query_ai_users_post(){
+        // $data = array(
+        //     "areaId" => $this->security->xss_clean($this->input->post("areaId")),
+        //     "industryId" => $this->security->xss_clean($this->input->post("industryId")),
+        // );
+        // $this->response($this->card_service->query_user_collect($data),200); // REST_Controller::HTTP_OK     
+    }
 }

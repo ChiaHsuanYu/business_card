@@ -333,7 +333,7 @@ CREATE TABLE `token` (
   `UserId` int(11) NOT NULL COMMENT '使用者ID',
   `Host` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '裝置host',
   `Device` tinyint(1) NOT NULL COMMENT '裝置類型(0:電腦,1:行動裝置)',
-  `Token` varchar(535) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Token',
+  `Token` varchar(535) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Token',
   `TokenCreateTime` datetime NOT NULL COMMENT 'Token建立時間',
   `TokenUpdateTime` datetime NOT NULL COMMENT 'Token更新時間'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -354,7 +354,7 @@ CREATE TABLE `users` (
   `Line_access_token` varchar(450) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'line access Token',
   `Account` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '手機號碼',
   `Verify` tinyint(1) NOT NULL DEFAULT 0 COMMENT '手機號碼驗證狀態(0:未驗證,1:已驗證)	',
-  `VerifyCode` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '驗證碼',
+  `VerifyCode` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '驗證碼',
   `SuperID` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'super ID',
   `SMSNumber` int(11) NOT NULL DEFAULT 0 COMMENT '當日簡訊發送次數',
   `SMSTime` datetime DEFAULT NULL COMMENT '簡訊最後發送時間',

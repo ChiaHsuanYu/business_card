@@ -89,10 +89,15 @@ define('TOKENEXPIRED', 28800);                                          //define
 define('SMS_NUM', 3);                                                   //簡訊當日發送限制次數
 define('SMSEXPIRED', 60);                                               //簡訊發送間隔時間
 define('LOGIN_DEVICE_NUM', 1);                                          //登入設備類型限制數量
-define('TIME_TO_LIVE', 2592000);                                        //cache存活時間
+define('TIME_TO_LIVE', 2592000);                                        //cache存活時間(分鐘)
 define('NOTIFY_TIME_TO_LIVE', 60);                                      //notify cache存活時間
 define('USER_ORDER', 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social');  //user order預設值
 define('COMPANY_ORDER', 'company_name,company_logo,company_industryId,company_position,company_aboutus,company_phone,company_address,company_email,company_gui,company_social');  //company order預設值
+define('DISTANCE', 100);                                                //最小距離(單位/公尺)
+define('MAX_CONTACT_TIME', 40);                                         //最大接觸時間(單位/分鐘)
+define('MIN_CONTACT_TIME', 0.1);                                        //最小接觸時間(單位/分鐘)
+define('CONTACT_CAP', 2);                                               //接觸天數上限
+
 
 /* 前台URI */
 define('SOCIAL_ICON_PATH', 'appoint/images/social/');                   //社群圖片路徑
