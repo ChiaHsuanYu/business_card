@@ -217,7 +217,7 @@ class BaseAPIController extends RestController{
         }
     }
 
-     // 檢查日期格式
+    // 檢查日期格式
     public function datetamp_validation($dateTime){
         if( date('Y-m-d', strtotime($dateTime)) != $dateTime && date('Y/m/d', strtotime($dateTime)) != $dateTime){
             $this->form_validation->set_message('datetamp_validation', '{field} 格式錯誤');

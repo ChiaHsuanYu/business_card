@@ -91,6 +91,7 @@
                 </button>
                 <div class="collapse" id="password-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a onclick="gotohref('<?php echo base_url('contact_setting/edit'); ?>')" class="link-dark rounded">親密度累積設定</a></li>
                         <li><a onclick="modal_show('confirmPasswordModal');" class="link-dark rounded">管理員密碼修改</a></li>
                         <li><a onclick="modal_show('confirmLogoutModal');" class="link-dark rounded cursor_pointer">登出</a></li>
                     </ul>

@@ -55,8 +55,6 @@ class Login_api extends BaseAPIController
     public function login_post(){   
         $account = $this->security->xss_clean($this->input->post("account"));
         $this->form_validation->set_rules('account', 'lang:「手機號碼」', 'required|callback_phone_validation');
-        // numeric|regex_match[/^09([0-9]{8})$/]
-
         //判斷規則是否成立
         if ($this->form_validation->run() === FALSE) {
             $result = array(

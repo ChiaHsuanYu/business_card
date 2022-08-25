@@ -36,4 +36,30 @@ class Contact_time_total_model extends CI_Model
         }
         return $result;
     }
+
+    // 取得AI推薦列表
+    public function query_ai_users($userId){
+        $sql = "SELECT users.Id,users.CompanyOrder,contact_time_total.Contact_time FROM contact_time_total 
+                INNER JOIN `users` ON contact_time_total.UserId = users.Id OR contact_time_total.Contact_userId = users.Id 
+                WHERE (contact_time_total.UserId = ? OR contact_time_total.Contact_userId = ?) 
+                AND users.isDeleted = 0 AND users.Id != ?
+                AND users.Id NOT IN(SELECT Contact_userId as Id FROM `cancel_contact_total` WHERE UserId = ?) 
+                AND users.Id NOT IN(SELECT UserId as Id FROM `cancel_contact_total` WHERE Contact_userId = ?) 
+                GROUP BY users.Id ORDER BY contact_time_total.Contact_time DESC";
+        $query = $this->db->query($sql, array($userId,$userId,$userId,$userId,$userId));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Contact_time_total_model();
+                $obj->id = $row->Id;
+                $obj->companyOrder = $row->CompanyOrder;
+                $obj->contact_time = $row->Contact_time;
+                if($row->CompanyOrder){
+                    $obj->companyOrder = explode(',',$row->CompanyOrder);
+                }
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
 }

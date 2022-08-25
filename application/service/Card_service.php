@@ -10,6 +10,7 @@ class Card_service extends MY_Service
         $this->load->model('user_msg_state_model');
         $this->load->model('county_model');
         $this->load->model('scan_record_model');
+        $this->load->model('contact_time_total_model');
         $this->load->service('Common_service');
         $this->load->library('session');
         $this->load->driver('cache');
@@ -388,6 +389,42 @@ class Card_service extends MY_Service
     public function query_scan_record($data){
         $data['userId'] = $this->session->user_info['id'];
         $all_users = $this->scan_record_model->get_scan_record($data['userId']);
+        if(!count($all_users)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );   
+            return $result;
+        }
+        // 檢查公司是否符合篩選條件
+        $collect_users_id = $this->check_company($all_users,$data);
+        if(!count($collect_users_id)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );   
+            return $result;
+        }
+        // 取得使用者資訊
+        $all_user_data = $this->get_output_user($collect_users_id,$data);
+        if(!count($all_user_data)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "查無資料"
+            );   
+        }else{
+            $result = array(
+                "status" => 1,
+                "data"=> $all_user_data
+            );   
+        }
+        return $result;
+    }
+
+    // 取得AI推薦列表
+    public function query_ai_users($data){
+        $data['userId'] = $this->session->user_info['id'];
+        $all_users = $this->contact_time_total_model->query_ai_users($data['userId']);
         if(!count($all_users)){
             $result = array(
                 "status" => 0,

@@ -16,14 +16,19 @@ class Contact_setting_api extends BaseAPIController
         $this->load->library('session');
 
         // 登入驗證
-        $r = $this->checkAA_front();
+        $r = $this->checkAA();
         if ($r['status'] == 1){             //Token合法並具有權限，將資料儲存在session           
-            $this->session->user_info = (array)$r['data'];   
+            $this->session->mgt_user_info = (array)$r['data'];   
         }else{                              //Token不合法或逾時，讓使用者執行登出
             $this->response($r,401); // REST_Controller::HTTP_OK     
             exit("Invalid Token");
         }
     }
+    //取得親密度累積設定
+    public function get_contact_setting_post(){
+        $this->response($this->contact_setting_service->get_contact_setting(),200); // REST_Controller::HTTP_OK     
+    }
+
     //親密度累積設定
     public function update_contact_setting_by_id_post(){
         $data = array(

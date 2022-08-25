@@ -56,6 +56,7 @@ function users_list(page_num, page_count) {
         page_count: page_count,
     };
     var result = call_api('mgt_users_api/query_users', data_obj);
+    console.log(result);
     if (result['status']) {
         var data = JSON.stringify(result['data']);
         data = JSON.parse(data);
@@ -101,8 +102,8 @@ function users_data(seachText, data_obj) {
         //輸出使用者列表
         tab += "<table class='web_table contentsTable' width='auto' cellpadding='0' cellspacing='0'>"
         tab += "<tr align='center'>";
-        tab += "<td class='contentsTh'>No</td><td class='contentsTh'>註冊類型</td><td class='contentsTh'>姓名</td><td class='contentsTh' colspan='2'>帳號</td><td class='contentsTh' colspan='2'>SUPER ID</td>";
-        tab += "<td class='contentsTh' colspan='2'>註冊時間</td><td class='contentsTh'>會員資料</td><td class='contentsTh'>功能</td>";
+        tab += "<td class='contentsTh'>No</td><td class='contentsTh'>註冊類型</td><td class='contentsTh'>姓名</td><td class='contentsTh' colspan='2'>帳號</td><td class='contentsTh'>SUPER ID</td>";
+        tab += "<td class='contentsTh'>AI推薦</td><td class='contentsTh'>隱私狀態</td><td class='contentsTh'>註冊時間</td><td class='contentsTh'>會員資料</td><td class='contentsTh'>功能</td>";
         tab += "</tr>";
         //逐步輸出所有使用者資料
         var page_star = (page_num - 1) * page_count;
@@ -111,7 +112,9 @@ function users_data(seachText, data_obj) {
             no++;
             var login_type = '手機號碼',
                 name = '-',
-                superID = '-';
+                superID = '-',
+                isOpenAI = '<p class="inline_block margin_0 fault_a red">關閉</p>',
+                isPublic = '<p class="inline_block margin_0 fault_a red">不公開</p>';
             var user_detail_id = "user_detail" + users[i]['id'];
             var user_detail_id_phone = "user_detail_phone_" + users[i]['id'];
             var company_id = "company_" + users[i]['id'];
@@ -136,6 +139,12 @@ function users_data(seachText, data_obj) {
             if (users[i]['personal_name']) {
                 name = users[i]['personal_name'];
             }
+            if (users[i]['isOpenAI']) {
+                isOpenAI = "開啟";
+            }
+            if (users[i]['isPublic']) {
+                isPublic = "公開";
+            }
             var user_data = {
                 id: users[i]['id'],
                 account: account
@@ -151,8 +160,8 @@ function users_data(seachText, data_obj) {
             }
             // <!-- 電腦版 -->
             tab += "<tr align='center' class='contentsTr'>";
-            tab += "<td>" + no + "</td><td>" + login_type + "</td><td>" + name + "</td><td colspan='2'>" + account + "</td><td colspan='2'>" + superID + "</td>";
-            tab += "<td colspan='2'>" + users[i]['createTime'] + "</td>";
+            tab += "<td>" + no + "</td><td>" + login_type + "</td><td>" + name + "</td><td colspan='2'>" + account + "</td><td>" + superID + "</td>";
+            tab += "<td>" + isOpenAI + "</td><td>" + isPublic + "</td><td>" + users[i]['createTime'] + "</td>";
             tab += "<td>";
             tab += "<div class='fault_a' onclick='show_user(" + '"' + user_detail_id + '"' + ")'>查看會員資料</div>";
             tab += "</td>";
@@ -166,6 +175,8 @@ function users_data(seachText, data_obj) {
             tab_phone += "<div class='content_phone'>姓名： " + name + "</div>";
             tab_phone += "<div class='content_phone'>帳號： " + account + "</div>";
             tab_phone += "<div class='content_phone'>SUPER ID： " + superID + "</div>";
+            tab_phone += "<div class='content_phone'>AI推薦： " + isOpenAI + "</div>";
+            tab_phone += "<div class='content_phone'>隱私狀態： " + isPublic + "</div>";
             tab_phone += "<div class='content_phone'>註冊時間： " + users[i]['createTime'] + "</div>";
             tab_phone += "<div class='content_phone'>會員資料： <p class='inline_block margin_0 fault_a' onclick='show_user(" + '"' + user_detail_id_phone + '"' + ")'>查看會員資料</p></div>";
             tab_phone += "<div class='content_phone'>功能： " + del_btn + "</div>";

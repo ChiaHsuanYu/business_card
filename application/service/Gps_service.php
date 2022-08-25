@@ -44,14 +44,13 @@ class Gps_service extends MY_Service
         return $result;
     }
 
-    // 檢查與其他人的定位距離
     public function check_other_users_gps($userId,$max_time,$min_time){
         // 取得個人座標
         $gps = $this->cache->redis->get($userId.'_gps');
         $startingPlace = new Point($gps['lat'], $gps['lng']); 
         $gps_room = array();
         if($this->cache->redis->get('gps_room')){
-            $gps_room=$this->cache->redis->get('gps_room');
+            $gps_room = $this->cache->redis->get('gps_room');
         }
         // 取得需檢查的人員清單(有開啟AI推薦的使用者/尚未收藏使用者/未在取消接觸累積的使用者列表內/當日接觸時間尚小於max_time的使用者)
         $other_users = $this->users_model->get_other_users_for_gps($userId,$max_time);
@@ -62,65 +61,70 @@ class Gps_service extends MY_Service
                 continue;
             }
             $other_gps = $this->cache->redis->get($other_id.'_gps');
-            $destination = new Point($other_gps['lat'], $other_gps['lng']);
-            // 計算並判斷距離(單位/公尺)
-            $calculator = new Calculator($startingPlace, $destination, $kilometers = true);
             // 檢查是否已有接觸紀錄,二次接觸時才開始計算累積接觸時間
             $room_no = 0;
+            $room_key = '';
             $nowtime = strtotime(date('Y-m-d H:i:s'));
-            foreach($gps_room as $room_key => $room_val){
-                if(in_array($userId,$room_val['users']) && in_array($other_id,$room_val['users'])){
-                    $room_no++;
-                    $last_check_time = $gps_room[$room_key]['last_check_time'];
-                    // 檢查距離
-                    $diff_distance = $calculator->getDistance() * 1000;
-                    if($diff_distance > DISTANCE){
-                        // 設定最新檢查時間
-                        $gps_room[$room_key]['last_check_time'] = $nowtime;
-                        continue;
-                    }
-                    if($room_val['check_state'] == 2){
-                        break;
-                    }
-                    $diff_time = $nowtime - $last_check_time;
-                    $contact_time = $gps_room[$room_key]['contact_time'] + round(abs($diff_time) / 60,3);
-                    $contact_data = array(
-                        'userId' => min($userId, $other_id),
-                        'other_id' => max($userId, $other_id),
-                        'contact_time' => $contact_time,
-                        'date' => date('Y-m-d'),
-                    );
-                    $time_data = array(
-                        'max_time' => $max_time,
-                        'min_time' => $min_time,
-                        'nowtime' => $nowtime
-                    );
-                    // 設置接觸紀錄(快取&資料庫)
-                    $gps_room_data = $this->set_gps_room($contact_data,$time_data,$room_val);
-                    // 判斷接觸紀錄狀態,為2時則當日不需再做計算,可移除接觸紀錄快取
-                    if($gps_room_data['check_state'] == '2'){
-                        array_splice($gps_room, $room_key, 1);
-                    }else{
-                        $gps_room[$room_key] = $gps_room_data;
-                    }
-                }
+            if(array_key_exists('room_'.$other_id.'_'.$userId,$gps_room)){
+                $room_key = 'room_'.$other_id.'_'.$userId;
             }
-            // 首次接觸,僅記錄尚不累積接觸時間,
-            if(!$room_no){
+            if(array_key_exists('room_'.$userId.'_'.$other_id,$gps_room)){
+                $room_key = 'room_'.$userId.'_'.$other_id;
+            }
+            // 計算並判斷距離(單位/公尺)
+            $destination = new Point($other_gps['lat'], $other_gps['lng']);
+            $calculator = new Calculator($startingPlace, $destination, $kilometers = true);
+            if($room_key){
+                $room_no++;
+                $room_val = $gps_room[$room_key];
+                $last_check_time = $room_val['last_check_time'];
+                // 檢查距離
+                $diff_distance = $calculator->getDistance() * 1000;
+                if($diff_distance > DISTANCE){
+                    // 設定最新檢查時間
+                    $room_val['last_check_time'] = $nowtime;
+                    $room_val['diff_distance'] = $diff_distance;
+                    continue;
+                }
+                if($room_val['check_state'] == 2){
+                    break;
+                }
+                $diff_time = $nowtime - $last_check_time;
+                $contact_time = $room_val['contact_time'] + round(abs($diff_time) / 60,3);
+                $contact_data = array(
+                    'userId' => min($userId, $other_id),
+                    'other_id' => max($userId, $other_id),
+                    'contact_time' => $contact_time,
+                    'date' => date('Y-m-d'),
+                );
+                $time_data = array(
+                    'max_time' => $max_time,
+                    'min_time' => $min_time,
+                    'nowtime' => $nowtime
+                );
+                // 設置接觸紀錄(快取&資料庫)
+                $gps_room_data = $this->set_gps_room($contact_data,$time_data,$room_val);
+                $gps_room_data['diff_distance'] = $diff_distance;
+                // 判斷接觸紀錄狀態,為2時則當日不需再做計算,可移除接觸紀錄快取
+                if($gps_room_data['check_state'] == '2'){
+                    unset($gps_room[$room_key]);
+                }else{
+                    $gps_room[$room_key] = $gps_room_data;
+                }
+            }else{
                 $room_data = array(
-                    'users' => [$userId,$other_id],
                     'check_state' => 0,
                     'contact_time' => 0,
-                    'last_check_time' => $nowtime
+                    'last_check_time' => $nowtime,
                 );
-                array_push($gps_room,$room_data);
+                $gps_room['room_'.$userId.'_'.$other_id] = $room_data;
             }
         }
         return $gps_room;
     }
 
     // 設置接觸紀錄(快取&資料庫)
-    public function set_gps_room($contact_data,$time_data,$gps_room){
+    public function set_gps_room($contact_data,$time_data,$gps_room = []){
         // 設定最新接觸統計時間
         $gps_room['contact_time'] = round(abs($contact_data['contact_time']),3);
         $gps_room['last_check_time'] = $time_data['nowtime'];

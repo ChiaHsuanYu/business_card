@@ -50,6 +50,19 @@ INSERT INTO `avatar` (`Id`, `ImageURL`, `Name`, `CreateTime`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `cancel_contact_total`
+--
+
+CREATE TABLE `cancel_contact_total` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `UserId` int(11) NOT NULL COMMENT '使用者id(FK:Users->Id)',
+  `Contact_userId` int(11) NOT NULL COMMENT '接觸的userId',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `company`
 --
 
@@ -71,6 +84,44 @@ CREATE TABLE `company` (
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
   `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
   `DeleteTime` datetime DEFAULT NULL COMMENT '刪除時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `contact_setting`
+--
+
+CREATE TABLE `contact_setting` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `Distance` int(11) NOT NULL COMMENT '最小距離(單位/公尺)',
+  `Max_contact_time` int(11) NOT NULL COMMENT '最大接觸時間(單位/分鐘)',
+  `Min_contact_time` int(11) NOT NULL COMMENT '最小接觸時間(單位/分鐘)',
+  `CreateTime` datetime NOT NULL COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL COMMENT '修改時間'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 傾印資料表的資料 `contact_setting`
+--
+
+INSERT INTO `contact_setting` (`Id`, `Distance`, `Max_contact_time`, `Min_contact_time`, `CreateTime`, `ModifiedTime`) VALUES
+(1, 100, 60, 20, '2022-08-10 14:29:09', '2022-08-11 11:31:40');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `contact_time_total`
+--
+
+CREATE TABLE `contact_time_total` (
+  `Id` int(11) NOT NULL COMMENT 'ID',
+  `UserId` int(11) NOT NULL COMMENT '使用者id(FK:Users->Id)',
+  `Contact_userId` int(11) NOT NULL COMMENT '接觸的userId',
+  `Contact_time` float NOT NULL COMMENT '接觸時間累積',
+  `Date` date NOT NULL COMMENT '建立日期',
+  `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
+  `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -410,6 +461,16 @@ ALTER TABLE `avatar`
   ADD KEY `Id` (`Id`);
 
 --
+-- 資料表索引 `cancel_contact_total`
+--
+ALTER TABLE `cancel_contact_total`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `Contact_userId` (`Contact_userId`),
+  ADD KEY `UserId` (`UserId`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Id` (`Id`);
+
+--
 -- 資料表索引 `company`
 --
 ALTER TABLE `company`
@@ -420,6 +481,25 @@ ALTER TABLE `company`
   ADD KEY `Id` (`Id`),
   ADD KEY `Company` (`Company`),
   ADD KEY `IndustryId` (`IndustryId`);
+
+--
+-- 資料表索引 `contact_setting`
+--
+ALTER TABLE `contact_setting`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `Id` (`Id`);
+
+--
+-- 資料表索引 `contact_time_total`
+--
+ALTER TABLE `contact_time_total`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `UserId` (`UserId`),
+  ADD KEY `Contact_userId` (`Contact_userId`),
+  ADD KEY `Date` (`Date`),
+  ADD KEY `CreateTime` (`CreateTime`),
+  ADD KEY `Contact_time` (`Contact_time`),
+  ADD KEY `Id` (`Id`);
 
 --
 -- 資料表索引 `country_code`
@@ -582,9 +662,27 @@ ALTER TABLE `avatar`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `cancel_contact_total`
+--
+ALTER TABLE `cancel_contact_total`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `company`
 --
 ALTER TABLE `company`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `contact_setting`
+--
+ALTER TABLE `contact_setting`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `contact_time_total`
+--
+ALTER TABLE `contact_time_total`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 
 --

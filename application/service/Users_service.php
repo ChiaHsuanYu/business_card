@@ -540,6 +540,8 @@ class Users_service extends MY_Service
         // 與其他使用者位置比對
         $result = $this->gps_service->check_gps($userId);
         $result['user'] = $data;
+        // $cache_info = $this->cache->redis->cache_info();
+        // $result['cache_info'] = $cache_info['used_memory_human'];
         return $result;
     }
 }
