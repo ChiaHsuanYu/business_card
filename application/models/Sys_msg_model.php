@@ -30,6 +30,26 @@ class Sys_msg_model extends CI_Model
         $query = $this->db->query($sql, array('1',date('Y-m-d H:i:s'),$id));
         return $query;
     }
+    
+    // 取得系統通知訊息 by id
+    public function get_sys_msg($id){
+        $sql = "SELECT * FROM sys_msg WHERE Id = ? AND isDeleted = 0";
+        $query = $this->db->query($sql, array($id));
+        $result = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $obj = new Sys_msg_model();
+                $obj->id = $row->Id;
+                $obj->title = $row->Title;
+                $obj->msg = $row->Msg;
+                $obj->userId = $row->UserId;
+                $obj->createTime = $row->CreateTime;
+                $obj->modifiedTime = $row->ModifiedTime;
+                array_push($result, $obj);
+            }
+        }
+        return $result;
+    }
 
     // 系統通知訊息列表
     public function query_sys_msg($data){

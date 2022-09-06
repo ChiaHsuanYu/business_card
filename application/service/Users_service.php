@@ -421,7 +421,6 @@ class Users_service extends MY_Service
         $result = array(
             "status" => 1,
             "msg"=> "修改成功",
-            "data" => $data
         );  
         return $result;
     }
@@ -521,6 +520,35 @@ class Users_service extends MY_Service
             "status" => 1,
             "msg"=> '修改成功'
         );  
+        // 開啟AI推薦功能時需先將該使用者相關的房間資訊檢查時間改成當下時間
+        if($data['isOpenAI'] == '1'){
+            // 取得親密度累積設定
+            $gps_room = $this->cache->redis->get('gps_room');
+            $contact_setting = $this->contact_setting_model->get_contact_setting();
+            $max_time = MAX_CONTACT_TIME;
+            if($contact_setting){
+                $max_time = $contact_setting[0]->max_contact_time;
+            }
+            // 取得需檢查的人員清單(有開啟AI推薦的使用者/尚未收藏使用者/未在取消接觸累積的使用者列表內/當日接觸時間尚小於max_time的使用者)
+            $other_users = $this->users_model->get_other_users_for_gps($data['userId'],$max_time);
+            foreach($other_users as $value){
+                $other_id = $value->id;
+                // 檢查是否已有接觸紀錄
+                $room_key = '';
+                $nowtime = strtotime(date('Y-m-d H:i:s'));
+                if(array_key_exists('room_'.$other_id.'_'.$data['userId'],$gps_room)){
+                    $room_key = 'room_'.$other_id.'_'.$data['userId'];
+                }
+                if(array_key_exists('room_'.$data['userId'].'_'.$other_id,$gps_room)){
+                    $room_key = 'room_'.$data['userId'].'_'.$other_id;
+                }
+                if($room_key){
+                    $gps_room[$room_key]['last_check_time'] = $nowtime;
+                }
+            }
+            $this->cache->redis->save('gps_room',$gps_room,TIME_TO_LIVE);
+            $result['gps_room'] = $gps_room;
+        }
         return $result;
     }
 
@@ -536,9 +564,12 @@ class Users_service extends MY_Service
         }
         $data['userId'] = $userId;
         $data['host'] = $host;
-        $this->cache->redis->save($userId .'_gps',$data,TIME_TO_LIVE); //記錄gps定位緩存
+        $gps_data = $this->cache->redis->get('gps_data'); //取得gps定位緩存
+        $gps_data[$userId .'_gps'] = $data;
+        $this->cache->redis->save('gps_data',$gps_data,TIME_TO_LIVE); //記錄gps定位緩存
+        
         // 與其他使用者位置比對
-        $result = $this->gps_service->check_gps($userId);
+        $result = $this->gps_service->check_gps($userId,$gps_data);
         $result['user'] = $data;
         // $cache_info = $this->cache->redis->cache_info();
         // $result['cache_info'] = $cache_info['used_memory_human'];

@@ -1,4 +1,6 @@
 <?php
+include APPPATH. 'third_party/gpsdistance/src/Location/Point.php';
+include APPPATH. 'third_party/gpsdistance/src/Counter/Calculator.php';
 class Card_service extends MY_Service
 {
     public function __construct()
@@ -58,10 +60,7 @@ class Card_service extends MY_Service
         }else{
             $notify_data['msg'] =  $notify_user[0]->personal_superID."已要求收藏您的名片";
         }
-        $result['notify_data'] = $notify_data;
-        $result['data'] = $data;
         $this->common_service->add_notify_cache($data['userId'],$notify_data);
-        $result['cache'] = $this->common_service->check_notify();
         // 新增收藏名片資訊
         $r = $this->user_collect_model->add_user_collect($data);
         if(!$r){
@@ -127,7 +126,7 @@ class Card_service extends MY_Service
         if(!count($collect_user_data)){
             $result = array(
                 "status" => 0,
-                "msg"=> "查無資料"
+                "msg"=> "查無收藏要求"
             );  
             return $result;
         }
@@ -161,8 +160,18 @@ class Card_service extends MY_Service
     // 查詢使用者ID
     public function query_users_id($data){
         $data['userId'] = $this->session->user_info['id'];
-        // 查詢指定userId外的使用者ID
-        $all_users = $this->users_model->get_random_users($data);
+        $userdata = $this->users_model->get_isOpenGps_by_id($data['userId']);
+        if(count($userdata)){
+            // 查詢位於userId附近的使用者資訊
+            $res = $this->get_nearby_users($data);
+            if(!$res['status']){
+                return $res;
+            }
+            $all_users = $res['data'];
+        }else{
+            // 查詢指定userId外的使用者ID
+            $all_users = $this->users_model->get_random_users($data);
+        }
         if(!count($all_users)){
             $result = array(
                 "status" => 0,
@@ -185,6 +194,47 @@ class Card_service extends MY_Service
                 "msg"=> "成功緩存隨機使用者ID"
             );   
         }
+        return $result;
+    }
+
+    // 查詢位於附近的使用者
+    public function get_nearby_users($data){
+        $all_users = array();
+        // 依據欲查詢位置取得使用者id
+        $gps_data = $this->cache->redis->get('gps_data'); //取得gps定位緩存
+        // 取得個人座標
+        if(!array_key_exists($data['userId'].'_gps', $gps_data)){
+            $result = array(
+                "status" => 0,
+                "msg"=> "無座標資訊"
+            );   
+            return $result;
+        }
+        $gps = $gps_data[$data['userId'].'_gps'];
+        $startingPlace = new Point($gps['lat'], $gps['lng']);
+        // 取得其他用戶清單
+        $other_users = $this->users_model->get_random_users($data);
+        foreach($other_users as $key => $value){
+            // 取得他人座標
+            $other_id = $value->id;
+            if(!array_key_exists($other_id.'_gps',$gps_data)){
+                continue;
+            } 
+            $other_gps = $gps_data[$other_id.'_gps'];
+            // 計算並判斷距離(單位/公尺)
+            $destination = new Point($other_gps['lat'], $other_gps['lng']);
+            $calculator = new Calculator($startingPlace, $destination, $kilometers = true);
+            // 檢查距離
+            $diff_distance = $calculator->getDistance() * 1000;
+            if($diff_distance > NEARBY_DISTANCE){
+                continue;
+            }
+            array_push($all_users,$value);
+        }
+        $result = array(
+            "status" => 1,
+            "data"=> $all_users,
+        );   
         return $result;
     }
 

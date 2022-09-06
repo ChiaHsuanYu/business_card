@@ -17,24 +17,9 @@ class Gps_service extends MY_Service
     }
    
     // gps定位-接觸時間累積檢查
-    public function check_gps($userId){
-        $contact_setting = $this->contact_setting_model->get_contact_setting();
-        $max_time = MAX_CONTACT_TIME;
-        $min_time = MIN_CONTACT_TIME;
-        if($contact_setting){
-            $max_time = $contact_setting[0]->max_contact_time;
-            $min_time = $contact_setting[0]->min_contact_time;
-        }
-        // 取得本人定位座標
-        if(!$this->cache->redis->get($userId.'_gps')){
-            $result = array(
-                "status" => 0,
-                "msg"=> '查無定位資訊',
-            );  
-            return $result;
-        }
+    public function check_gps($userId,$gps_data){
         // 比對與其他人的定位距離並記錄
-        $gps_room = $this->check_other_users_gps($userId,$max_time,$min_time);
+        $gps_room = $this->check_other_users_gps($userId,$gps_data);
         $this->cache->redis->save('gps_room',$gps_room,TIME_TO_LIVE);
         $result = array(
             "status" => 1,
@@ -44,9 +29,17 @@ class Gps_service extends MY_Service
         return $result;
     }
 
-    public function check_other_users_gps($userId,$max_time,$min_time){
+    public function check_other_users_gps($userId,$gps_data){
+        // 取得親密度累積設定
+        $contact_setting = $this->contact_setting_model->get_contact_setting();
+        $max_time = MAX_CONTACT_TIME;
+        $min_time = MIN_CONTACT_TIME;
+        if($contact_setting){
+            $max_time = $contact_setting[0]->max_contact_time;
+            $min_time = $contact_setting[0]->min_contact_time;
+        }
         // 取得個人座標
-        $gps = $this->cache->redis->get($userId.'_gps');
+        $gps = $gps_data[$userId.'_gps'];
         $startingPlace = new Point($gps['lat'], $gps['lng']); 
         $gps_room = array();
         if($this->cache->redis->get('gps_room')){
@@ -57,10 +50,10 @@ class Gps_service extends MY_Service
         foreach($other_users as $key => $value){
             // 取得他人座標
             $other_id = $value->id;
-            if (!$this->cache->redis->get($other_id.'_gps')){
+            if(!array_key_exists($other_id.'_gps',$gps_data)){
                 continue;
-            }
-            $other_gps = $this->cache->redis->get($other_id.'_gps');
+            } 
+            $other_gps = $gps_data[$other_id.'_gps'];
             // 檢查是否已有接觸紀錄,二次接觸時才開始計算累積接觸時間
             $room_no = 0;
             $room_key = '';
@@ -77,6 +70,7 @@ class Gps_service extends MY_Service
             if($room_key){
                 $room_no++;
                 $room_val = $gps_room[$room_key];
+                $room_val['last_check_time'] = $nowtime;
                 $last_check_time = $room_val['last_check_time'];
                 // 檢查距離
                 $diff_distance = $calculator->getDistance() * 1000;
@@ -84,6 +78,7 @@ class Gps_service extends MY_Service
                     // 設定最新檢查時間
                     $room_val['last_check_time'] = $nowtime;
                     $room_val['diff_distance'] = $diff_distance;
+                    $gps_room[$room_key] = $room_val;
                     continue;
                 }
                 if($room_val['check_state'] == 2){

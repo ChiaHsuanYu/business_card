@@ -150,6 +150,37 @@ CREATE TABLE `county` (
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- 傾印資料表的資料 `county`
+--
+
+INSERT INTO `county` (`Id`, `Name`, `CreateTime`) VALUES
+(1, '台北市', '2022-07-28 15:59:19'),
+(2, '新北市', '2022-07-28 15:59:19'),
+(3, '基隆市', '2022-07-28 15:59:19'),
+(4, '桃園市', '2022-07-28 15:59:19'),
+(5, '新竹市', '2022-07-28 15:59:19'),
+(6, '新竹縣', '2022-07-28 15:59:19'),
+(7, '苗栗縣', '2022-07-28 15:59:19'),
+(8, '台中市', '2022-07-28 15:59:19'),
+(9, '南投縣', '2022-07-28 15:59:19'),
+(10, '彰化縣', '2022-07-28 15:59:19'),
+(11, '雲林縣', '2022-07-28 15:59:19'),
+(12, '嘉義市', '2022-07-28 15:59:19'),
+(13, '嘉義縣', '2022-07-28 15:59:19'),
+(14, '台南市', '2022-07-28 15:59:19'),
+(15, '高雄市', '2022-07-28 15:59:19'),
+(16, '屏東縣', '2022-07-28 15:59:19'),
+(17, '台東縣', '2022-07-28 15:59:19'),
+(18, '花蓮縣', '2022-07-28 15:59:19'),
+(19, '宜蘭縣', '2022-07-28 15:59:19'),
+(20, '連江縣', '2022-07-28 15:59:19'),
+(21, '金門縣', '2022-07-28 15:59:19'),
+(22, '琉球鄉', '2022-07-28 15:59:19'),
+(23, '蘭嶼鄉', '2022-07-28 15:59:19'),
+(24, '綠島鄉', '2022-07-28 15:59:19'),
+(25, '澎湖縣', '2022-07-28 15:59:19');
+
 -- --------------------------------------------------------
 
 --
@@ -421,6 +452,7 @@ CREATE TABLE `users` (
   `Identity` tinyint(1) NOT NULL DEFAULT 0 COMMENT '身分-0:一般用戶,1:系統管理人員',
   `isOpenAI` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否開啟AI推薦-0:否;1:是',
   `isPublic` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否公開-0:否;1:是',
+  `isOpenGps` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否開啟GPS搜尋附近用戶-0:否,1:是',
   `isDeleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否刪除-0:否,1:是',
   `CreateTime` datetime NOT NULL DEFAULT current_timestamp() COMMENT '建立時間',
   `ModifiedTime` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改時間',
@@ -637,7 +669,8 @@ ALTER TABLE `users`
   ADD KEY `Line_uid` (`Line_uid`),
   ADD KEY `Line_access_token` (`Line_access_token`),
   ADD KEY `isOpenAI` (`isOpenAI`),
-  ADD KEY `isPublic` (`isPublic`);
+  ADD KEY `isPublic` (`isPublic`),
+  ADD KEY `isOpenGps` (`isOpenGps`);
 
 --
 -- 資料表索引 `user_collect`

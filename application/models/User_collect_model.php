@@ -36,7 +36,7 @@ class User_collect_model extends CI_Model
     public function update_isCollected_by_id($data){
         $sql = "UPDATE user_collect SET isCollected = ?, ModifiedTime = ? WHERE Id = ?;";
         $query = $this->db->query($sql, array($data['isCollected'],date('Y-m-d H:i:s'),$data['collectId']));
-        return $query;
+        return $this->db->affected_rows();
     }
 
     // 取得名片收藏資訊 by id

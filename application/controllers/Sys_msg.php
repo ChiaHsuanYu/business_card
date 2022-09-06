@@ -17,6 +17,7 @@ class Sys_msg extends BaseController {
         header("Cache-Control: no-cache");
         
     }
+    // 現階段不需使用此功能
     public function index($token){
         //登入驗證
         $r = $this->checkAA_front($token);
@@ -33,13 +34,13 @@ class Sys_msg extends BaseController {
             // 將資料編碼 json 傳送
             echo "data: ".json_encode($data);
             echo "\n\n";
-            ob_flush();
             flush();
+            ob_flush();
 
             // 控制睡眠多久再執行（秒）
             sleep(1);
             $count++; 
-            if($count>20){
+            if($count>10){
                 echo "結束";
                 exit;
             }

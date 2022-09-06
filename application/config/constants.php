@@ -94,6 +94,7 @@ define('NOTIFY_TIME_TO_LIVE', 60);                                      //notify
 define('USER_ORDER', 'personal_superID,personal_name,personal_nickname,personal_avatar,personal_phone,personal_email,personal_social');  //user order預設值
 define('COMPANY_ORDER', 'company_name,company_logo,company_industryId,company_position,company_aboutus,company_phone,company_address,company_email,company_gui,company_social');  //company order預設值
 define('DISTANCE', 100);                                                //最小距離(單位/公尺)
+define('NEARBY_DISTANCE', 1000);                                        //附近距離(單位/公尺)
 define('MAX_CONTACT_TIME', 60);                                         //最大接觸時間(單位/分鐘)
 define('MIN_CONTACT_TIME', 20);                                        //最小接觸時間(單位/分鐘)
 define('CONTACT_CAP', 2);                                               //接觸天數上限

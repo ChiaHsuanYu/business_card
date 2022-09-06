@@ -405,19 +405,23 @@ class Common_service extends MY_Service
 
     // 緩存通知訊息
     public function add_notify_cache($userId,$data){
-        $notify_data = $this->cache->redis->get('notify_'.$userId); //取得其他通知緩存
-        if(!$notify_data){
-            $notify_data = array();
+        $all_notify_data = $this->cache->redis->get('notify_list'); //取得其他通知緩存
+        $notify_data = array();
+        if(array_key_exists('notify_'.$userId,$all_notify_data)){
+            $notify_data = $all_notify_data['notify_'.$userId];
         }
         array_push($notify_data,$data);
-        $this->cache->redis->save('notify_'.$userId,$notify_data,NOTIFY_TIME_TO_LIVE); //記錄緩存並設置存活時間
+        $all_notify_data['notify_'.$userId] = $notify_data;
+        $this->cache->redis->save('notify_list',$all_notify_data,NOTIFY_TIME_TO_LIVE); //記錄緩存並設置存活時間
     }
 
     // 取得通知緩存訊息
     public function check_notify(){
         $userId = $this->session->user_info['id'];
         $notify_data = $this->cache->redis->get('notify_'.$userId); //取得通知緩存
-        $this->cache->delete('notify_'.$userId); //刪除緩存
+        if($notify_data){
+            $this->cache->redis->delete('notify_'.$userId); //刪除緩存
+        }
         return $notify_data;
     }
 }

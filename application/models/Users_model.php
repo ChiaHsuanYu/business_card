@@ -706,14 +706,7 @@ class Users_model extends CI_Model
             array_push($sql_array, $userId);
         }
         $query = $this->db->query($sql, $sql_array);
-        if ($query->num_rows() > 0) {
-            foreach ($query->result() as $row) {
-                $obj = new Users_model();
-                $obj->id = $row->Id;
-                array_push($result, $obj);
-            }
-        }
-        return $result;
+        return $query->result();
     }
 
     public function get_random_users($data){
@@ -751,6 +744,12 @@ class Users_model extends CI_Model
                 AND users.Id NOT IN(SELECT UserId as Id FROM `contact_time_total` WHERE Contact_userId = ? AND `Date` = ? AND `Contact_time` >= ?)
                 AND users.Id NOT IN(SELECT Contact_userId as Id FROM `contact_time_total` WHERE `UserId` = ? AND `Date` = ? AND `Contact_time` >= ?)";
         $query = $this->db->query($sql, array($userId,$userId,$userId,$userId,$userId,date('Y-m-d'),$max_time,$userId,date('Y-m-d'),$max_time));
+        return $query->result();
+    }
+
+    public function get_isOpenGps_by_id($userId){
+        $sql = "SELECT Id FROM users WHERE users.Id = ? AND users.isOpenGps = ?";
+        $query = $this->db->query($sql, array($userId,1));
         return $query->result();
     }
 }

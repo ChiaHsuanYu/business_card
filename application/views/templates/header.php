@@ -83,7 +83,17 @@
                     </ul>
                 </div>
             </li>
-            
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#mgt_sys_msg-collapse" aria-expanded="false">
+                    通知訊息管理
+                </button>
+                <div class="collapse" id="mgt_sys_msg-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="<?php echo base_url("mgt_sys_msg/add"); ?>" class="link-dark rounded">新增通知訊息</a></li>
+                    <li><a href="<?php echo base_url("mgt_sys_msg/index"); ?>" class="link-dark rounded">通知訊息維護</a></li>
+                    </ul>
+                </div>
+            </li>
             <li class="border-top my-3"></li>
             <li class="mb-1">
                 <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#password-collapse" aria-expanded="false">
