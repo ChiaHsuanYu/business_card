@@ -146,7 +146,7 @@ class Sys_msg_service extends MY_Service
     // 系統通知訊息列表
     public function query_sys_msg($data){
         $r = $this->sys_msg_model->query_sys_msg($data);
-        if(!$r){
+        if(!$r['total_count']){
             $result = array(
                 "status" => 0,
                 "msg"=> "查無資料"

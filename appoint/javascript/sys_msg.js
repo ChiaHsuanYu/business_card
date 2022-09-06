@@ -188,18 +188,13 @@ function sys_msg_list(page_num, page_count) {
 
 // 列表-尚無通知訊息資料
 function sys_msg_noData() {
-    let tab = "",
-        tab_phone = "";
+    let tab = "";
     tab = "<table class='contentsTable' width='auto' cellpadding='0' cellspacing='0'>"
     tab += "<tr align='center'>";
-    tab += "<td class='contentsTh' colspan='3'>查無通知訊息資料</td>";
+    tab += "<td class='contentsTh' colspan='5'>查無通知訊息資料</td>";
     tab += "</tr>";
     tab += "</table>";
-    tab_phone += "<div class='phone_table' width='100%' cellpadding='0' cellspacing='0'>";
-    tab_phone += "<div class='contentsTh'>查無通知訊息資料</div>";
-    tab_phone += "</div>";
     $("#sysmsgAll").html(tab);
-    $("#sysmsgAll_phone").html(tab_phone);
     document.getElementById('total_count').innerHTML = '資料總筆數：0';
     let hideobj = document.getElementById("allPageCountBox");
     hideobj.style.display = "none"; //隱藏筆數頁數層 
