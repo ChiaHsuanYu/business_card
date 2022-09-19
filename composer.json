@@ -17,14 +17,21 @@
         "google/apiclient":"^2.7",
         "facebook/graph-sdk": "~5.0",
         "giggsey/libphonenumber-for-php": "8.12.47.1",
-        "jeroendesloovere/vcard": "^1.7"
+        "jeroendesloovere/vcard": "^1.7",
+        "phpunit/phpunit": "^9.5"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x"
     },
     "require-dev": {
         "mikey179/vfsstream": "1.6.*",
-        "phpunit/phpunit": "4.* || 5.* || 9.*",
-        "phpstan/phpstan": "^0.12.2"
+        "phpstan/phpstan": "^0.12.2",
+        "kenjis/ci-phpunit-test": "^3.0",
+        "nikic/php-parser": "4.2.5"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
     }
 }

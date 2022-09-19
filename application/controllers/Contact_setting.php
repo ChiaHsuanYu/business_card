@@ -9,7 +9,7 @@ class Contact_setting extends BaseController {
     {
         parent::__construct();
         $this->load->library('session');
-        $this->load->helper('url'); 
+        $this->load->helper('url');
         $this->load->helper('html');
         $this->load->helper('form');
         //登入驗證

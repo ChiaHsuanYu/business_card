@@ -36,7 +36,7 @@ class Users_service extends MY_Service
 
     // 檢查SUPER ID是否重複
     public function check_superId($data){
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->common_service->get_userId_for_session();
         $r = $this->users_model->check_superId($data);
         if(!$r){
             $result = array(
@@ -59,7 +59,7 @@ class Users_service extends MY_Service
         // 檢查是否已有上傳過圖片
         $data['personal_avatar_path'] = $this->check_orig_img($data['personal_avatar_path'],$data['personal_orig_img']);
         // 新增公司資訊
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->common_service->get_userId_for_session();
         $companyId = $this->company_model->add_company($data);
         if(!$companyId){
             $result = array(
@@ -124,7 +124,7 @@ class Users_service extends MY_Service
     // 修改密碼
     public function update_password($data){
         // 檢查使用者舊密碼
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->common_service->get_userId_for_session();
         $r = $this->users_model->check_user_by_password($data);
         if(!$r){
             $result = array(
@@ -184,7 +184,7 @@ class Users_service extends MY_Service
             if(!isset($this->session->user_info['id'])){
                 return $result;
             }
-            $data['userId'] = $this->session->user_info['id'];
+            $data['userId'] = $this->common_service->get_userId_for_session();
             $data['collect_userId'] = $user_data->id;
             // 檢查是否已有收藏紀錄
             $collect_data = $this->user_collect_model->check_user_collect($data);
@@ -239,7 +239,7 @@ class Users_service extends MY_Service
     // 編輯個人檔案
     public function update_acc_by_id($data){
         $data->company_order = array();
-        $data->id = $this->session->user_info['id'];
+        $data->id = $this->common_service->get_userId_for_session();
         // 檢查是否需要取得系統預設頭像資料
         $data->personal_avatar_path = $this->check_avatar_data($data->personal_avatar_path,$data->personal_avatar_id);
         if($data->personal_avatar_path){
@@ -365,7 +365,7 @@ class Users_service extends MY_Service
 
     // 更改使用者主題 by userId
     public function update_subjectId_by_id($data){
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->common_service->get_userId_for_session();
         $r = $this->users_model->update_subjectId_by_id($data);
         if(!$r){
             $result = array(
@@ -383,7 +383,7 @@ class Users_service extends MY_Service
 
     // 修改SUPER ID by userId
     public function update_superId_by_id($data){
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->common_service->get_userId_for_session();
         $r = $this->users_model->check_superId($data);
         if($r){
             $result = array(
@@ -409,7 +409,7 @@ class Users_service extends MY_Service
 
     // 更改隱私設定 by userId
     public function update_isPublic_by_userId($data){
-        $data['id'] = $this->session->user_info['id'];
+        $data['id'] = $this->common_service->get_userId_for_session();
         $r = $this->users_model->update_isPublic_by_id($data);
         if(!$r){
             $result = array(
@@ -427,7 +427,7 @@ class Users_service extends MY_Service
 
     // 取得系統通知訊息 by userId
     public function get_sys_msg_by_userId(){
-        $userId = $this->session->user_info['id'];
+        $userId = $this->common_service->get_userId_for_session();
         $sys_msgs = $this->sys_msg_model->get_sys_msg_by_userId($userId);
         if(!$sys_msgs){
             $result = array(
@@ -455,7 +455,7 @@ class Users_service extends MY_Service
     // 取得未讀通知總數 by userId
     public function get_msg_count_by_userId(){
         // 取得當前使用者ID及所有系統訊息
-        $userId = $this->session->user_info['id'];
+        $userId = $this->common_service->get_userId_for_session();
         $sys_msgs = $this->sys_msg_model->get_sys_msg_by_userId($userId);
         if(!$sys_msgs){
             $result = array(
@@ -480,7 +480,7 @@ class Users_service extends MY_Service
     }
     // 修改系統訊息已讀狀態 by userId
     public function update_sys_msg_isReaded_by_id($data){
-        $userId = $this->session->user_info['id'];
+        $userId = $this->common_service->get_userId_for_session();
         $all_msgId = explode(',',$data['msgId']);
         foreach($all_msgId as $key => $value){
             $this->cache->delete($value.'_'.$userId);
@@ -507,7 +507,7 @@ class Users_service extends MY_Service
 
     // 更改AI推薦設定
     public function update_isOpenAI($data){
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $r = $this->users_model->update_isOpenAI($data);
         if(!$r){
             $result = array(
@@ -554,7 +554,7 @@ class Users_service extends MY_Service
 
     // 更新裝置GPS定位
     public function update_gps($data){
-        $userId = $this->session->user_info['id'];
+        $userId = $this->common_service->get_userId_for_session();
         if(isset($this->input->request_headers()['x-forwarded-for'])){
             $host = $this->input->request_headers()['x-forwarded-for'];
         }else if(isset($this->input->request_headers()['Host'])){

@@ -70,7 +70,6 @@ class Gps_service extends MY_Service
             if($room_key){
                 $room_no++;
                 $room_val = $gps_room[$room_key];
-                $room_val['last_check_time'] = $nowtime;
                 $last_check_time = $room_val['last_check_time'];
                 // 檢查距離
                 $diff_distance = $calculator->getDistance() * 1000;

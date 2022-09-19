@@ -1,5 +1,5 @@
 <?php
-require APPPATH . 'controllers/BaseController.php';
+require_once APPPATH . 'controllers/BaseController.php';
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class CronResetContactTime extends BaseController

@@ -1,5 +1,5 @@
 <?php 
-    require APPPATH . '/libraries/JWT.php';
+    require_once APPPATH . '/libraries/JWT.php';
 
     class CreatorJwt
     {

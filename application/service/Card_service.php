@@ -20,7 +20,7 @@ class Card_service extends MY_Service
     // 收藏名片
     public function collect_user_by_userId($data){
         // 預設收藏資訊
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $data['isCollected'] = 2;
         // 檢查是否已有收藏紀錄
         $r = $this->user_collect_model->check_user_collect($data);
@@ -120,7 +120,7 @@ class Card_service extends MY_Service
 
     // 取得收藏要求清單
     public function get_collect_by_userId(){
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $data['isCollected'] = 2;
         $collect_user_data = $this->user_collect_model->get_collect_by_collect_userId($data);
         if(!count($collect_user_data)){
@@ -159,7 +159,7 @@ class Card_service extends MY_Service
 
     // 查詢使用者ID
     public function query_users_id($data){
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $userdata = $this->users_model->get_isOpenGps_by_id($data['userId']);
         if(count($userdata)){
             // 查詢位於userId附近的使用者資訊
@@ -241,7 +241,7 @@ class Card_service extends MY_Service
     // 取得隨機名片列表
     public function query_user($data){
         // 依據欲查詢位置取得使用者id
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $users_id = $this->cache->redis->get('id_'.$data['userId']);
         if(!count($users_id)){
             $result = array(
@@ -269,7 +269,7 @@ class Card_service extends MY_Service
     // 取得收藏名片列表
     public function query_user_collect($data){
         // 查詢指定userId外的使用者ID
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $all_users = $this->user_collect_model->get_collect_users($data['userId']);
         if(!count($all_users)){
             $result = array(
@@ -306,7 +306,7 @@ class Card_service extends MY_Service
     // 取得被收藏的使用者清單
     public function get_user_for_collected(){
         // 查詢指定userId外的使用者ID
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $all_users = $this->user_collect_model->get_user_for_collected($data['userId']);
         if(!count($all_users)){
             $result = array(
@@ -413,7 +413,7 @@ class Card_service extends MY_Service
     }
 
     public function add_scan_record($data){
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $check_result = $this->scan_record_model->check_scan_record($data);
         if(count($check_result)){
             $data['id'] = $check_result[0]->id;
@@ -437,7 +437,7 @@ class Card_service extends MY_Service
 
     // 取得瀏覽紀錄列表
     public function query_scan_record($data){
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $all_users = $this->scan_record_model->get_scan_record($data['userId']);
         if(!count($all_users)){
             $result = array(
@@ -473,7 +473,7 @@ class Card_service extends MY_Service
 
     // 取得AI推薦列表
     public function query_ai_users($data){
-        $data['userId'] = $this->session->user_info['id'];
+        $data['userId'] = $this->common_service->get_userId_for_session();
         $all_users = $this->contact_time_total_model->query_ai_users($data['userId']);
         if(!count($all_users)){
             $result = array(

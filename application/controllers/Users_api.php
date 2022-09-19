@@ -1,6 +1,7 @@
 <?php
 
-require APPPATH . 'controllers/BaseAPIController.php';
+require_once APPPATH . 'controllers/BaseAPIController.php';
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 use JeroenDesloovere\VCard\VCard;
 
@@ -399,7 +400,8 @@ class Users_api extends BaseAPIController
                 "message" => $this->form_validation->error_string()
             ); 
             $this->response($result,200); // REST_Controller::HTTP_NOT_FOUND
-        }else{
+        }else{   
+            // print_r(json_encode($this->users_service->update_gps($data),true));
             $this->response($this->users_service->update_gps($data),200); // REST_Controller::HTTP_OK     
         }
     }

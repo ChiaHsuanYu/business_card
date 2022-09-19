@@ -1,6 +1,6 @@
 <?php
 
-require APPPATH . 'libraries/CreatorJwt.php';
+require_once APPPATH . 'libraries/CreatorJwt.php';
 
 class BaseController extends CI_Controller 
 {

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 use chriskacerguis\RestServer\RestController;
 
-require APPPATH . 'libraries/CreatorJwt.php';
+require_once APPPATH . 'libraries/CreatorJwt.php';
 class BaseAPIController extends RestController{
     public function __construct()
     {
@@ -12,7 +12,9 @@ class BaseAPIController extends RestController{
         $this->load->library(array("form_validation"));
         $this->load->service("Common_service");
         $this->objOfJwt = new CreatorJwt();
-        header("X-Frame-Options: DENY");
+        if(!headers_sent()){
+            header("X-Frame-Options: DENY");
+        }
         if (isset($_SERVER['HTTP_ORIGIN'])) {
             // header("Access-Control-Allow-Origin: {https://192.168.88.138}");
             header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");

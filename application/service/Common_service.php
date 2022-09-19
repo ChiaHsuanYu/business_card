@@ -325,7 +325,7 @@ class Common_service extends MY_Service
     public function avatar_uuid($fileName){
         $name = explode('.', $fileName);
         $nowtime = date('YmdHis');
-        $userId = $this->session->user_info['id'];
+        $userId = $this->get_userId_for_session();
         $new_num = 1; //預設1，總數+1=新單號
         $uuid = $userId."_".$nowtime."_".$new_num;
         $path = DEL_AVATAR_PATH;
@@ -342,7 +342,7 @@ class Common_service extends MY_Service
     public function logo_uuid($fileName){
         $name = explode('.', $fileName);
         $nowtime = date('YmdHis');
-        $userId = $this->session->user_info['id'];
+        $userId = $this->get_userId_for_session();
         $new_num = 1; //預設1，總數+1=新單號
         $uuid = "logo_".$userId."_".$nowtime."_".$new_num;
         $path = DEL_LOGO_PATH;
@@ -417,11 +417,15 @@ class Common_service extends MY_Service
 
     // 取得通知緩存訊息
     public function check_notify(){
-        $userId = $this->session->user_info['id'];
+        $userId = $this->get_userId_for_session();
         $notify_data = $this->cache->redis->get('notify_'.$userId); //取得通知緩存
         if($notify_data){
             $this->cache->redis->delete('notify_'.$userId); //刪除緩存
         }
         return $notify_data;
+    }
+
+    public function get_userId_for_session(){
+        return $this->session->user_info['id'];
     }
 }

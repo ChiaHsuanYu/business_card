@@ -14,6 +14,7 @@ class Contact_setting_api extends BaseAPIController
         $this->load->service("Contact_setting_service");
         $this->load->service('Common_service');
         $this->load->library('session');
+        $this->load->helper('url');
 
         // 登入驗證
         $r = $this->checkAA();

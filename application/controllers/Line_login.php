@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require FCPATH. 'vendor/autoload.php';
+require_once FCPATH. 'vendor/autoload.php';
 Class Line_login extends CI_Controller{
     public function __construct()
     {

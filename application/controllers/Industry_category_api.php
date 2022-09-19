@@ -1,6 +1,6 @@
 <?php
 
-require APPPATH . 'controllers/BaseAPIController.php';
+require_once APPPATH . 'controllers/BaseAPIController.php';
 defined('BASEPATH') OR exit('No direct script access allowed');
  
 class Industry_category_api extends BaseAPIController 
