@@ -490,7 +490,14 @@ class Users_service extends MY_Service
 
     // 修改收藏要求已讀狀態
     public function update_collect_isReaded_by_id($data){
-        $this->user_collect_model->update_collect_isReaded_by_id($data['collectId']);
+        $r = $this->user_collect_model->update_collect_isReaded_by_id($data['collectId']);
+        if(!$r){
+            $result = array(
+                "status" => 0,
+                "msg"=> '修改失敗'
+            );  
+            return $result;
+        }
         $result = array(
             "status" => 1,
             "msg"=> '修改成功'

@@ -97,7 +97,7 @@ class User_collect_model extends CI_Model
     public function update_collect_isReaded_by_id($collectId){
         $sql = "UPDATE user_collect SET isReaded = 1, ModifiedTime = ? WHERE Id = ?;";
         $query = $this->db->query($sql, array(date('Y-m-d H:i:s'),$collectId));
-        return $query;
+        return $this->db->affected_rows();
     }
 
     // 查詢收藏的使用者ID
