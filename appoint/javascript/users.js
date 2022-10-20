@@ -113,8 +113,8 @@ function users_data(seachText, data_obj) {
             var login_type = '手機號碼',
                 name = '-',
                 superID = '-',
-                isOpenAI = '<p class="inline_block margin_0 fault_a red">關閉</p>',
-                isPublic = '<p class="inline_block margin_0 fault_a red">不公開</p>';
+                isOpenAI = '<p class="inline_block margin_0 red">關閉</p>',
+                isPublic = '<p class="inline_block margin_0 red">不公開</p>';
             var user_detail_id = "user_detail" + users[i]['id'];
             var user_detail_id_phone = "user_detail_phone_" + users[i]['id'];
             var company_id = "company_" + users[i]['id'];
@@ -139,10 +139,10 @@ function users_data(seachText, data_obj) {
             if (users[i]['personal_name']) {
                 name = users[i]['personal_name'];
             }
-            if (users[i]['isOpenAI']) {
+            if (users[i]['isOpenAI'] == '1') {
                 isOpenAI = "開啟";
             }
-            if (users[i]['isPublic']) {
+            if (users[i]['isPublic'] == '1') {
                 isPublic = "公開";
             }
             var user_data = {

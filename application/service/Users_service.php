@@ -85,13 +85,12 @@ class Users_service extends MY_Service
             $result = array(
                 "status" => 0,
                 "msg"=> "修改失敗",
-                "data"=>$data
             );
             return $result;
         }
         $result = array(
             "status" => 1,
-            "msg"=> "修改成功"
+            "msg"=> "修改成功",
         );  
         return $result;
     }
@@ -481,10 +480,7 @@ class Users_service extends MY_Service
     // 修改系統訊息已讀狀態 by userId
     public function update_sys_msg_isReaded_by_id($data){
         $userId = $this->common_service->get_userId_for_session();
-        $all_msgId = explode(',',$data['msgId']);
-        foreach($all_msgId as $key => $value){
-            $this->cache->delete($value.'_'.$userId);
-        }
+        $this->cache->delete($data['msgId'].'_'.$userId);
         $result = array(
             "status" => 1,
             "msg"=> '修改成功'
@@ -494,10 +490,7 @@ class Users_service extends MY_Service
 
     // 修改收藏要求已讀狀態
     public function update_collect_isReaded_by_id($data){
-        $all_collectId = explode(',',$data['collectId']);
-        foreach($all_collectId as $key => $value){
-            $this->user_collect_model->update_collect_isReaded_by_id($value);
-        }
+        $this->user_collect_model->update_collect_isReaded_by_id($data['collectId']);
         $result = array(
             "status" => 1,
             "msg"=> '修改成功'
@@ -554,6 +547,7 @@ class Users_service extends MY_Service
 
     // 更新裝置GPS定位
     public function update_gps($data){
+        // $userId = $data['userId'];
         $userId = $this->common_service->get_userId_for_session();
         if(isset($this->input->request_headers()['x-forwarded-for'])){
             $host = $this->input->request_headers()['x-forwarded-for'];

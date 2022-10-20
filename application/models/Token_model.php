@@ -80,6 +80,8 @@ class Token_model extends CI_Model
                 $obj->subject_name = $row->subjectName;
                 $obj->subject_template = $row->Template;
                 $obj->isDeleted = $row->isDeleted;
+                $obj->isPublic = $row->isPublic;
+                $obj->isOpenGps = $row->isOpenGps;
                 $obj->identity = $row->Identity;
                 $obj->token = $row->Token;
                 $obj->tokenCreateTime = $row->TokenCreateTime;
@@ -136,6 +138,8 @@ class Token_model extends CI_Model
                 // $obj->SMSNumber = $row->SMSNumber;
                 // $obj->SMSTime = $row->SMSTime;
                 // $obj->isDeleted = $row->isDeleted;
+                $obj->isPublic = $row->isPublic;
+                $obj->isOpenGps = $row->isOpenGps;
                 $obj->identity = $row->Identity;
                 $obj->token = $row->Token;
                 $obj->tokenCreateTime = $row->TokenCreateTime;

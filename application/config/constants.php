@@ -124,6 +124,11 @@ define('LINE_LOGIN_REDIRECT_URL', 'https://shine.sub.sakawa.com.tw/business_card
 define('LINE_ACCESS_TOKEN_API', 'https://api.line.me/oauth2/v2.1/token');                // define line get access_token API
 define('LINE_PROFILE_API', 'https://api.line.me/v2/profile');                            // define line get profile API
 
+/* SMS API*/
+define('SEND_SMS_API', 'https://api.sms.hinet.net/api/sendSMS/v1');                      // define HiNet send sms API
+define('SMS_USERNAME', '89881560');                                                      // define HiNet sms username
+define('SMS_PASSWORD', 'qwe55664');                                                      // define HiNet sms password
+
 /* 後台URI */
 define('LOGIN_PAGE', 'mgt_login/index');                                //define login page
 define('LOGOUT_PAGE', '/mgt_login/logout/');                            //define logout page

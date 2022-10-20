@@ -426,6 +426,10 @@ class Common_service extends MY_Service
     }
 
     public function get_userId_for_session(){
-        return $this->session->user_info['id'];
+        if(isset($this->session->user_info)){
+            return $this->session->user_info['id'];
+        }else{
+            return '';
+        }
     }
 }
